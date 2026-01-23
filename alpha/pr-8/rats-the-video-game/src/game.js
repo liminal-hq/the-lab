@@ -47,6 +47,9 @@ const state = {
     turds: [], // Aerial projectiles
     score: 0, // Chewed items count
     frameCount: 0, // Debug timer
+    cycleCheckpoints: [], // X positions of level cycles
+    totalCycles: 25,
+    currentCycle: 0,
     input: { left: false, right: false, jump: false, chew: false }, // The human commands
     level: 'SURFACE', // SURFACE or SUBWAY
     levelCompleted: false
@@ -59,6 +62,7 @@ function generateLevel() {
     state.obstacles = [];
     state.birds = [];
     state.turds = [];
+    state.cycleCheckpoints = [];
     state.rat.x = 100;
     state.rat.vx = 0;
     state.rat.vy = 0;
@@ -79,7 +83,7 @@ function generateSurface() {
     let x = 0;
     // Generate a long city (plenty of hiding spots)
     // Decreased to 25 for a shorter level
-    for (let i = 0; i < 25; i++) {
+    for (let i = 0; i < state.totalCycles; i++) {
         const w = 100 + Math.random() * 200;
         const h = 100 + Math.random() * (canvas.height - 200);
         // Coloured like the gloom of night
@@ -116,6 +120,7 @@ function generateSurface() {
             }
         }
         x += w + gap;
+        state.cycleCheckpoints.push(x);
     }
     // Subway entrance at the end
     state.obstacles.push({ x: x + 100, w: 60, h: 80, type: 'SUBWAY_ENTRANCE' });
@@ -340,6 +345,14 @@ const JUMP_FORCE = 15;    // The power of the hind legs
 function update() {
     state.frameCount++;
 
+    // Update Current Cycle
+    if (state.level === 'SURFACE') {
+        const cycleIdx = state.cycleCheckpoints.findIndex(cp => state.rat.x < cp);
+        state.currentCycle = cycleIdx === -1 ? state.totalCycles : cycleIdx + 1;
+    } else {
+        state.currentCycle = 0; // Or handle subway cycles if needed
+    }
+
     // Movement Logic
     if (state.input.right) {
         state.rat.vx = SPEED;
@@ -523,7 +536,7 @@ function loop() {
         ctx.fillText(`Touches: ${lastTouchDebug.count} | Last X: ${Math.round(lastTouchDebug.x)}`, 20, 50);
         ctx.fillText(`Input: L:${state.input.left} R:${state.input.right} J:${state.input.jump}`, 20, 70);
         ctx.fillText(`Rat: ${Math.round(state.rat.x)}, ${Math.round(state.rat.y)}`, 20, 90);
-        ctx.fillText(`Frames: ${state.frameCount}`, 20, 110);
+        ctx.fillText(`Cycle: ${state.currentCycle} / ${state.totalCycles}`, 20, 110);
 
         // Draw Split Line
         ctx.strokeStyle = 'red';
