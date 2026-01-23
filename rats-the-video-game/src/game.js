@@ -43,12 +43,29 @@ const state = {
     rat: { x: 100, y: 0, vx: 0, vy: 0, grounded: true, facingRight: true }, // The protagonist
     buildings: [], // The concrete jungle
     obstacles: [], // The things in our way
-    input: { left: false, right: false, jump: false, chew: false } // The human commands
+    input: { left: false, right: false, jump: false, chew: false }, // The human commands
+    level: 'SURFACE', // SURFACE or SUBWAY
+    levelCompleted: false
 };
 
 // Procedural Generation: Building the Maze
 // "The city is a maze, and we are the masters." - Rat Proverb
-function generateCity() {
+function generateLevel() {
+    state.buildings = [];
+    state.obstacles = [];
+    state.rat.x = 100;
+    state.rat.vx = 0;
+    state.rat.vy = 0;
+    state.levelCompleted = false;
+
+    if (state.level === 'SURFACE') {
+        generateSurface();
+    } else {
+        generateSubway();
+    }
+}
+
+function generateSurface() {
     let x = 0;
     // Generate a long city (plenty of hiding spots)
     for (let i = 0; i < 200; i++) {
@@ -57,6 +74,16 @@ function generateCity() {
         // Coloured like the gloom of night
         state.buildings.push({ x, w, h, color: `hsl(${Math.random() * 360}, 20%, 30%)` });
 
+        // Decorations
+        if (i === 2) {
+            // Welcome sign early on
+            state.obstacles.push({ x: x + 20, w: 10, h: 10, type: 'SIGN_CITY' });
+        }
+        if (i === 15) {
+            // Barzini's somewhere
+            state.obstacles.push({ x: x + 20, w: 10, h: 10, type: 'BARZINIS' });
+        }
+
         // Random Obstacles in the alleys
         //      _  _
         //     ( \/ )  <-- "Watch your step!"
@@ -64,19 +91,47 @@ function generateCity() {
         const gap = Math.random() * 50 + 50; // Ensure enough space
         if (Math.random() < 0.4) {
             const obsX = x + w + gap / 2 - 15; // Center in the gap
-            if (Math.random() < 0.5) {
+            const rand = Math.random();
+
+            if (rand < 0.4) {
                 // A Box to chew
                 state.obstacles.push({ x: obsX, w: 30, h: 30, type: 'BOX' });
-            } else {
+            } else if (rand < 0.7) {
                 // A Trap to jump
                 state.obstacles.push({ x: obsX, w: 40, h: 10, type: 'TRAP' });
+            } else {
+                // Prius!
+                state.obstacles.push({ x: obsX - 25, w: 80, h: 40, type: 'PRIUS' });
             }
         }
         x += w + gap;
     }
+    // Subway entrance at the end
+    state.obstacles.push({ x: x + 100, w: 60, h: 80, type: 'SUBWAY_ENTRANCE' });
 }
 
-generateCity();
+function generateSubway() {
+    let x = 0;
+    // Generate subway tunnel
+    for (let i = 0; i < 200; i++) {
+        const w = 300 + Math.random() * 200;
+        // In subway, buildings are just walls/pillars in background
+        state.buildings.push({ x, w, h: canvas.height, color: '#111', type: 'TUNNEL' });
+
+        // Obstacles on tracks
+        if (Math.random() < 0.6) {
+             const obsX = x + w/2;
+             if (Math.random() < 0.5) {
+                 state.obstacles.push({ x: obsX, w: 40, h: 30, type: 'TRASH_PILE' });
+             } else {
+                 state.obstacles.push({ x: obsX, w: 120, h: 5, type: 'THIRD_RAIL' });
+             }
+        }
+        x += w;
+    }
+}
+
+generateLevel();
 
 // Input: Translating human fingers to rat paws
 window.addEventListener('keydown', (e) => {
@@ -285,13 +340,17 @@ function update() {
         const obsR = obs.x + obs.w;
         const obsT = obs.h;
 
+        // Visual only objects (don't collide)
+        if (obs.type === 'SIGN_CITY' || obs.type === 'BARZINIS') continue;
+
         // Simple AABB overlap check
         if (ratR > obsL && ratL < obsR && ratB < obsT) {
-             if (obs.type === 'BOX') {
+             if (obs.type === 'BOX' || obs.type === 'PRIUS' || obs.type === 'TRASH_PILE') {
                  if (state.input.chew) {
                      // Nom nom nom
                      state.obstacles.splice(i, 1);
                      audio.playChew();
+                     if (obs.type === 'PRIUS') audio.playHonk(); // Angry driver?
                  } else {
                      // Solid wall logic
                      // We check overlap on the X axis specifically to push out
@@ -311,16 +370,25 @@ function update() {
                          state.rat.x = obsR + 15;
                      }
                  }
-             } else if (obs.type === 'TRAP') {
-                 // SNAP!
+             } else if (obs.type === 'TRAP' || obs.type === 'THIRD_RAIL') {
+                 // SNAP! or ZAP!
                  //      \ | /
                  //     - X -  <-- Pain
                  //      / | \
-                 audio.playSnap();
+                 if (obs.type === 'THIRD_RAIL') audio.playSpark();
+                 else audio.playSnap();
+
                  // Bounce back
                  state.rat.vy = 10;
                  state.rat.vx = state.rat.facingRight ? -10 : 10;
                  state.rat.grounded = false;
+             } else if (obs.type === 'SUBWAY_ENTRANCE') {
+                 if (!state.levelCompleted) {
+                     state.levelCompleted = true;
+                     state.level = 'SUBWAY';
+                     generateLevel(); // Transition!
+                     return; // Skip rest of update frame
+                 }
              }
         }
     }
@@ -336,6 +404,8 @@ function update() {
     // <( )_
     //  (   )
     graphics.cameraX = state.rat.x - canvas.width / 2;
+    // Store level info in graphics for rendering context
+    graphics.level = state.level;
 }
 
 // The Game Loop: The Heartbeat of the City
