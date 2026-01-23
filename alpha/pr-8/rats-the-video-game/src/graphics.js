@@ -83,22 +83,39 @@ export class GraphicsEngine {
                     // Windows (Human cages)
                     // Flickering Logic
                     const now = Date.now();
+                    const slowTime = Math.floor(now / 5000); // 5 second intervals
 
                     // Simple window logic
                     for (let wx = screenX + 5; wx < screenX + b.w - 5; wx += 20) {
                         for (let wy = this.height - b.h + 10; wy < this.height - 10; wy += 30) {
                             // Unique seed per window
                             const seed = (wx * wy);
-                            // Random flicker: 1% chance to be off/on different than base state
-                            const flicker = Math.sin(now / (100 + (seed % 500))) > 0.9;
 
-                            if ((seed % 3 !== 0) && !flicker) {
-                                this.ctx.fillStyle = '#FFD700'; // Yellow lights
+                            // Deterministic random based on position and slow time interval
+                            // This keeps the state stable for 5 seconds
+                            const randState = Math.sin(seed + slowTime * 123.45);
+                            const isOn = randState > -0.5; // Mostly on for "normal" windows
+
+                            // Quick Flicker check (momentary toggle)
+                            // Happens rarely, independent of the slow state
+                            const flickerTime = Math.sin(now / 50 + seed);
+                            const isFlickering = flickerTime > 0.95;
+
+                            let lightColor = null;
+
+                            // Default Pattern (Some windows lit, some dark)
+                            if (seed % 3 !== 0) {
+                                // Normally Lit
+                                if (isOn && !isFlickering) lightColor = '#FFD700';
+                            } else {
+                                // Normally Dark
+                                // Occasional dark window lights up
+                                if (!isOn || isFlickering) lightColor = '#FFA500';
+                            }
+
+                            if (lightColor) {
+                                this.ctx.fillStyle = lightColor;
                                 this.ctx.fillRect(wx, wy, 10, 20);
-                            } else if (flicker && (seed % 7 === 0)) {
-                                 // Some normally dark windows flicker on
-                                 this.ctx.fillStyle = '#FFA500';
-                                 this.ctx.fillRect(wx, wy, 10, 20);
                             }
                         }
                     }
@@ -313,6 +330,21 @@ export class GraphicsEngine {
         this.ctx.stroke();
 
         this.ctx.restore();
+    }
+
+    drawTurds(turds) {
+        if (!turds) return;
+        this.ctx.fillStyle = '#FFF'; // Bird droppings are... whiteish?
+        for (const turd of turds) {
+            const screenX = turd.x - this.cameraX;
+            const screenY = this.height - 20 - turd.y;
+
+            if (screenX > -10 && screenX < this.width + 10) {
+                this.ctx.beginPath();
+                this.ctx.arc(screenX, screenY, 3, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+        }
     }
 
     drawUI(score) {
