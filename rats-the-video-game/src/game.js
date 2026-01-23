@@ -107,31 +107,52 @@ function handleTouch(e) {
 
     e.preventDefault(); // Prevent scrolling/zooming
 
-    // Reset movement inputs
-    let touchLeft = false;
-    let touchRight = false;
-
     lastTouchDebug.count = e.touches.length;
 
-    // Process all active touches for Movement (Hold)
+    let touchesOnLeft = 0;
+    let touchesOnRight = 0;
+    const width = window.innerWidth;
+
+    // Count touches in each zone
     for (let i = 0; i < e.touches.length; i++) {
-        const touch = e.touches[i];
-        const x = touch.clientX;
-        lastTouchDebug.x = x; // Track for debug
+        const x = e.touches[i].clientX;
+        lastTouchDebug.x = x; // Track last touch for debug
 
-        // Use window width for split logic
-        const width = window.innerWidth;
-
-        // Split screen 50/50 for movement
         if (x < width * 0.5) {
-            touchLeft = true;
+            touchesOnLeft++;
         } else {
-            touchRight = true;
+            touchesOnRight++;
         }
     }
 
-    state.input.left = touchLeft;
-    state.input.right = touchRight;
+    // Input Logic with Hysteresis / Priority
+    // This allows "Hold Left + Tap Right to Jump" without stopping movement
+    if (touchesOnLeft > 0 && touchesOnRight === 0) {
+        state.input.left = true;
+        state.input.right = false;
+    } else if (touchesOnRight > 0 && touchesOnLeft === 0) {
+        state.input.left = false;
+        state.input.right = true;
+    } else if (touchesOnLeft > 0 && touchesOnRight > 0) {
+        // Conflict detected (Touches on both sides)
+        // Prioritize maintaining the current direction to allow for "Tap to Jump"
+        // without interrupting movement.
+        if (state.input.left) {
+            // We were moving Left, keep moving Left
+            state.input.right = false;
+        } else if (state.input.right) {
+            // We were moving Right, keep moving Right
+            state.input.left = false;
+        } else {
+            // If strictly neutral before, default to Left (rare case)
+            state.input.left = true;
+            state.input.right = false;
+        }
+    } else {
+        // No touches
+        state.input.left = false;
+        state.input.right = false;
+    }
 
     // Start music on first interaction
     if (e.touches.length > 0 && !audio.isPlaying) {
@@ -185,7 +206,9 @@ function update() {
         state.rat.vx = -SPEED;
         state.rat.facingRight = false;
     } else {
-        state.rat.vx = 0; // Resting whiskers
+        // Friction / Decaying momentum
+        state.rat.vx *= 0.8;
+        if (Math.abs(state.rat.vx) < 0.5) state.rat.vx = 0; // Resting whiskers
     }
 
     // Jump Logic
