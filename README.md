@@ -31,6 +31,8 @@ A procedural open-world city game where you assume the role of an escaped lab ra
 
 ### Rats Music Converter
 
+![Rats Music Converter](assets/images/rats_music.svg)
+
 **Status:** *Beta Testing*
 
 A specialized tool to transform high-fidelity audio into the 16-channel "Rat-Bit" frequency format used by the game engine.
