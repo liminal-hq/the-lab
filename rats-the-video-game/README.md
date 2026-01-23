@@ -2,6 +2,33 @@
 
 **"Rats are on the warpath, Rats are on parade..."**
 
+## Prologue: The Detective's Note
+
+<!--
+      / \
+     /   \
+    /_____\
+   (_______)   <-- Detective Hat
+    _|_|_|_
+   (_______)
+
+      / \
+      | |
+      | |      <-- The Pipe of Deductive Reasoning
+     /   \
+    |_____|
+-->
+
+*Found crumpled in a dark alley behind The Lab:*
+
+> "If you're reading this, it's already too late. They're everywhere. Not just in the sewers. They're in the code.
+> I've seen things... ASCII art where comments should be. Functions that squeak when you run them.
+> The story isn't just in the game. It's hidden. Fragmented.
+> You have to look closer. Check the source code. Check the logs. Check the dark corners of the repository.
+> The truth is out there... and it wants cheese."
+
+---
+
 Welcome to the apocalypse man-made. You are a rat. The city is yours.
 
 ## Features
