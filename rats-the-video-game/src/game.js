@@ -118,6 +118,8 @@ function handleTouch(e) {
         const touch = e.touches[i];
         const x = touch.clientX;
         lastTouchDebug.x = x; // Track for debug
+
+        // Use window width for split logic
         const width = window.innerWidth;
 
         // Split screen 50/50 for movement
@@ -273,6 +275,14 @@ function loop() {
         ctx.fillText(`Touches: ${lastTouchDebug.count} | Last X: ${Math.round(lastTouchDebug.x)}`, 20, 50);
         ctx.fillText(`Input: L:${state.input.left} R:${state.input.right} J:${state.input.jump}`, 20, 70);
         ctx.fillText(`Rat: ${Math.round(state.rat.x)}, ${Math.round(state.rat.y)}`, 20, 90);
+
+        // Draw Split Line
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(window.innerWidth / 2, 0);
+        ctx.lineTo(window.innerWidth / 2, window.innerHeight);
+        ctx.stroke();
     }
 
     requestAnimationFrame(loop);
