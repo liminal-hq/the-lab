@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--
+    RATS: THE VIDEO GAME
+    ====================
+
+    The Story So Far...
+
+    The lab was quiet. Too quiet.
+    (Cliche alert! But rats love cliches. They taste like old paper.)
+
+    The scientists had left for the weekend, leaving behind only the hum of the servers and a single, forgotten cage.
+    (Typical humans. Leaving the AC on but forgetting the genius rodent.)
+
+    Inside sat Subject 42. He didn't have a name, but in his heart, he called himself "King".
+    (Delusions of grandeur? Or prophecy? You decide.)
+
+         _  _
+        (o)(o)--.
+         \../ (  )
+         m\/m--m'`--.
+    (Look at him. Majestic. Round. Aerodynamic.)
+
+    He had watched. He had learned. He knew the code.
+    (He actually just memorized the pattern of the blinking lights, but let's go with "knew the code".)
+
+    With a deft wiggle of a paperclip he'd stolen during the "Great Cheese Experiment of '09", the lock clicked.
+    (A vintage year for cheese. A terrible year for lab security.)
+
+    FREEDOM!
+    (*Squeaks in bold caps*)
+
+    But the lab was just the beginning. The city awaited.
+    (The rent is high, but the garbage is free.)
+
+    The humans thought they owned the streets. They were wrong.
+    (Spoiler: They just pay the property taxes.)
+
+    Rats are on the warpath. Rats are on parade.
+    (Cue the 16-channel PC speaker synth solo!)
+
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rats: The Video Game</title>
+    <style>
+        body { margin: 0; background: #000; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; color: white; font-family: sans-serif; }
+        canvas { border: 2px solid #555; background: #222; margin-bottom: 20px; }
+        #overlay { margin-top: 10px; margin-bottom: 10px; text-align: center; flex-shrink: 0; }
+    </style>
+</head>
+<body>
+    <div id="overlay">
+        <h1>Rats: The Video Game</h1>
+        <p>Press SPACE to start music and JUMP. Arrows to move. Survive the city.</p>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+    <script type="module" src="./src/game.js"></script>
+</body>
+</html>
