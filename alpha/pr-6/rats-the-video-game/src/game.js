@@ -98,6 +98,7 @@ window.addEventListener('keyup', (e) => {
 
 // Touch Input: For the modern rat on the go
 let lastTouchDebug = { x: 0, count: 0 };
+const activeSwipes = new Map(); // Track swipe start positions: identifier -> startY
 
 function handleTouch(e) {
     // Ignore touches on UI elements (like the tutorial modal buttons)
@@ -113,15 +114,55 @@ function handleTouch(e) {
     let touchesOnRight = 0;
     const width = window.innerWidth;
 
-    // Count touches in each zone
+    // Track active touches to clean up activeSwipes
+    const currentTouchIds = new Set();
+
+    // Count touches in each zone & Handle Swipes
     for (let i = 0; i < e.touches.length; i++) {
-        const x = e.touches[i].clientX;
+        const touch = e.touches[i];
+        const x = touch.clientX;
+        const y = touch.clientY;
+        const id = touch.identifier;
+
+        currentTouchIds.add(id);
         lastTouchDebug.x = x; // Track last touch for debug
+
+        // Swipe Detection
+        if (!activeSwipes.has(id)) {
+            // New touch tracking for swipe
+            activeSwipes.set(id, { startY: y, hasJumped: false });
+        } else {
+            const swipeData = activeSwipes.get(id);
+            // Check deltaY (Negative is UP)
+            if (!swipeData.hasJumped && (y - swipeData.startY < -40)) {
+                // SWIPE UP DETECTED!
+                state.input.jump = true;
+                setTimeout(() => { state.input.jump = false; }, 100);
+
+                swipeData.hasJumped = true; // Prevent multi-jumps per swipe
+                // Reset startY to current to allow another swipe if they go down and up again?
+                // For now, let's keep it simple: one jump per swipe motion.
+                // User must lift or move significantly down to reset?
+                // Let's just flag it. If they move down, we could reset.
+            }
+            // Reset jump flag if they move back down?
+            if (y - swipeData.startY > -10) {
+                swipeData.hasJumped = false;
+                swipeData.startY = y; // Re-anchor
+            }
+        }
 
         if (x < width * 0.5) {
             touchesOnLeft++;
         } else {
             touchesOnRight++;
+        }
+    }
+
+    // Cleanup ended touches
+    for (const [id] of activeSwipes) {
+        if (!currentTouchIds.has(id)) {
+            activeSwipes.delete(id);
         }
     }
 

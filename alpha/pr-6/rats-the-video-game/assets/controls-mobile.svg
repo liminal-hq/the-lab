@@ -16,6 +16,6 @@
   <text x="150" y="75" fill="white" text-anchor="middle" font-size="10" font-family="sans-serif">TO MOVE</text>
 
   <!-- Overlay Text for Jump -->
-  <rect x="60" y="80" width="80" height="15" fill="rgba(0,0,0,0.8)" rx="5" />
-  <text x="100" y="91" fill="#e74c3c" text-anchor="middle" font-size="9" font-family="sans-serif" font-weight="bold">TAP ANYWHERE TO JUMP</text>
+  <rect x="50" y="80" width="100" height="15" fill="rgba(0,0,0,0.8)" rx="5" />
+  <text x="100" y="91" fill="#e74c3c" text-anchor="middle" font-size="8" font-family="sans-serif" font-weight="bold">TAP OR SWIPE UP TO JUMP</text>
 </svg>
