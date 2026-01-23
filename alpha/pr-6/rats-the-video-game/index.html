@@ -104,9 +104,31 @@
             font-size: 0.9rem;
             color: #aaa;
         }
+
+        #help-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background: #444;
+            color: white;
+            border: 2px solid #777;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #help-btn:hover { background: #666; }
     </style>
 </head>
 <body>
+    <button id="help-btn" aria-label="Show Tutorial">?</button>
+
     <div id="overlay">
         <h1>Rats: The Video Game</h1>
         <p>Press SPACE to start music and JUMP. Arrows to move. Survive the city.</p>
@@ -151,6 +173,17 @@
                 // Ensure touch closes it too, preventing ghost clicks
                 e.preventDefault();
                 closeModal();
+            });
+
+            // Re-open tutorial
+            const helpBtn = document.getElementById('help-btn');
+            function openModal() {
+                modal.style.display = 'flex';
+            }
+            helpBtn.addEventListener('click', openModal);
+            helpBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                openModal();
             });
 
             debugToggle.addEventListener('change', (e) => {
