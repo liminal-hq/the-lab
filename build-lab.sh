@@ -96,7 +96,8 @@ mkdir -p _site/rats-music-converter
 # Copy web files
 cp -r rats-music-converter/www/* _site/rats-music-converter/
 # Copy WASM artifacts (pkg)
-cp -r rats-music-converter/pkg _site/rats-music-converter/pkg
+mkdir -p _site/rats-music-converter/pkg
+cp -r rats-music-converter/pkg/* _site/rats-music-converter/pkg/
 
 # The End (Exit code 0)
 echo -e "${CYAN}------------------------------------------------------------${NC}"
