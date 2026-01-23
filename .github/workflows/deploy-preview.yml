@@ -21,13 +21,20 @@ permissions:
   pull-requests: write
 
 jobs:
+  # -----------------------------------------------------------------------
+  # Job: Deploy Alpha
+  # Description: Builds and deploys the PR to the 'alpha-builds' branch.
+  # Trigger: Runs when a PR is opened, synchronized (updated), or reopened.
+  # -----------------------------------------------------------------------
   deploy-alpha:
     if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
+      # Step 1: Checkout the code from the Pull Request
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Step 2: Setup the environment (Node.js and pnpm)
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -38,29 +45,38 @@ jobs:
         with:
           version: 9
 
+      # Step 3: Build the project using the shared build script
+      # This generates the static site in the '_site' directory.
       - name: Build Site
         run: |
           chmod +x build-lab.sh
           ./build-lab.sh
 
+      # Step 4: Upload the build artifact to GitHub
+      # This serves as a backup and allows manual inspection if deployment fails.
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: alpha-build-pr-${{ github.event.number }}
           path: _site/
 
+      # Step 5: Deploy to the 'alpha-builds' branch
+      # This involves:
+      # - Switching to the target branch (orphaned if necessary).
+      # - Creating a specific folder for this PR (alpha/pr-<ID>).
+      # - Committing the new build files.
       - name: Deploy to Alpha Branch
         run: |
-          # Configure Git
+          # Configure Git user for the commit
           git config --global user.name "Rat Bot"
           git config --global user.email "rat@lab.local"
 
-          # Stash the build safely outside the repo
+          # Stash the build safely outside the repo so it survives the branch switch
           mkdir -p /tmp/rat_build
           cp -r _site/* /tmp/rat_build/
 
           # Fetch and checkout alpha-builds branch
-          # If it doesn't exist, create an orphan branch
+          # If it doesn't exist, create an orphan branch (empty history)
           if git ls-remote --exit-code --heads origin alpha-builds; then
             echo "Branch alpha-builds exists. Fetching..."
             git fetch origin alpha-builds
@@ -71,7 +87,7 @@ jobs:
             git rm -rf .
           fi
 
-          # Prepare target directory
+          # Prepare target directory for this specific PR
           TARGET_DIR="alpha/pr-${{ github.event.number }}"
           mkdir -p "$TARGET_DIR"
 
@@ -79,13 +95,13 @@ jobs:
           # (We remove contents but keep the directory to avoid errors)
           rm -rf "$TARGET_DIR"/*
 
-          # Copy build files from stash
+          # Copy build files from stash to the target directory
           cp -r /tmp/rat_build/* "$TARGET_DIR"/
 
-          # Add changes
+          # Add changes to git staging
           git add .
 
-          # Commit and Push
+          # Commit and Push if there are changes
           if ! git diff-index --quiet HEAD; then
             echo "Committing changes..."
             git commit -m "feat(alpha): deploy preview for PR #${{ github.event.number }}"
@@ -94,6 +110,8 @@ jobs:
              echo "No changes to deploy."
           fi
 
+      # Step 6: Post a comment on the PR
+      # Provides the user with a direct link to the deployed preview.
       - name: Comment on PR
         uses: actions/github-script@v6
         with:
@@ -102,7 +120,7 @@ jobs:
             const repo = context.repo.repo;
             const owner = context.repo.owner;
             const branch = 'alpha-builds';
-            // Using raw.githack.com for preview
+            // Using raw.githack.com for preview serving
             const url = `https://raw.githack.com/${owner}/${repo}/${branch}/alpha/pr-${prNumber}/index.html`;
 
             const ratArt = `
@@ -137,6 +155,11 @@ jobs:
               body: body
             });
 
+  # -----------------------------------------------------------------------
+  # Job: Cleanup Alpha
+  # Description: Removes the deployment folder when the PR is closed.
+  # Trigger: Runs when a PR is closed (merged or discarded).
+  # -----------------------------------------------------------------------
   cleanup-alpha:
     if: github.event.action == 'closed'
     runs-on: ubuntu-latest
@@ -144,12 +167,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      # Step 1: Remove the specific PR folder from the alpha-builds branch
       - name: Remove PR Folder
         run: |
           git config --global user.name "Rat Bot"
           git config --global user.email "rat@lab.local"
 
-          # Check if branch exists
+          # Check if branch exists before trying to delete from it
           if git ls-remote --exit-code --heads origin alpha-builds; then
             git fetch origin alpha-builds
             git checkout alpha-builds
