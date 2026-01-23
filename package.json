@@ -1,0 +1,8 @@
+{
+  "name": "the-lab",
+  "private": true,
+  "workspaces": [
+    "rats-the-video-game",
+    "the-lab-website"
+  ]
+}

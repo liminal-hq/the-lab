@@ -1,0 +1,72 @@
+name: Deploy static content to Pages
+
+# -----------------------------------------------------------------------
+#  The Rat's Guide to Deployment
+# -----------------------------------------------------------------------
+#  While the humans sleep, the rats deploy.
+#  We sneak our code through the pipes of GitHub Actions.
+#
+#        (\_/)
+#       (o.o)
+#       (> <)  <-- "I pushed to main!"
+#
+#  They think it's just a website. We know it's a takeover.
+# -----------------------------------------------------------------------
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # Setting up the Rat-Environment (Node.js)
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Installing pnpm (Perfectly Nice Pest Management?)
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      # The magic happens here. Remy runs the script.
+      #      __
+      #  ___( o)>
+      #  \ <_. )
+      #   `---'
+      - name: Build Site
+        run: |
+          chmod +x build-lab.sh
+          ./build-lab.sh
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '_site'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
