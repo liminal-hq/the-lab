@@ -190,3 +190,43 @@ jobs:
           else
             echo "Alpha branch does not exist. Nothing to clean."
           fi
+
+      # Step 2: Post a sign-off comment on the PR
+      - name: Comment on PR Closure
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prNumber = context.issue.number;
+            const repo = context.repo.repo;
+            const owner = context.repo.owner;
+
+            const ratArt = `
+            \`\`\`
+                 __             _
+                /  \\           / \\
+               |  oo|         |  oo|
+               |  _ |         | _  |
+               | | | |        | | | |
+               | | | |        | | | |
+               | | | |        | | | |
+               |_| |_|        |_| |_|
+              (Bye!)         (See ya!)
+            \`\`\`
+            `;
+
+            const body = `
+            ### 🐀 The Alpha Rats Have Left the Building
+
+            ${ratArt}
+
+            The preview for this PR has been removed from the **Alpha Zone**.
+
+            *The rats have scurried off to find more cheese.*
+            `;
+
+            github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body: body
+            });
