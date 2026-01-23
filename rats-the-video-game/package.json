@@ -1,0 +1,8 @@
+{
+  "name": "rats-the-video-game",
+  "version": "1.0.0",
+  "description": "Rats: The Video Game - An open world city game with 16 channel PC speaker audio.",
+  "scripts": {
+    "start": "echo 'Open index.html in your browser'"
+  }
+}

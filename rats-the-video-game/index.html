@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Rats: The Video Game</title>
+    <style>
+        body { margin: 0; background: #000; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; color: white; font-family: sans-serif; }
+        canvas { border: 2px solid #555; background: #222; }
+        #overlay { margin-bottom: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div id="overlay">
+        <h1>Rats: The Video Game</h1>
+        <p>Press SPACE to start music and JUMP. Arrows to move. Survive the city.</p>
+    </div>
+    <canvas id="gameCanvas"></canvas>
+    <script type="module" src="./src/game.js"></script>
+</body>
+</html>
