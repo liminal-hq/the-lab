@@ -1,0 +1,168 @@
+name: Deploy Alpha Preview
+
+# -----------------------------------------------------------------------
+#  The Rat's Guide to Alpha Previews
+# -----------------------------------------------------------------------
+#  Every pull request deserves a chance to shine (or squeak).
+#  This workflow deploys PRs to a dedicated 'alpha-builds' branch.
+#
+#        (\_/)
+#       (o.o)
+#       (> <)  <-- "Is it ready yet?"
+#
+# -----------------------------------------------------------------------
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  deploy-alpha:
+    if: github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 9
+
+      - name: Build Site
+        run: |
+          chmod +x build-lab.sh
+          ./build-lab.sh
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpha-build-pr-${{ github.event.number }}
+          path: _site/
+
+      - name: Deploy to Alpha Branch
+        run: |
+          # Configure Git
+          git config --global user.name "Rat Bot"
+          git config --global user.email "rat@lab.local"
+
+          # Stash the build safely outside the repo
+          mkdir -p /tmp/rat_build
+          cp -r _site/* /tmp/rat_build/
+
+          # Fetch and checkout alpha-builds branch
+          # If it doesn't exist, create an orphan branch
+          if git ls-remote --exit-code --heads origin alpha-builds; then
+            echo "Branch alpha-builds exists. Fetching..."
+            git fetch origin alpha-builds
+            git checkout alpha-builds
+          else
+            echo "Branch alpha-builds does not exist. Creating orphan..."
+            git checkout --orphan alpha-builds
+            git rm -rf .
+          fi
+
+          # Prepare target directory
+          TARGET_DIR="alpha/pr-${{ github.event.number }}"
+          mkdir -p "$TARGET_DIR"
+
+          # Clean existing PR files in that folder to ensure fresh deploy
+          # (We remove contents but keep the directory to avoid errors)
+          rm -rf "$TARGET_DIR"/*
+
+          # Copy build files from stash
+          cp -r /tmp/rat_build/* "$TARGET_DIR"/
+
+          # Add changes
+          git add .
+
+          # Commit and Push
+          if ! git diff-index --quiet HEAD; then
+            echo "Committing changes..."
+            git commit -m "feat(alpha): deploy preview for PR #${{ github.event.number }}"
+            git push origin alpha-builds
+          else
+             echo "No changes to deploy."
+          fi
+
+      - name: Comment on PR
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const prNumber = context.issue.number;
+            const repo = context.repo.repo;
+            const owner = context.repo.owner;
+            const branch = 'alpha-builds';
+            // Using raw.githack.com for preview
+            const url = `https://raw.githack.com/${owner}/${repo}/${branch}/alpha/pr-${prNumber}/index.html`;
+
+            const ratArt = `
+            \`\`\`
+                 __             _
+                /  \\           / \\
+               / ..|\\         /.. \\
+              (_\\  |_)       (_\\  |)
+              /  \\@'          /  \\@'
+             /     \\         /     \\
+            _/  \\  \\        _/  \\   \\
+            \`\`\`
+            `;
+
+            const body = `
+            ### 🐀 The Rats Have Deployed an Alpha!
+
+            ${ratArt}
+
+            Your changes have been staged in the **Alpha Zone**.
+
+            - **👀 Preview Link**: [Click here to view the Alpha](${url})
+            - **📦 Artifact**: If the link doesn't work (e.g., private repo), download the artifact from the "Summary" tab.
+
+            *Squeak squeak!*
+            `;
+
+            github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: prNumber,
+              body: body
+            });
+
+  cleanup-alpha:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Remove PR Folder
+        run: |
+          git config --global user.name "Rat Bot"
+          git config --global user.email "rat@lab.local"
+
+          # Check if branch exists
+          if git ls-remote --exit-code --heads origin alpha-builds; then
+            git fetch origin alpha-builds
+            git checkout alpha-builds
+
+            TARGET_DIR="alpha/pr-${{ github.event.number }}"
+
+            if [ -d "$TARGET_DIR" ]; then
+              git rm -rf "$TARGET_DIR"
+              git commit -m "chore(alpha): remove preview for PR #${{ github.event.number }}"
+              git push origin alpha-builds
+            else
+              echo "Directory $TARGET_DIR already gone."
+            fi
+          else
+            echo "Alpha branch does not exist. Nothing to clean."
+          fi
