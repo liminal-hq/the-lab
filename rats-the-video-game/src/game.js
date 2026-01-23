@@ -46,6 +46,7 @@ const state = {
     birds: [], // Sky vermin
     turds: [], // Aerial projectiles
     score: 0, // Chewed items count
+    frameCount: 0, // Debug timer
     input: { left: false, right: false, jump: false, chew: false }, // The human commands
     level: 'SURFACE', // SURFACE or SUBWAY
     levelCompleted: false
@@ -77,8 +78,8 @@ function generateLevel() {
 function generateSurface() {
     let x = 0;
     // Generate a long city (plenty of hiding spots)
-    // Decreased from 100 to 50 for a shorter level
-    for (let i = 0; i < 50; i++) {
+    // Decreased to 25 for a shorter level
+    for (let i = 0; i < 25; i++) {
         const w = 100 + Math.random() * 200;
         const h = 100 + Math.random() * (canvas.height - 200);
         // Coloured like the gloom of night
@@ -337,6 +338,8 @@ const SPEED = 5;          // Maximum scurrying velocity
 const JUMP_FORCE = 15;    // The power of the hind legs
 
 function update() {
+    state.frameCount++;
+
     // Movement Logic
     if (state.input.right) {
         state.rat.vx = SPEED;
@@ -520,6 +523,7 @@ function loop() {
         ctx.fillText(`Touches: ${lastTouchDebug.count} | Last X: ${Math.round(lastTouchDebug.x)}`, 20, 50);
         ctx.fillText(`Input: L:${state.input.left} R:${state.input.right} J:${state.input.jump}`, 20, 70);
         ctx.fillText(`Rat: ${Math.round(state.rat.x)}, ${Math.round(state.rat.y)}`, 20, 90);
+        ctx.fillText(`Frames: ${state.frameCount}`, 20, 110);
 
         // Draw Split Line
         ctx.strokeStyle = 'red';
