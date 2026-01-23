@@ -43,6 +43,13 @@ const state = {
     rat: { x: 100, y: 0, vx: 0, vy: 0, grounded: true, facingRight: true }, // The protagonist
     buildings: [], // The concrete jungle
     obstacles: [], // The things in our way
+    birds: [], // Sky vermin
+    turds: [], // Aerial projectiles
+    score: 0, // Chewed items count
+    frameCount: 0, // Debug timer
+    cycleCheckpoints: [], // X positions of level cycles
+    totalCycles: 25,
+    currentCycle: 0,
     input: { left: false, right: false, jump: false, chew: false }, // The human commands
     level: 'SURFACE', // SURFACE or SUBWAY
     levelCompleted: false
@@ -53,10 +60,17 @@ const state = {
 function generateLevel() {
     state.buildings = [];
     state.obstacles = [];
+    state.birds = [];
+    state.turds = [];
+    state.cycleCheckpoints = [];
     state.rat.x = 100;
     state.rat.vx = 0;
     state.rat.vy = 0;
     state.levelCompleted = false;
+
+    if (audio && audio.setLevel) {
+        audio.setLevel(state.level);
+    }
 
     if (state.level === 'SURFACE') {
         generateSurface();
@@ -68,7 +82,8 @@ function generateLevel() {
 function generateSurface() {
     let x = 0;
     // Generate a long city (plenty of hiding spots)
-    for (let i = 0; i < 200; i++) {
+    // Decreased to 25 for a shorter level
+    for (let i = 0; i < state.totalCycles; i++) {
         const w = 100 + Math.random() * 200;
         const h = 100 + Math.random() * (canvas.height - 200);
         // Coloured like the gloom of night
@@ -79,7 +94,7 @@ function generateSurface() {
             // Welcome sign early on
             state.obstacles.push({ x: x + 20, w: 10, h: 10, type: 'SIGN_CITY' });
         }
-        if (i === 15) {
+        if (i === 10) { // Moved closer
             // Barzini's somewhere
             state.obstacles.push({ x: x + 20, w: 10, h: 10, type: 'BARZINIS' });
         }
@@ -105,9 +120,19 @@ function generateSurface() {
             }
         }
         x += w + gap;
+        state.cycleCheckpoints.push(x);
     }
     // Subway entrance at the end
     state.obstacles.push({ x: x + 100, w: 60, h: 80, type: 'SUBWAY_ENTRANCE' });
+
+    // Initial birds
+    for(let i=0; i<5; i++) {
+        state.birds.push({
+            x: Math.random() * 2000,
+            y: Math.random() * (canvas.height/2),
+            speed: 1 + Math.random() * 2
+        });
+    }
 }
 
 function generateSubway() {
@@ -142,6 +167,10 @@ window.addEventListener('keydown', (e) => {
         if (!audio.isPlaying) audio.startMusic(); // Cue the dramatic squeaks
     }
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = true; // GNAW!
+    if (e.code === 'KeyS') audio.playHappySqueak(); // SQUEAK!
+    if (e.key === '?') {
+        if (window.game && window.game.toggleHelp) window.game.toggleHelp();
+    }
 });
 
 window.addEventListener('keyup', (e) => {
@@ -150,6 +179,17 @@ window.addEventListener('keyup', (e) => {
     if (e.code === 'Space') state.input.jump = false;
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = false;
 });
+
+// Audio Toggles
+window.game = window.game || {};
+window.game.toggleMusic = (enabled) => {
+    audio.musicEnabled = enabled;
+    if (!enabled) audio.stopMusic();
+    else if (!audio.isPlaying) audio.startMusic();
+};
+window.game.toggleSfx = (enabled) => {
+    audio.sfxEnabled = enabled;
+};
 
 // Touch Input: For the modern rat on the go
 let lastTouchDebug = { x: 0, count: 0 };
@@ -303,6 +343,16 @@ const SPEED = 5;          // Maximum scurrying velocity
 const JUMP_FORCE = 15;    // The power of the hind legs
 
 function update() {
+    state.frameCount++;
+
+    // Update Current Cycle
+    if (state.level === 'SURFACE') {
+        const cycleIdx = state.cycleCheckpoints.findIndex(cp => state.rat.x < cp);
+        state.currentCycle = cycleIdx === -1 ? state.totalCycles : cycleIdx + 1;
+    } else {
+        state.currentCycle = 0; // Or handle subway cycles if needed
+    }
+
     // Movement Logic
     if (state.input.right) {
         state.rat.vx = SPEED;
@@ -349,6 +399,7 @@ function update() {
                  if (state.input.chew) {
                      // Nom nom nom
                      state.obstacles.splice(i, 1);
+                     state.score++; // Delicious
                      audio.playChew();
                      if (obs.type === 'PRIUS') audio.playHonk(); // Angry driver?
                  } else {
@@ -356,18 +407,26 @@ function update() {
                      // We check overlap on the X axis specifically to push out
                      const overlapXLeft = ratR - obsL; // How far right we are inside left edge
                      const overlapXRight = obsR - ratL; // How far left we are inside right edge
+                     const overlapY = obsT - ratB;     // How far down we are inside the top edge
 
-                     // Only resolve collision if we are not "inside" the box vertically too deeply?
-                     // Actually, simple resolution: push to closest side.
-
-                     if (overlapXLeft < overlapXRight) {
-                         // Closer to left side -> push left
-                         if (state.rat.vx > 0) state.rat.vx = 0;
-                         state.rat.x = obsL - 15;
+                     // Landing Logic:
+                     // If we are falling (or flat) and the vertical overlap is small (we just hit the top)
+                     // AND vertical overlap is "shallower" than horizontal penetration (meaning we hit the top, not the side)
+                     if (state.rat.vy <= 0 && overlapY > 0 && overlapY < 20 && overlapY < Math.min(overlapXLeft, overlapXRight)) {
+                         state.rat.y = obsT;
+                         state.rat.vy = 0;
+                         state.rat.grounded = true;
                      } else {
-                         // Closer to right side -> push right
-                         if (state.rat.vx < 0) state.rat.vx = 0;
-                         state.rat.x = obsR + 15;
+                         // Wall Logic: Push to closest side
+                         if (overlapXLeft < overlapXRight) {
+                             // Closer to left side -> push left
+                             if (state.rat.vx > 0) state.rat.vx = 0;
+                             state.rat.x = obsL - 15;
+                         } else {
+                             // Closer to right side -> push right
+                             if (state.rat.vx < 0) state.rat.vx = 0;
+                             state.rat.x = obsR + 15;
+                         }
                      }
                  }
              } else if (obs.type === 'TRAP' || obs.type === 'THIRD_RAIL') {
@@ -400,21 +459,71 @@ function update() {
         state.rat.grounded = true;
     }
 
+    // Update Birds
+    state.birds.forEach(bird => {
+        bird.x -= bird.speed;
+        if (bird.x < state.rat.x - 500) {
+            bird.x = state.rat.x + 500 + Math.random() * 500;
+            bird.y = Math.random() * (canvas.height / 2);
+        }
+
+        // Drop Turd Logic (Aerial Attacks)
+        // Only drop if bird is roughly on screen (close to rat)
+        if (Math.abs(bird.x - state.rat.x) < 500 && Math.random() < 0.005) {
+             state.turds.push({ x: bird.x, y: bird.y, vy: 0 });
+        }
+    });
+
+    // Update Turds (Physics & Collision)
+    for (let i = state.turds.length - 1; i >= 0; i--) {
+        const turd = state.turds[i];
+        turd.vy -= GRAVITY * 0.2; // Gravity pulls down (negative Y)
+        turd.y += turd.vy;
+
+        // Ground collision (splat)
+        if (turd.y < 0) {
+            state.turds.splice(i, 1);
+            continue;
+        }
+
+        // Rat Collision
+        // Simple circle/box check
+        if (state.rat.x < turd.x + 5 && state.rat.x + 30 > turd.x &&
+            state.rat.y < turd.y + 5 && state.rat.y + 20 > turd.y) {
+
+             // HIT!
+             state.score = Math.max(0, state.score - 5); // Penalty
+             audio.playSnap(); // Ouch sound (reuse snap for now)
+             state.turds.splice(i, 1);
+        }
+    }
+
     // Camera follow (keep our hero in the spotlight)
     // <( )_
     //  (   )
     graphics.cameraX = state.rat.x - canvas.width / 2;
     // Store level info in graphics for rendering context
     graphics.level = state.level;
+
+    // Sunset Logic (Approaching the subway)
+    const subway = state.obstacles.find(o => o.type === 'SUBWAY_ENTRANCE');
+    if (state.level === 'SURFACE' && subway) {
+        const progress = Math.min(Math.max(state.rat.x / subway.x, 0), 1);
+        graphics.levelProgress = progress;
+    } else {
+        graphics.levelProgress = 0;
+    }
 }
 
 // The Game Loop: The Heartbeat of the City
 function loop() {
     update();
     graphics.clear();
-    graphics.drawCity(state.buildings);
+    graphics.drawCity(state.buildings, state.birds); // Birds fly in the city
+    graphics.drawTurds(state.turds); // Danger from above
     graphics.drawObstacles(state.obstacles);
     graphics.drawRat(state.rat.x, state.rat.y, state.rat.facingRight);
+    graphics.drawUI(state.score); // Draw score
 
     // Debug Overlay
     if (window.DEBUG_MODE) {
@@ -427,6 +536,7 @@ function loop() {
         ctx.fillText(`Touches: ${lastTouchDebug.count} | Last X: ${Math.round(lastTouchDebug.x)}`, 20, 50);
         ctx.fillText(`Input: L:${state.input.left} R:${state.input.right} J:${state.input.jump}`, 20, 70);
         ctx.fillText(`Rat: ${Math.round(state.rat.x)}, ${Math.round(state.rat.y)}`, 20, 90);
+        ctx.fillText(`Cycle: ${state.currentCycle} / ${state.totalCycles}`, 20, 110);
 
         // Draw Split Line
         ctx.strokeStyle = 'red';

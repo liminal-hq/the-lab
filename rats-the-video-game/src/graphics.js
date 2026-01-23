@@ -25,21 +25,43 @@ export class GraphicsEngine {
             this.ctx.fillRect(0, 0, this.width, this.height);
         } else {
             // Red sky apocalypse! (The lyrics said "apocalypse man-made")
+            const progress = this.levelProgress || 0;
+            const r = Math.floor(139 * (1 - progress));
+            const b = Math.floor(34 * progress);
+
             const grad = this.ctx.createLinearGradient(0, 0, 0, this.height);
-            grad.addColorStop(0, '#8B0000'); // Blood red sky
+            grad.addColorStop(0, `rgb(${r}, 0, ${b})`); // Fading to night
             grad.addColorStop(1, '#222');    // Dark city horizon
             this.ctx.fillStyle = grad;
             this.ctx.fillRect(0, 0, this.width, this.height);
         }
     }
 
-    drawCity(buildings) {
+    drawCity(buildings, birds = []) {
         if (this.level === 'SURFACE') {
             // Draw moon/sun (The big cheese in the sky)
+            const progress = this.levelProgress || 0;
+            const sunY = 100 + (progress * 300); // Sun sets
+
             this.ctx.fillStyle = '#ff4444'; // Red sun for the apocalypse
             this.ctx.beginPath();
-            this.ctx.arc(this.width - 100, 100, 40, 0, Math.PI * 2);
+            this.ctx.arc(this.width - 100, sunY, 40, 0, Math.PI * 2);
             this.ctx.fill();
+
+            // Birds (Sky Vermin)
+            this.ctx.fillStyle = '#111';
+            for (const bird of birds) {
+                const screenX = bird.x - this.cameraX * 0.5; // Parallax
+                if (screenX > -20 && screenX < this.width + 20) {
+                     this.ctx.beginPath();
+                     // Simple V shape
+                     const wing = Math.sin(Date.now() / 100) * 5;
+                     this.ctx.moveTo(screenX, bird.y);
+                     this.ctx.lineTo(screenX - 5, bird.y - 5 + wing);
+                     this.ctx.lineTo(screenX + 5, bird.y - 5 + wing);
+                     this.ctx.fill();
+                }
+            }
         }
 
         for (const b of buildings) {
@@ -59,11 +81,38 @@ export class GraphicsEngine {
                     this.ctx.fillRect(screenX, this.height - b.h, b.w, b.h);
 
                     // Windows (Human cages)
-                    this.ctx.fillStyle = '#FFD700'; // Yellow lights
+                    // Flickering Logic
+                    const now = Date.now();
+                    // Coordinated building state (Slow toggle)
+                    const buildingActive = Math.sin(now / 4000 + b.x) > 0.2;
+
                     // Simple window logic
                     for (let wx = screenX + 5; wx < screenX + b.w - 5; wx += 20) {
                         for (let wy = this.height - b.h + 10; wy < this.height - 10; wy += 30) {
-                            if ((wx * wy) % 3 !== 0) {
+                            // Unique seed per window
+                            const seed = (wx * wy);
+
+                            // Occasional individual flicker
+                            const flicker = Math.sin(now / (50 + (seed % 200))) > 0.95;
+
+                            let lightColor = null;
+
+                            if (buildingActive) {
+                                // Building is "Active" (Office hours?)
+                                // Most windows ON
+                                if ((seed % 10 !== 0) && !flicker) {
+                                    lightColor = '#FFD700'; // Bright Yellow
+                                }
+                            } else {
+                                // Building is "Inactive" (Night mode)
+                                // Most windows OFF, sparse lights
+                                if ((seed % 7 === 0) || flicker) {
+                                    lightColor = '#FFA500'; // Dimmer Orange
+                                }
+                            }
+
+                            if (lightColor) {
+                                this.ctx.fillStyle = lightColor;
                                 this.ctx.fillRect(wx, wy, 10, 20);
                             }
                         }
@@ -239,6 +288,11 @@ export class GraphicsEngine {
     drawRat(x, y, facingRight) {
         const screenX = x - this.cameraX;
         const screenY = this.height - 20 - y; // y is height from ground
+        const now = Date.now();
+
+        // Animations
+        const breathe = Math.sin(now / 200) * 0.5; // Slight expansion/contraction
+        const tailWag = Math.sin(now / 300) * 5;   // Tail swinging
 
         this.ctx.save();
         this.ctx.translate(screenX, screenY);
@@ -247,7 +301,7 @@ export class GraphicsEngine {
         // Simple Rat Shape (A masterpiece of biological engineering)
         this.ctx.fillStyle = '#8B4513'; // Brown rat. Classic.
         this.ctx.beginPath();
-        this.ctx.ellipse(0, -10, 20, 10, 0, 0, Math.PI * 2); // Body (filled with determination)
+        this.ctx.ellipse(0, -10, 20 + breathe, 10 + breathe, 0, 0, Math.PI * 2); // Body (filled with determination)
         this.ctx.fill();
 
         this.ctx.beginPath();
@@ -269,9 +323,33 @@ export class GraphicsEngine {
         this.ctx.lineWidth = 3;
         this.ctx.beginPath();
         this.ctx.moveTo(-15, -10);
-        this.ctx.quadraticCurveTo(-30, -5, -35, -15);
+        // Animate the control point and end point slightly
+        this.ctx.quadraticCurveTo(-30, -5 + tailWag, -35, -15 + tailWag);
         this.ctx.stroke();
 
         this.ctx.restore();
+    }
+
+    drawTurds(turds) {
+        if (!turds) return;
+        this.ctx.fillStyle = '#FFF'; // Bird droppings are... whiteish?
+        for (const turd of turds) {
+            const screenX = turd.x - this.cameraX;
+            const screenY = this.height - 20 - turd.y;
+
+            if (screenX > -10 && screenX < this.width + 10) {
+                this.ctx.beginPath();
+                this.ctx.arc(screenX, screenY, 3, 0, Math.PI * 2);
+                this.ctx.fill();
+            }
+        }
+    }
+
+    drawUI(score) {
+        // Score (The spoils of war)
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = '20px "Courier New", monospace';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText(`CHEWED: ${score}`, 20, 30);
     }
 }
