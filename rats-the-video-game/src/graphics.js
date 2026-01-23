@@ -25,8 +25,12 @@ export class GraphicsEngine {
             this.ctx.fillRect(0, 0, this.width, this.height);
         } else {
             // Red sky apocalypse! (The lyrics said "apocalypse man-made")
+            const progress = this.levelProgress || 0;
+            const r = Math.floor(139 * (1 - progress));
+            const b = Math.floor(34 * progress);
+
             const grad = this.ctx.createLinearGradient(0, 0, 0, this.height);
-            grad.addColorStop(0, '#8B0000'); // Blood red sky
+            grad.addColorStop(0, `rgb(${r}, 0, ${b})`); // Fading to night
             grad.addColorStop(1, '#222');    // Dark city horizon
             this.ctx.fillStyle = grad;
             this.ctx.fillRect(0, 0, this.width, this.height);
@@ -36,9 +40,12 @@ export class GraphicsEngine {
     drawCity(buildings) {
         if (this.level === 'SURFACE') {
             // Draw moon/sun (The big cheese in the sky)
+            const progress = this.levelProgress || 0;
+            const sunY = 100 + (progress * 300); // Sun sets
+
             this.ctx.fillStyle = '#ff4444'; // Red sun for the apocalypse
             this.ctx.beginPath();
-            this.ctx.arc(this.width - 100, 100, 40, 0, Math.PI * 2);
+            this.ctx.arc(this.width - 100, sunY, 40, 0, Math.PI * 2);
             this.ctx.fill();
         }
 
@@ -239,6 +246,11 @@ export class GraphicsEngine {
     drawRat(x, y, facingRight) {
         const screenX = x - this.cameraX;
         const screenY = this.height - 20 - y; // y is height from ground
+        const now = Date.now();
+
+        // Animations
+        const breathe = Math.sin(now / 200) * 0.5; // Slight expansion/contraction
+        const tailWag = Math.sin(now / 300) * 5;   // Tail swinging
 
         this.ctx.save();
         this.ctx.translate(screenX, screenY);
@@ -247,7 +259,7 @@ export class GraphicsEngine {
         // Simple Rat Shape (A masterpiece of biological engineering)
         this.ctx.fillStyle = '#8B4513'; // Brown rat. Classic.
         this.ctx.beginPath();
-        this.ctx.ellipse(0, -10, 20, 10, 0, 0, Math.PI * 2); // Body (filled with determination)
+        this.ctx.ellipse(0, -10, 20 + breathe, 10 + breathe, 0, 0, Math.PI * 2); // Body (filled with determination)
         this.ctx.fill();
 
         this.ctx.beginPath();
@@ -269,7 +281,8 @@ export class GraphicsEngine {
         this.ctx.lineWidth = 3;
         this.ctx.beginPath();
         this.ctx.moveTo(-15, -10);
-        this.ctx.quadraticCurveTo(-30, -5, -35, -15);
+        // Animate the control point and end point slightly
+        this.ctx.quadraticCurveTo(-30, -5 + tailWag, -35, -15 + tailWag);
         this.ctx.stroke();
 
         this.ctx.restore();

@@ -58,6 +58,10 @@ function generateLevel() {
     state.rat.vy = 0;
     state.levelCompleted = false;
 
+    if (audio && audio.setLevel) {
+        audio.setLevel(state.level);
+    }
+
     if (state.level === 'SURFACE') {
         generateSurface();
     } else {
@@ -142,6 +146,7 @@ window.addEventListener('keydown', (e) => {
         if (!audio.isPlaying) audio.startMusic(); // Cue the dramatic squeaks
     }
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = true; // GNAW!
+    if (e.code === 'KeyS') audio.playHappySqueak(); // SQUEAK!
 });
 
 window.addEventListener('keyup', (e) => {
@@ -356,18 +361,26 @@ function update() {
                      // We check overlap on the X axis specifically to push out
                      const overlapXLeft = ratR - obsL; // How far right we are inside left edge
                      const overlapXRight = obsR - ratL; // How far left we are inside right edge
+                     const overlapY = obsT - ratB;     // How far down we are inside the top edge
 
-                     // Only resolve collision if we are not "inside" the box vertically too deeply?
-                     // Actually, simple resolution: push to closest side.
-
-                     if (overlapXLeft < overlapXRight) {
-                         // Closer to left side -> push left
-                         if (state.rat.vx > 0) state.rat.vx = 0;
-                         state.rat.x = obsL - 15;
+                     // Landing Logic:
+                     // If we are falling (or flat) and the vertical overlap is small (we just hit the top)
+                     // AND vertical overlap is "shallower" than horizontal penetration (meaning we hit the top, not the side)
+                     if (state.rat.vy <= 0 && overlapY > 0 && overlapY < 20 && overlapY < Math.min(overlapXLeft, overlapXRight)) {
+                         state.rat.y = obsT;
+                         state.rat.vy = 0;
+                         state.rat.grounded = true;
                      } else {
-                         // Closer to right side -> push right
-                         if (state.rat.vx < 0) state.rat.vx = 0;
-                         state.rat.x = obsR + 15;
+                         // Wall Logic: Push to closest side
+                         if (overlapXLeft < overlapXRight) {
+                             // Closer to left side -> push left
+                             if (state.rat.vx > 0) state.rat.vx = 0;
+                             state.rat.x = obsL - 15;
+                         } else {
+                             // Closer to right side -> push right
+                             if (state.rat.vx < 0) state.rat.vx = 0;
+                             state.rat.x = obsR + 15;
+                         }
                      }
                  }
              } else if (obs.type === 'TRAP' || obs.type === 'THIRD_RAIL') {
@@ -406,6 +419,15 @@ function update() {
     graphics.cameraX = state.rat.x - canvas.width / 2;
     // Store level info in graphics for rendering context
     graphics.level = state.level;
+
+    // Sunset Logic (Approaching the subway)
+    const subway = state.obstacles.find(o => o.type === 'SUBWAY_ENTRANCE');
+    if (state.level === 'SURFACE' && subway) {
+        const progress = Math.min(Math.max(state.rat.x / subway.x, 0), 1);
+        graphics.levelProgress = progress;
+    } else {
+        graphics.levelProgress = 0;
+    }
 }
 
 // The Game Loop: The Heartbeat of the City

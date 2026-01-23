@@ -48,6 +48,31 @@ export class AudioEngine {
         osc.stop(this.ctx.currentTime + duration);
     }
 
+    playHappySqueak() {
+        if (!this.ctx) return;
+        // A happy little squeak!
+        //      (\_/)
+        //      ( ^.^ )
+        const now = this.ctx.currentTime;
+        // Arpeggio
+        [880, 1108, 1318].forEach((freq, i) => { // A5, C#6, E6
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'triangle';
+            osc.frequency.value = freq;
+
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+
+            gain.gain.setValueAtTime(0.1, now + i * 0.05);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + i * 0.05 + 0.1);
+
+            osc.start(now + i * 0.05);
+            osc.stop(now + i * 0.05 + 0.1);
+        });
+    }
+
     playChew() {
         if (!this.ctx) return;
         // The sound of cardboard destruction
@@ -135,6 +160,10 @@ export class AudioEngine {
         osc.stop(this.ctx.currentTime + 0.2);
     }
 
+    setLevel(level) {
+        this.level = level;
+    }
+
     startMusic() {
         if (this.isPlaying) return;
         this.isPlaying = true;
@@ -152,27 +181,51 @@ export class AudioEngine {
         setInterval(() => {
             if (!this.isPlaying) return;
 
-            // Channel 0: Bass (The heavy footsteps of the exterminator... or a fat rat)
-            if (beat % 4 === 0) {
-                const note = bassLine[(beat / 4) % bassLine.length];
-                this.playTone(note, 0.2, 0);
-            }
+            if (this.level === 'SUBWAY') {
+                // Subway Theme: Darker, slower feel (Half time feel on bass)
+                if (beat % 8 === 0) {
+                     // Lower bass
+                     const note = bassLine[(beat / 8) % bassLine.length] / 2;
+                     this.playTone(note, 0.4, 0);
+                }
 
-            // Channel 1: Lead (Random pentatonic scurrying)
-            if (Math.random() > 0.4) {
-                const scale = [440, 523.25, 587.33, 659.25, 783.99, 880];
-                const note = scale[Math.floor(Math.random() * scale.length)];
-                this.playTone(note, 0.1, 1);
-            }
+                // Echoey lead
+                if (Math.random() > 0.6) {
+                    const scale = [220, 261.63, 311.13, 329.63, 392]; // Am / C pentatonic ish
+                    const note = scale[Math.floor(Math.random() * scale.length)];
+                    this.playTone(note, 0.2, 1);
+                }
 
-            // Channel 2: Squeaks (High pitch gossip)
-            if (Math.random() > 0.9) {
-                 this.playTone(1500 + Math.random() * 500, 0.05, 2);
-            }
+                // Train clatter?
+                if (beat % 16 === 12) {
+                     this.playTone(80, 0.1, 3);
+                     setTimeout(() => this.playTone(70, 0.1, 3), 100);
+                }
 
-            // Channel 3: Noise/Drums (Knocking over trash cans)
-            if (beat % 8 === 4) {
-                 this.playTone(100, 0.05, 3);
+            } else {
+                // SURFACE Theme (Original)
+                // Channel 0: Bass (The heavy footsteps of the exterminator... or a fat rat)
+                if (beat % 4 === 0) {
+                    const note = bassLine[(beat / 4) % bassLine.length];
+                    this.playTone(note, 0.2, 0);
+                }
+
+                // Channel 1: Lead (Random pentatonic scurrying)
+                if (Math.random() > 0.4) {
+                    const scale = [440, 523.25, 587.33, 659.25, 783.99, 880];
+                    const note = scale[Math.floor(Math.random() * scale.length)];
+                    this.playTone(note, 0.1, 1);
+                }
+
+                // Channel 2: Squeaks (High pitch gossip)
+                if (Math.random() > 0.9) {
+                     this.playTone(1500 + Math.random() * 500, 0.05, 2);
+                }
+
+                // Channel 3: Noise/Drums (Knocking over trash cans)
+                if (beat % 8 === 4) {
+                     this.playTone(100, 0.05, 3);
+                }
             }
 
             beat++;
