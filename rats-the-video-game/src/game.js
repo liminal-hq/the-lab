@@ -96,6 +96,152 @@ window.addEventListener('keyup', (e) => {
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = false;
 });
 
+// Touch Input: For the modern rat on the go
+let lastTouchDebug = { x: 0, count: 0 };
+const activeSwipes = new Map(); // Track swipe start positions: identifier -> startY
+
+function handleTouch(e) {
+    // Ignore touches on UI elements (like the tutorial modal buttons)
+    if (e.target.closest('#tutorial-modal') || e.target.closest('button')) {
+        return;
+    }
+
+    e.preventDefault(); // Prevent scrolling/zooming
+
+    lastTouchDebug.count = e.touches.length;
+
+    let touchesOnLeft = 0;
+    let touchesOnRight = 0;
+    const width = window.innerWidth;
+
+    // Track active touches to clean up activeSwipes
+    const currentTouchIds = new Set();
+
+    // Count touches in each zone & Handle Swipes
+    for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        const x = touch.clientX;
+        const y = touch.clientY;
+        const id = touch.identifier;
+
+        currentTouchIds.add(id);
+        lastTouchDebug.x = x; // Track last touch for debug
+
+        // Swipe Detection
+        if (!activeSwipes.has(id)) {
+            // New touch tracking for swipe
+            activeSwipes.set(id, { startY: y, startTime: Date.now(), hasJumped: false });
+        } else {
+            const swipeData = activeSwipes.get(id);
+            const deltaY = y - swipeData.startY;
+            const timeDiff = Date.now() - swipeData.startTime;
+
+            // Velocity Calculation (pixels per ms)
+            // Negative velocity means moving UP
+            const velocity = timeDiff > 0 ? deltaY / timeDiff : 0;
+
+            // Jump Trigger Logic
+            // 1. Distance Threshold: Moved up significantly (> 30px)
+            // 2. Velocity Threshold: Fast flick (> 0.5px/ms) with minimal distance (> 15px)
+            const isSwipeUp = (deltaY < -30) || (velocity < -0.5 && deltaY < -15);
+
+            if (!swipeData.hasJumped && isSwipeUp) {
+                // SWIPE UP DETECTED!
+                state.input.jump = true;
+                setTimeout(() => { state.input.jump = false; }, 100);
+
+                swipeData.hasJumped = true;
+            }
+
+            // Reset jump flag if they move back down or stop moving up
+            if (deltaY > -10) {
+                swipeData.hasJumped = false;
+                swipeData.startY = y; // Re-anchor
+                swipeData.startTime = Date.now();
+            }
+        }
+
+        if (x < width * 0.5) {
+            touchesOnLeft++;
+        } else {
+            touchesOnRight++;
+        }
+    }
+
+    // Cleanup ended touches
+    for (const [id] of activeSwipes) {
+        if (!currentTouchIds.has(id)) {
+            activeSwipes.delete(id);
+        }
+    }
+
+    // Input Logic with Hysteresis / Priority
+    // This allows "Hold Left + Tap Right to Jump" without stopping movement
+    if (touchesOnLeft > 0 && touchesOnRight === 0) {
+        state.input.left = true;
+        state.input.right = false;
+    } else if (touchesOnRight > 0 && touchesOnLeft === 0) {
+        state.input.left = false;
+        state.input.right = true;
+    } else if (touchesOnLeft > 0 && touchesOnRight > 0) {
+        // Conflict detected (Touches on both sides)
+        // Prioritize maintaining the current direction to allow for "Tap to Jump"
+        // without interrupting movement.
+        if (state.input.left) {
+            // We were moving Left, keep moving Left
+            state.input.right = false;
+        } else if (state.input.right) {
+            // We were moving Right, keep moving Right
+            state.input.left = false;
+        } else {
+            // If strictly neutral before, default to Left (rare case)
+            state.input.left = true;
+            state.input.right = false;
+        }
+    } else {
+        // No touches
+        state.input.left = false;
+        state.input.right = false;
+    }
+
+    // Start music on first interaction
+    if (e.touches.length > 0 && !audio.isPlaying) {
+        audio.startMusic();
+    }
+}
+
+// Handle Jump separately on touchstart (Tap anywhere)
+function handleJumpTap(e) {
+    if (e.target.closest('#tutorial-modal') || e.target.closest('button')) return;
+
+    // Trigger jump
+    state.input.jump = true;
+
+    // Reset jump input after a short delay to prevent "flying" if logic requires toggle
+    // But game loop checks `state.input.jump` every frame.
+    // We need to ensure it's true for at least one update.
+    setTimeout(() => {
+        state.input.jump = false;
+    }, 100);
+}
+
+window.addEventListener('touchstart', (e) => {
+    handleTouch(e);
+    handleJumpTap(e);
+}, { passive: false });
+
+window.addEventListener('touchmove', handleTouch, { passive: false });
+
+window.addEventListener('touchend', (e) => {
+    handleTouch(e);
+    // Ensure movement cleared if no touches
+    if (e.touches.length === 0) {
+        state.input.left = false;
+        state.input.right = false;
+        // Jump is auto-cleared by timeout
+    }
+}, { passive: false });
+
 // Physics Constants (Rat Physics 101)
 const GRAVITY = 0.8;      // What goes up, must come down (unless it climbs)
 const SPEED = 5;          // Maximum scurrying velocity
@@ -109,8 +255,10 @@ function update() {
     } else if (state.input.left) {
         state.rat.vx = -SPEED;
         state.rat.facingRight = false;
-    } else {
-        state.rat.vx = 0; // Resting whiskers
+    } else if (state.rat.grounded) {
+        // Friction / Decaying momentum (Only when grounded to preserve jump arc)
+        state.rat.vx *= 0.8;
+        if (Math.abs(state.rat.vx) < 0.5) state.rat.vx = 0; // Resting whiskers
     }
 
     // Jump Logic
@@ -145,13 +293,22 @@ function update() {
                      state.obstacles.splice(i, 1);
                      audio.playChew();
                  } else {
-                     // Solid wall
-                     if (state.rat.vx > 0 && ratR > obsL && ratL < obsL) {
+                     // Solid wall logic
+                     // We check overlap on the X axis specifically to push out
+                     const overlapXLeft = ratR - obsL; // How far right we are inside left edge
+                     const overlapXRight = obsR - ratL; // How far left we are inside right edge
+
+                     // Only resolve collision if we are not "inside" the box vertically too deeply?
+                     // Actually, simple resolution: push to closest side.
+
+                     if (overlapXLeft < overlapXRight) {
+                         // Closer to left side -> push left
+                         if (state.rat.vx > 0) state.rat.vx = 0;
                          state.rat.x = obsL - 15;
-                         state.rat.vx = 0;
-                     } else if (state.rat.vx < 0 && ratL < obsR && ratR > obsR) {
+                     } else {
+                         // Closer to right side -> push right
+                         if (state.rat.vx < 0) state.rat.vx = 0;
                          state.rat.x = obsR + 15;
-                         state.rat.vx = 0;
                      }
                  }
              } else if (obs.type === 'TRAP') {
@@ -188,6 +345,28 @@ function loop() {
     graphics.drawCity(state.buildings);
     graphics.drawObstacles(state.obstacles);
     graphics.drawRat(state.rat.x, state.rat.y, state.rat.facingRight);
+
+    // Debug Overlay
+    if (window.DEBUG_MODE) {
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(10, 10, 300, 100);
+        ctx.fillStyle = 'lime';
+        ctx.font = '12px monospace';
+        ctx.fillText(`Viewport: ${window.innerWidth}x${window.innerHeight}`, 20, 30);
+        ctx.fillText(`Touches: ${lastTouchDebug.count} | Last X: ${Math.round(lastTouchDebug.x)}`, 20, 50);
+        ctx.fillText(`Input: L:${state.input.left} R:${state.input.right} J:${state.input.jump}`, 20, 70);
+        ctx.fillText(`Rat: ${Math.round(state.rat.x)}, ${Math.round(state.rat.y)}`, 20, 90);
+
+        // Draw Split Line
+        ctx.strokeStyle = 'red';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(window.innerWidth / 2, 0);
+        ctx.lineTo(window.innerWidth / 2, window.innerHeight);
+        ctx.stroke();
+    }
+
     requestAnimationFrame(loop);
 }
 

@@ -42,19 +42,156 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Rats: The Video Game</title>
     <style>
         body { margin: 0; background: #000; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; color: white; font-family: sans-serif; }
         canvas { border: 2px solid #555; background: #222; margin-bottom: 20px; }
         #overlay { margin-top: 10px; margin-bottom: 10px; text-align: center; flex-shrink: 0; }
+
+        #tutorial-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .tutorial-content {
+            background: #222;
+            padding: 20px;
+            border: 2px solid #666;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 90%;
+        }
+        .controls-img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            display: none;
+        }
+
+        /* Desktop Default */
+        #controls-desktop { display: block; }
+
+        /* Mobile Override */
+        @media (pointer: coarse) {
+            #controls-desktop { display: none; }
+            #controls-mobile { display: block; }
+        }
+
+        #close-btn {
+            margin-top: 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        #close-btn:hover { background: #c0392b; }
+
+        #debug-container {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        #help-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 40px;
+            height: 40px;
+            background: #444;
+            color: white;
+            border: 2px solid #777;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #help-btn:hover { background: #666; }
     </style>
 </head>
 <body>
+    <button id="help-btn" aria-label="Show Tutorial">?</button>
+
     <div id="overlay">
         <h1>Rats: The Video Game</h1>
         <p>Press SPACE to start music and JUMP. Arrows to move. Survive the city.</p>
+        <p style="font-size: 0.8em; color: #888;">Tap '?' for Help</p>
     </div>
+
+    <div id="tutorial-modal">
+        <div class="tutorial-content">
+            <h2>How to Play</h2>
+            <img id="controls-desktop" src="./assets/controls-desktop.svg" class="controls-img" alt="Desktop Controls">
+            <img id="controls-mobile" src="./assets/controls-mobile.svg" class="controls-img" alt="Mobile Controls">
+            <button id="close-btn">PLAY!</button>
+            <div id="debug-container">
+                <label>
+                    <input type="checkbox" id="debug-toggle"> Enable Debug Info
+                </label>
+            </div>
+        </div>
+    </div>
+
     <canvas id="gameCanvas"></canvas>
+
+    <script>
+        window.DEBUG_MODE = false;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const modal = document.getElementById('tutorial-modal');
+            const closeBtn = document.getElementById('close-btn');
+            const debugToggle = document.getElementById('debug-toggle');
+
+            // Check if seen
+            if (!localStorage.getItem('rats_tutorial_seen')) {
+                modal.style.display = 'flex';
+            }
+
+            function closeModal() {
+                modal.style.display = 'none';
+                localStorage.setItem('rats_tutorial_seen', 'true');
+            }
+
+            closeBtn.addEventListener('click', closeModal);
+            closeBtn.addEventListener('touchend', (e) => {
+                // Ensure touch closes it too, preventing ghost clicks
+                e.preventDefault();
+                closeModal();
+            });
+
+            // Re-open tutorial
+            const helpBtn = document.getElementById('help-btn');
+            function openModal() {
+                modal.style.display = 'flex';
+            }
+            helpBtn.addEventListener('click', openModal);
+            helpBtn.addEventListener('touchend', (e) => {
+                e.preventDefault();
+                openModal();
+            });
+
+            debugToggle.addEventListener('change', (e) => {
+                window.DEBUG_MODE = e.target.checked;
+            });
+        });
+    </script>
     <script type="module" src="./src/game.js"></script>
 </body>
 </html>
