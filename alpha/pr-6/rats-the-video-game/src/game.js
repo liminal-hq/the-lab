@@ -130,25 +130,34 @@ function handleTouch(e) {
         // Swipe Detection
         if (!activeSwipes.has(id)) {
             // New touch tracking for swipe
-            activeSwipes.set(id, { startY: y, hasJumped: false });
+            activeSwipes.set(id, { startY: y, startTime: Date.now(), hasJumped: false });
         } else {
             const swipeData = activeSwipes.get(id);
-            // Check deltaY (Negative is UP)
-            if (!swipeData.hasJumped && (y - swipeData.startY < -40)) {
+            const deltaY = y - swipeData.startY;
+            const timeDiff = Date.now() - swipeData.startTime;
+
+            // Velocity Calculation (pixels per ms)
+            // Negative velocity means moving UP
+            const velocity = timeDiff > 0 ? deltaY / timeDiff : 0;
+
+            // Jump Trigger Logic
+            // 1. Distance Threshold: Moved up significantly (> 30px)
+            // 2. Velocity Threshold: Fast flick (> 0.5px/ms) with minimal distance (> 15px)
+            const isSwipeUp = (deltaY < -30) || (velocity < -0.5 && deltaY < -15);
+
+            if (!swipeData.hasJumped && isSwipeUp) {
                 // SWIPE UP DETECTED!
                 state.input.jump = true;
                 setTimeout(() => { state.input.jump = false; }, 100);
 
-                swipeData.hasJumped = true; // Prevent multi-jumps per swipe
-                // Reset startY to current to allow another swipe if they go down and up again?
-                // For now, let's keep it simple: one jump per swipe motion.
-                // User must lift or move significantly down to reset?
-                // Let's just flag it. If they move down, we could reset.
+                swipeData.hasJumped = true;
             }
-            // Reset jump flag if they move back down?
-            if (y - swipeData.startY > -10) {
+
+            // Reset jump flag if they move back down or stop moving up
+            if (deltaY > -10) {
                 swipeData.hasJumped = false;
                 swipeData.startY = y; // Re-anchor
+                swipeData.startTime = Date.now();
             }
         }
 
@@ -246,8 +255,8 @@ function update() {
     } else if (state.input.left) {
         state.rat.vx = -SPEED;
         state.rat.facingRight = false;
-    } else {
-        // Friction / Decaying momentum
+    } else if (state.rat.grounded) {
+        // Friction / Decaying momentum (Only when grounded to preserve jump arc)
         state.rat.vx *= 0.8;
         if (Math.abs(state.rat.vx) < 0.5) state.rat.vx = 0; // Resting whiskers
     }
@@ -284,13 +293,22 @@ function update() {
                      state.obstacles.splice(i, 1);
                      audio.playChew();
                  } else {
-                     // Solid wall
-                     if (state.rat.vx > 0 && ratR > obsL && ratL < obsL) {
+                     // Solid wall logic
+                     // We check overlap on the X axis specifically to push out
+                     const overlapXLeft = ratR - obsL; // How far right we are inside left edge
+                     const overlapXRight = obsR - ratL; // How far left we are inside right edge
+
+                     // Only resolve collision if we are not "inside" the box vertically too deeply?
+                     // Actually, simple resolution: push to closest side.
+
+                     if (overlapXLeft < overlapXRight) {
+                         // Closer to left side -> push left
+                         if (state.rat.vx > 0) state.rat.vx = 0;
                          state.rat.x = obsL - 15;
-                         state.rat.vx = 0;
-                     } else if (state.rat.vx < 0 && ratL < obsR && ratR > obsR) {
+                     } else {
+                         // Closer to right side -> push right
+                         if (state.rat.vx < 0) state.rat.vx = 0;
                          state.rat.x = obsR + 15;
-                         state.rat.vx = 0;
                      }
                  }
              } else if (obs.type === 'TRAP') {
