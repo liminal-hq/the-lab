@@ -293,6 +293,16 @@
             closeTutorialBtn.addEventListener('click', closeTutorial);
             helpBtn.addEventListener('click', () => tutorialModal.style.display = 'flex');
 
+            // Expose toggle for Game JS
+            window.game = window.game || {};
+            window.game.toggleHelp = () => {
+                if (tutorialModal.style.display === 'flex') {
+                    closeTutorial();
+                } else {
+                    tutorialModal.style.display = 'flex';
+                }
+            };
+
             // --- Options Logic ---
             optionsBtn.addEventListener('click', () => optionsModal.style.display = 'flex');
             closeOptionsBtn.addEventListener('click', () => optionsModal.style.display = 'none');

@@ -44,6 +44,7 @@ const state = {
     buildings: [], // The concrete jungle
     obstacles: [], // The things in our way
     birds: [], // Sky vermin
+    turds: [], // Aerial projectiles
     score: 0, // Chewed items count
     input: { left: false, right: false, jump: false, chew: false }, // The human commands
     level: 'SURFACE', // SURFACE or SUBWAY
@@ -56,6 +57,7 @@ function generateLevel() {
     state.buildings = [];
     state.obstacles = [];
     state.birds = [];
+    state.turds = [];
     state.rat.x = 100;
     state.rat.vx = 0;
     state.rat.vy = 0;
@@ -160,6 +162,9 @@ window.addEventListener('keydown', (e) => {
     }
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = true; // GNAW!
     if (e.code === 'KeyS') audio.playHappySqueak(); // SQUEAK!
+    if (e.key === '?') {
+        if (window.game && window.game.toggleHelp) window.game.toggleHelp();
+    }
 });
 
 window.addEventListener('keyup', (e) => {
@@ -445,7 +450,36 @@ function update() {
             bird.x = state.rat.x + 500 + Math.random() * 500;
             bird.y = Math.random() * (canvas.height / 2);
         }
+
+        // Drop Turd Logic (Aerial Attacks)
+        if (Math.random() < 0.005) { // Rare event
+             state.turds.push({ x: bird.x, y: bird.y, vy: 0 });
+        }
     });
+
+    // Update Turds (Physics & Collision)
+    for (let i = state.turds.length - 1; i >= 0; i--) {
+        const turd = state.turds[i];
+        turd.vy += GRAVITY * 0.5; // Falls slower than rat? No, gravity is gravity.
+        turd.y += turd.vy;
+
+        // Ground collision (splat)
+        if (turd.y < 0) {
+            state.turds.splice(i, 1);
+            continue;
+        }
+
+        // Rat Collision
+        // Simple circle/box check
+        if (state.rat.x < turd.x + 5 && state.rat.x + 30 > turd.x &&
+            state.rat.y < turd.y + 5 && state.rat.y + 20 > turd.y) {
+
+             // HIT!
+             state.score = Math.max(0, state.score - 5); // Penalty
+             audio.playSnap(); // Ouch sound (reuse snap for now)
+             state.turds.splice(i, 1);
+        }
+    }
 
     // Camera follow (keep our hero in the spotlight)
     // <( )_
@@ -469,6 +503,7 @@ function loop() {
     update();
     graphics.clear();
     graphics.drawCity(state.buildings, state.birds); // Birds fly in the city
+    graphics.drawTurds(state.turds); // Danger from above
     graphics.drawObstacles(state.obstacles);
     graphics.drawRat(state.rat.x, state.rat.y, state.rat.facingRight);
     graphics.drawUI(state.score); // Draw score
