@@ -43,6 +43,15 @@ jobs:
         with:
           node-version: '20'
 
+      # Rust & WASM (For the heavy lifting)
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
       # Installing pnpm (Perfectly Nice Pest Management?)
       - name: Install pnpm
         uses: pnpm/action-setup@v2

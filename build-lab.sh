@@ -85,6 +85,19 @@ cp -r rats-the-video-game/* _site/rats-the-video-game/
 # Remove node_modules if present (Rats don't need heavyweight dependencies, they travel light)
 rm -rf _site/rats-the-video-game/node_modules
 
+# Build Rats Music Converter
+echo -e "${GREEN}Action: Building Rats Music Converter...${NC}"
+cd rats-music-converter
+wasm-pack build --target web
+cd ..
+
+# Copy Rats Music Converter to _site
+mkdir -p _site/rats-music-converter
+# Copy web files
+cp -r rats-music-converter/www/* _site/rats-music-converter/
+# Copy WASM artifacts (pkg)
+cp -r rats-music-converter/pkg _site/rats-music-converter/pkg
+
 # The End (Exit code 0)
 echo -e "${CYAN}------------------------------------------------------------${NC}"
 echo -e "${PURPLE}Epilogue: The Feast${NC}"
