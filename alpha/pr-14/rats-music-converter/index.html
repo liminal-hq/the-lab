@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rats Music Converter</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Rats Music Converter 🐀🎵</h1>
+            <p>Transform high-fidelity audio into 16-channel "Rat-Bit" format.</p>
+        </header>
+
+        <main>
+            <section class="controls">
+                <div class="input-group">
+                    <label for="audio-file">Select Audio File:</label>
+                    <input type="file" id="audio-file" accept="audio/*">
+                </div>
+
+                <div class="input-group">
+                    <label for="channel-count">Channels:</label>
+                    <select id="channel-count">
+                        <option value="1">1 Channel (Beeper)</option>
+                        <option value="4">4 Channels (NES-ish)</option>
+                        <option value="8">8 Channels (Arcade)</option>
+                        <option value="16" selected>16 Channels (Rat-Bit)</option>
+                    </select>
+                </div>
+
+                <button id="convert-btn" disabled>Convert Audio</button>
+            </section>
+
+            <section id="status-section" class="hidden">
+                <p id="status-text">Ready</p>
+                <progress id="progress-bar" value="0" max="100"></progress>
+            </section>
+
+            <section id="result-section" class="hidden">
+                <div class="visualizer-container">
+                    <canvas id="visualizer"></canvas>
+                </div>
+
+                <div class="playback-controls">
+                    <button id="play-btn">Play Preview</button>
+                    <button id="stop-btn" disabled>Stop</button>
+                    <button id="download-btn">Download JSON</button>
+                </div>
+
+                <div class="stats">
+                    <p>Duration: <span id="duration-display">0:00</span></p>
+                    <p>Total Frames: <span id="frames-display">0</span></p>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            <!--
+              __
+          ___( o)>
+          \ <_. )
+           `---'
+           Rat Infestation Detected.
+            -->
+            <p>Centre for Experimental Audio Processing</p>
+            <p class="tiny">© The Lab - Canadian Spelling Enforced</p>
+        </footer>
+    </div>
+    <script type="module" src="main.js"></script>
+</body>
+</html>
