@@ -14,6 +14,8 @@ export class AudioEngine {
         this.channels = []; // Channels of communication (like sewer pipes)
         this.numChannels = 16; // 16 channels of pure 8-bit bliss
         this.isPlaying = false;
+        this.musicEnabled = true;
+        this.sfxEnabled = true;
     }
 
     init() {
@@ -27,7 +29,7 @@ export class AudioEngine {
     }
 
     playTone(frequency, duration, channelIdx = 0) {
-        if (!this.ctx) return; // No ears to hear? No sound to make.
+        if (!this.ctx || !this.musicEnabled) return; // No ears to hear? No sound to make.
 
         // Creating a temporary oscillator (a brief squeak in the void)
         // We don't strictly reuse oscillators here because... well, rats are messy.
@@ -49,7 +51,7 @@ export class AudioEngine {
     }
 
     playHappySqueak() {
-        if (!this.ctx) return;
+        if (!this.ctx || !this.sfxEnabled) return;
         // A happy little squeak!
         //      (\_/)
         //      ( ^.^ )
@@ -74,7 +76,7 @@ export class AudioEngine {
     }
 
     playChew() {
-        if (!this.ctx) return;
+        if (!this.ctx || !this.sfxEnabled) return;
         // The sound of cardboard destruction
         //      (\_/)
         //      ( 'x')
@@ -97,7 +99,7 @@ export class AudioEngine {
     }
 
     playSnap() {
-        if (!this.ctx) return;
+        if (!this.ctx || !this.sfxEnabled) return;
         // The sound of danger!
         //      / \
         //     / ! \
@@ -120,7 +122,7 @@ export class AudioEngine {
     }
 
     playSpark() {
-        if (!this.ctx) return;
+        if (!this.ctx || !this.sfxEnabled) return;
         // ZZZZT! The sound of electricity finding a path through a small rodent
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -141,7 +143,7 @@ export class AudioEngine {
     }
 
     playHonk() {
-        if (!this.ctx) return;
+        if (!this.ctx || !this.sfxEnabled) return;
         // BEEP! Get out of the road!
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
@@ -164,8 +166,14 @@ export class AudioEngine {
         this.level = level;
     }
 
+    stopMusic() {
+        this.isPlaying = false;
+        // Interval clears automatically via check, but we could explicitly clear it if we stored the ID.
+        // For now, the loop just checks isPlaying.
+    }
+
     startMusic() {
-        if (this.isPlaying) return;
+        if (this.isPlaying || !this.musicEnabled) return;
         this.isPlaying = true;
         this.init();
 

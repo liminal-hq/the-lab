@@ -43,6 +43,8 @@ const state = {
     rat: { x: 100, y: 0, vx: 0, vy: 0, grounded: true, facingRight: true }, // The protagonist
     buildings: [], // The concrete jungle
     obstacles: [], // The things in our way
+    birds: [], // Sky vermin
+    score: 0, // Chewed items count
     input: { left: false, right: false, jump: false, chew: false }, // The human commands
     level: 'SURFACE', // SURFACE or SUBWAY
     levelCompleted: false
@@ -53,6 +55,7 @@ const state = {
 function generateLevel() {
     state.buildings = [];
     state.obstacles = [];
+    state.birds = [];
     state.rat.x = 100;
     state.rat.vx = 0;
     state.rat.vy = 0;
@@ -72,7 +75,8 @@ function generateLevel() {
 function generateSurface() {
     let x = 0;
     // Generate a long city (plenty of hiding spots)
-    for (let i = 0; i < 200; i++) {
+    // Decreased from 200 to 100 for a shorter level
+    for (let i = 0; i < 100; i++) {
         const w = 100 + Math.random() * 200;
         const h = 100 + Math.random() * (canvas.height - 200);
         // Coloured like the gloom of night
@@ -83,7 +87,7 @@ function generateSurface() {
             // Welcome sign early on
             state.obstacles.push({ x: x + 20, w: 10, h: 10, type: 'SIGN_CITY' });
         }
-        if (i === 15) {
+        if (i === 10) { // Moved closer
             // Barzini's somewhere
             state.obstacles.push({ x: x + 20, w: 10, h: 10, type: 'BARZINIS' });
         }
@@ -112,6 +116,15 @@ function generateSurface() {
     }
     // Subway entrance at the end
     state.obstacles.push({ x: x + 100, w: 60, h: 80, type: 'SUBWAY_ENTRANCE' });
+
+    // Initial birds
+    for(let i=0; i<5; i++) {
+        state.birds.push({
+            x: Math.random() * 2000,
+            y: Math.random() * (canvas.height/2),
+            speed: 1 + Math.random() * 2
+        });
+    }
 }
 
 function generateSubway() {
@@ -155,6 +168,17 @@ window.addEventListener('keyup', (e) => {
     if (e.code === 'Space') state.input.jump = false;
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = false;
 });
+
+// Audio Toggles
+window.game = window.game || {};
+window.game.toggleMusic = (enabled) => {
+    audio.musicEnabled = enabled;
+    if (!enabled) audio.stopMusic();
+    else if (!audio.isPlaying) audio.startMusic();
+};
+window.game.toggleSfx = (enabled) => {
+    audio.sfxEnabled = enabled;
+};
 
 // Touch Input: For the modern rat on the go
 let lastTouchDebug = { x: 0, count: 0 };
@@ -354,6 +378,7 @@ function update() {
                  if (state.input.chew) {
                      // Nom nom nom
                      state.obstacles.splice(i, 1);
+                     state.score++; // Delicious
                      audio.playChew();
                      if (obs.type === 'PRIUS') audio.playHonk(); // Angry driver?
                  } else {
@@ -413,6 +438,15 @@ function update() {
         state.rat.grounded = true;
     }
 
+    // Update Birds
+    state.birds.forEach(bird => {
+        bird.x -= bird.speed;
+        if (bird.x < state.rat.x - 500) {
+            bird.x = state.rat.x + 500 + Math.random() * 500;
+            bird.y = Math.random() * (canvas.height / 2);
+        }
+    });
+
     // Camera follow (keep our hero in the spotlight)
     // <( )_
     //  (   )
@@ -434,9 +468,10 @@ function update() {
 function loop() {
     update();
     graphics.clear();
-    graphics.drawCity(state.buildings);
+    graphics.drawCity(state.buildings, state.birds); // Birds fly in the city
     graphics.drawObstacles(state.obstacles);
     graphics.drawRat(state.rat.x, state.rat.y, state.rat.facingRight);
+    graphics.drawUI(state.score); // Draw score
 
     // Debug Overlay
     if (window.DEBUG_MODE) {

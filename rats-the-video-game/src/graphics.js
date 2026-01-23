@@ -37,7 +37,7 @@ export class GraphicsEngine {
         }
     }
 
-    drawCity(buildings) {
+    drawCity(buildings, birds = []) {
         if (this.level === 'SURFACE') {
             // Draw moon/sun (The big cheese in the sky)
             const progress = this.levelProgress || 0;
@@ -47,6 +47,21 @@ export class GraphicsEngine {
             this.ctx.beginPath();
             this.ctx.arc(this.width - 100, sunY, 40, 0, Math.PI * 2);
             this.ctx.fill();
+
+            // Birds (Sky Vermin)
+            this.ctx.fillStyle = '#111';
+            for (const bird of birds) {
+                const screenX = bird.x - this.cameraX * 0.5; // Parallax
+                if (screenX > -20 && screenX < this.width + 20) {
+                     this.ctx.beginPath();
+                     // Simple V shape
+                     const wing = Math.sin(Date.now() / 100) * 5;
+                     this.ctx.moveTo(screenX, bird.y);
+                     this.ctx.lineTo(screenX - 5, bird.y - 5 + wing);
+                     this.ctx.lineTo(screenX + 5, bird.y - 5 + wing);
+                     this.ctx.fill();
+                }
+            }
         }
 
         for (const b of buildings) {
@@ -66,12 +81,24 @@ export class GraphicsEngine {
                     this.ctx.fillRect(screenX, this.height - b.h, b.w, b.h);
 
                     // Windows (Human cages)
-                    this.ctx.fillStyle = '#FFD700'; // Yellow lights
+                    // Flickering Logic
+                    const now = Date.now();
+
                     // Simple window logic
                     for (let wx = screenX + 5; wx < screenX + b.w - 5; wx += 20) {
                         for (let wy = this.height - b.h + 10; wy < this.height - 10; wy += 30) {
-                            if ((wx * wy) % 3 !== 0) {
+                            // Unique seed per window
+                            const seed = (wx * wy);
+                            // Random flicker: 1% chance to be off/on different than base state
+                            const flicker = Math.sin(now / (100 + (seed % 500))) > 0.9;
+
+                            if ((seed % 3 !== 0) && !flicker) {
+                                this.ctx.fillStyle = '#FFD700'; // Yellow lights
                                 this.ctx.fillRect(wx, wy, 10, 20);
+                            } else if (flicker && (seed % 7 === 0)) {
+                                 // Some normally dark windows flicker on
+                                 this.ctx.fillStyle = '#FFA500';
+                                 this.ctx.fillRect(wx, wy, 10, 20);
                             }
                         }
                     }
@@ -286,5 +313,13 @@ export class GraphicsEngine {
         this.ctx.stroke();
 
         this.ctx.restore();
+    }
+
+    drawUI(score) {
+        // Score (The spoils of war)
+        this.ctx.fillStyle = '#fff';
+        this.ctx.font = '20px "Courier New", monospace';
+        this.ctx.textAlign = 'left';
+        this.ctx.fillText(`CHEWED: ${score}`, 20, 30);
     }
 }
