@@ -83,7 +83,8 @@ export class GraphicsEngine {
                     // Windows (Human cages)
                     // Flickering Logic
                     const now = Date.now();
-                    const slowTime = Math.floor(now / 5000); // 5 second intervals
+                    // Coordinated building state (Slow toggle)
+                    const buildingActive = Math.sin(now / 4000 + b.x) > 0.2;
 
                     // Simple window logic
                     for (let wx = screenX + 5; wx < screenX + b.w - 5; wx += 20) {
@@ -91,26 +92,23 @@ export class GraphicsEngine {
                             // Unique seed per window
                             const seed = (wx * wy);
 
-                            // Deterministic random based on position and slow time interval
-                            // This keeps the state stable for 5 seconds
-                            const randState = Math.sin(seed + slowTime * 123.45);
-                            const isOn = randState > -0.5; // Mostly on for "normal" windows
-
-                            // Quick Flicker check (momentary toggle)
-                            // Happens rarely, independent of the slow state
-                            const flickerTime = Math.sin(now / 50 + seed);
-                            const isFlickering = flickerTime > 0.95;
+                            // Occasional individual flicker
+                            const flicker = Math.sin(now / (50 + (seed % 200))) > 0.95;
 
                             let lightColor = null;
 
-                            // Default Pattern (Some windows lit, some dark)
-                            if (seed % 3 !== 0) {
-                                // Normally Lit
-                                if (isOn && !isFlickering) lightColor = '#FFD700';
+                            if (buildingActive) {
+                                // Building is "Active" (Office hours?)
+                                // Most windows ON
+                                if ((seed % 10 !== 0) && !flicker) {
+                                    lightColor = '#FFD700'; // Bright Yellow
+                                }
                             } else {
-                                // Normally Dark
-                                // Occasional dark window lights up
-                                if (!isOn || isFlickering) lightColor = '#FFA500';
+                                // Building is "Inactive" (Night mode)
+                                // Most windows OFF, sparse lights
+                                if ((seed % 7 === 0) || flicker) {
+                                    lightColor = '#FFA500'; // Dimmer Orange
+                                }
                             }
 
                             if (lightColor) {
