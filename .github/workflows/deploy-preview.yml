@@ -85,6 +85,10 @@ jobs:
           mkdir -p /tmp/rat_build
           cp -r _site/* /tmp/rat_build/
 
+          # Clean up local build artifacts to prevent checkout errors
+          rm -rf rats-music-converter/target
+          rm -rf rats-music-converter/pkg
+
           # Fetch and checkout alpha-builds branch
           # If it doesn't exist, create an orphan branch (empty history)
           if git ls-remote --exit-code --heads origin alpha-builds; then
