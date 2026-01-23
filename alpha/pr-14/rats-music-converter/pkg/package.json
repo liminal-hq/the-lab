@@ -1,0 +1,15 @@
+{
+  "name": "rats-music-converter",
+  "type": "module",
+  "version": "0.1.0",
+  "files": [
+    "rats_music_converter_bg.wasm",
+    "rats_music_converter.js",
+    "rats_music_converter.d.ts"
+  ],
+  "main": "rats_music_converter.js",
+  "types": "rats_music_converter.d.ts",
+  "sideEffects": [
+    "./snippets/*"
+  ]
+}
