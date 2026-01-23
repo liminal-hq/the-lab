@@ -1,0 +1,17 @@
+<svg viewBox="0 0 200 100" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="200" height="100" fill="none"/>
+  <!-- Screen Outline -->
+  <rect x="5" y="5" width="190" height="90" fill="none" stroke="white" stroke-width="2" rx="10" />
+  <!-- Divider -->
+  <line x1="100" y1="5" x2="100" y2="95" stroke="#555" stroke-dasharray="5,5" />
+
+  <!-- Left Zone -->
+  <text x="50" y="30" fill="white" text-anchor="middle" font-size="10" font-family="sans-serif">MOVE</text>
+  <line x1="50" y1="40" x2="50" y2="90" stroke="#444" />
+  <text x="25" y="70" fill="#aaa" text-anchor="middle" font-family="sans-serif">&lt;</text>
+  <text x="75" y="70" fill="#aaa" text-anchor="middle" font-family="sans-serif">&gt;</text>
+
+  <!-- Right Zone -->
+  <text x="150" y="55" fill="white" text-anchor="middle" font-size="14" font-family="sans-serif">TAP TO</text>
+  <text x="150" y="75" fill="white" text-anchor="middle" font-size="14" font-family="sans-serif">JUMP</text>
+</svg>
