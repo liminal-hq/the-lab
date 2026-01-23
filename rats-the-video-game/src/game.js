@@ -107,53 +107,65 @@ function handleTouch(e) {
 
     e.preventDefault(); // Prevent scrolling/zooming
 
-    // Reset inputs controlled by touch
+    // Reset movement inputs
     let touchLeft = false;
     let touchRight = false;
-    let touchJump = false;
 
     lastTouchDebug.count = e.touches.length;
 
+    // Process all active touches for Movement (Hold)
     for (let i = 0; i < e.touches.length; i++) {
         const touch = e.touches[i];
         const x = touch.clientX;
         lastTouchDebug.x = x; // Track for debug
         const width = window.innerWidth;
 
+        // Split screen 50/50 for movement
         if (x < width * 0.5) {
-            // Movement Zone (Left 50%)
-            if (x < width * 0.25) {
-                // Far left -> Move Left
-                touchLeft = true;
-            } else {
-                // Inner left -> Move Right
-                touchRight = true;
-            }
+            touchLeft = true;
         } else {
-            // Jump Zone (Right 50%)
-            touchJump = true;
+            touchRight = true;
         }
     }
 
     state.input.left = touchLeft;
     state.input.right = touchRight;
-    state.input.jump = touchJump;
 
     // Start music on first interaction
-    if ((touchLeft || touchRight || touchJump) && !audio.isPlaying) {
+    if (e.touches.length > 0 && !audio.isPlaying) {
         audio.startMusic();
     }
 }
 
-window.addEventListener('touchstart', handleTouch, { passive: false });
+// Handle Jump separately on touchstart (Tap anywhere)
+function handleJumpTap(e) {
+    if (e.target.closest('#tutorial-modal') || e.target.closest('button')) return;
+
+    // Trigger jump
+    state.input.jump = true;
+
+    // Reset jump input after a short delay to prevent "flying" if logic requires toggle
+    // But game loop checks `state.input.jump` every frame.
+    // We need to ensure it's true for at least one update.
+    setTimeout(() => {
+        state.input.jump = false;
+    }, 100);
+}
+
+window.addEventListener('touchstart', (e) => {
+    handleTouch(e);
+    handleJumpTap(e);
+}, { passive: false });
+
 window.addEventListener('touchmove', handleTouch, { passive: false });
+
 window.addEventListener('touchend', (e) => {
     handleTouch(e);
-    // Ensure all cleared if no touches
+    // Ensure movement cleared if no touches
     if (e.touches.length === 0) {
         state.input.left = false;
         state.input.right = false;
-        state.input.jump = false;
+        // Jump is auto-cleared by timeout
     }
 }, { passive: false });
 
