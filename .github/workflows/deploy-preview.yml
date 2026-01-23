@@ -45,7 +45,16 @@ jobs:
         with:
           version: 9
 
-      # Step 3: Build the project using the shared build script
+      # Step 3: Setup Rust & WASM (For the heavy lifting)
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Install wasm-pack
+        run: curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
+
+      # Step 4: Build the project using the shared build script
       # This generates the static site in the '_site' directory.
       - name: Build Site
         run: |
