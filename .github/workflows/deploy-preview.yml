@@ -66,6 +66,7 @@ jobs:
       # - Creating a specific folder for this PR (alpha/pr-<ID>).
       # - Committing the new build files.
       - name: Deploy to Alpha Branch
+        id: deploy
         run: |
           # Configure Git user for the commit
           git config --global user.name "Rat Bot"
@@ -110,6 +111,8 @@ jobs:
              echo "No changes to deploy."
           fi
 
+          echo "ALPHA_SHA=$(git rev-parse HEAD)" >> $GITHUB_OUTPUT
+
       # Step 6: Post a comment on the PR
       # Provides the user with a direct link to the deployed preview.
       - name: Comment on PR
@@ -120,8 +123,9 @@ jobs:
             const repo = context.repo.repo;
             const owner = context.repo.owner;
             const branch = 'alpha-builds';
-            // Using raw.githack.com for preview serving
-            const url = `https://raw.githack.com/${owner}/${repo}/${branch}/alpha/pr-${prNumber}/index.html`;
+            const sha = '${{ steps.deploy.outputs.ALPHA_SHA }}';
+            // Using rawcdn.githack.com for preview serving (permanent cache based on commit SHA)
+            const url = `https://rawcdn.githack.com/${owner}/${repo}/${sha}/alpha/pr-${prNumber}/index.html`;
 
             const ratArt = `
             \`\`\`
