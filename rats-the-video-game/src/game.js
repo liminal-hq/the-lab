@@ -4,12 +4,36 @@ import { GraphicsEngine } from './graphics.js';
 // ~~~ The Great Rat Control Center ~~~
 // Where all the squeaking happens.
 const canvas = document.getElementById('gameCanvas');
-// Make canvas fill the screen or be substantial (Big enough for a rat army)
-canvas.width = window.innerWidth - 40;
-canvas.height = window.innerHeight - 100;
 
 const audio = new AudioEngine();
 const graphics = new GraphicsEngine(canvas);
+
+// Resize logic to keep the rat world fitting snugly
+//      __             _
+//   .-'  `.  _  __  .' `.
+//   :      \/ \/  \/     :
+//    \                   /
+//     `-.._  _  _  _..-'
+//          `' `' `'
+function resize() {
+    const overlay = document.getElementById('overlay');
+    // Account for overlay height + margins (10 top + 10 bottom)
+    const overlayHeight = overlay ? overlay.offsetHeight + 20 : 100;
+
+    canvas.width = window.innerWidth - 40;
+    canvas.height = window.innerHeight - overlayHeight - 30; // Extra buffer
+
+    if (canvas.height < 150) canvas.height = 150; // Minimum height for rat activities
+
+    // Update graphics engine dimensions
+    if (graphics) {
+        graphics.width = canvas.width;
+        graphics.height = canvas.height;
+    }
+}
+
+window.addEventListener('resize', resize);
+resize();
 
 // Game State: The Brain of the Rat
 //      (\,/)
