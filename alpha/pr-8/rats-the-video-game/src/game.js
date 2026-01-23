@@ -452,7 +452,8 @@ function update() {
         }
 
         // Drop Turd Logic (Aerial Attacks)
-        if (Math.random() < 0.005) { // Rare event
+        // Only drop if bird is roughly on screen (close to rat)
+        if (Math.abs(bird.x - state.rat.x) < 500 && Math.random() < 0.005) {
              state.turds.push({ x: bird.x, y: bird.y, vy: 0 });
         }
     });
