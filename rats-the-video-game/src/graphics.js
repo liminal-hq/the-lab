@@ -57,6 +57,45 @@ export class GraphicsEngine {
         this.ctx.fillRect(0, this.height - 20, this.width, 20);
     }
 
+    drawObstacles(obstacles) {
+        // Drawing the dangers of the modern world.
+        //      !
+        //    (o.o)
+        //    ( > )
+        for (const obs of obstacles) {
+            const screenX = obs.x - this.cameraX;
+            // Cull off-screen
+            if (screenX + obs.w > -100 && screenX < this.width + 100) {
+                 const screenY = this.height - 20 - obs.h; // On the ground
+
+                 if (obs.type === 'BOX') {
+                     // A delicious cardboard box
+                     this.ctx.fillStyle = '#A0522D'; // Sienna (Distinct from the rat's #8B4513)
+                     this.ctx.fillRect(screenX, screenY, obs.w, obs.h);
+
+                     // Tape details
+                     this.ctx.fillStyle = '#D2B48C'; // Tan tape
+                     this.ctx.fillRect(screenX, screenY + obs.h/2 - 2, obs.w, 4);
+                 } else if (obs.type === 'TRAP') {
+                     // A nasty trap
+                     this.ctx.fillStyle = '#708090'; // SlateGrey
+                     this.ctx.beginPath();
+                     // Spikes
+                     this.ctx.moveTo(screenX, screenY + obs.h);
+                     this.ctx.lineTo(screenX + obs.w * 0.25, screenY);
+                     this.ctx.lineTo(screenX + obs.w * 0.5, screenY + obs.h);
+                     this.ctx.lineTo(screenX + obs.w * 0.75, screenY);
+                     this.ctx.lineTo(screenX + obs.w, screenY + obs.h);
+                     this.ctx.fill();
+
+                     // Danger colour (The "Do Not Touch" indicator)
+                     this.ctx.fillStyle = '#FF4500'; // OrangeRed
+                     this.ctx.fillRect(screenX + obs.w/2 - 2, screenY + obs.h - 5, 4, 4);
+                 }
+            }
+        }
+    }
+
     drawRat(x, y, facingRight) {
         const screenX = x - this.cameraX;
         const screenY = this.height - 20 - y; // y is height from ground
