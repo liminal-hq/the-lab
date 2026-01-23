@@ -96,6 +96,57 @@ window.addEventListener('keyup', (e) => {
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = false;
 });
 
+// Touch Input: For the modern rat on the go
+function handleTouch(e) {
+    e.preventDefault(); // Prevent scrolling/zooming
+
+    // Reset inputs controlled by touch
+    let touchLeft = false;
+    let touchRight = false;
+    let touchJump = false;
+
+    for (let i = 0; i < e.touches.length; i++) {
+        const touch = e.touches[i];
+        const x = touch.clientX;
+        const width = window.innerWidth;
+
+        if (x < width * 0.5) {
+            // Movement Zone (Left 50%)
+            if (x < width * 0.25) {
+                // Far left -> Move Left
+                touchLeft = true;
+            } else {
+                // Inner left -> Move Right
+                touchRight = true;
+            }
+        } else {
+            // Jump Zone (Right 50%)
+            touchJump = true;
+        }
+    }
+
+    state.input.left = touchLeft;
+    state.input.right = touchRight;
+    state.input.jump = touchJump;
+
+    // Start music on first interaction
+    if ((touchLeft || touchRight || touchJump) && !audio.isPlaying) {
+        audio.startMusic();
+    }
+}
+
+window.addEventListener('touchstart', handleTouch, { passive: false });
+window.addEventListener('touchmove', handleTouch, { passive: false });
+window.addEventListener('touchend', (e) => {
+    handleTouch(e);
+    // Ensure all cleared if no touches
+    if (e.touches.length === 0) {
+        state.input.left = false;
+        state.input.right = false;
+        state.input.jump = false;
+    }
+}, { passive: false });
+
 // Physics Constants (Rat Physics 101)
 const GRAVITY = 0.8;      // What goes up, must come down (unless it climbs)
 const SPEED = 5;          // Maximum scurrying velocity
