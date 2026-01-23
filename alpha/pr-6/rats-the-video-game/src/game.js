@@ -98,6 +98,11 @@ window.addEventListener('keyup', (e) => {
 
 // Touch Input: For the modern rat on the go
 function handleTouch(e) {
+    // Ignore touches on UI elements (like the tutorial modal buttons)
+    if (e.target.closest('#tutorial-modal') || e.target.tagName === 'BUTTON') {
+        return;
+    }
+
     e.preventDefault(); // Prevent scrolling/zooming
 
     // Reset inputs controlled by touch
