@@ -123,9 +123,9 @@ jobs:
             const repo = context.repo.repo;
             const owner = context.repo.owner;
             const branch = 'alpha-builds';
-            const sha = '${{ steps.deploy.outputs.ALPHA_SHA }}';
-            // Using rawcdn.githack.com for preview serving (permanent cache based on commit SHA)
-            const url = `https://rawcdn.githack.com/${owner}/${repo}/${sha}/alpha/pr-${prNumber}/index.html`;
+            // Using raw.githack.com for preview serving (dev/volatile cache based on branch)
+            // This ensures links expire (404) when the PR is closed and cleanup runs.
+            const url = `https://raw.githack.com/${owner}/${repo}/${branch}/alpha/pr-${prNumber}/index.html`;
 
             const ratArt = `
             \`\`\`
