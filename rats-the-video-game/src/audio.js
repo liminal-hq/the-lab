@@ -94,6 +94,47 @@ export class AudioEngine {
         osc.stop(this.ctx.currentTime + 0.2);
     }
 
+    playSpark() {
+        if (!this.ctx) return;
+        // ZZZZT! The sound of electricity finding a path through a small rodent
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        // Rapid frequency modulation for that zapping sound
+        osc.frequency.setValueAtTime(200, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(1000, this.ctx.currentTime + 0.1);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.1);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.1);
+    }
+
+    playHonk() {
+        if (!this.ctx) return;
+        // BEEP! Get out of the road!
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'square'; // Harsh city sound
+        osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(400, this.ctx.currentTime + 0.2);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.2);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.2);
+    }
+
     startMusic() {
         if (this.isPlaying) return;
         this.isPlaying = true;
