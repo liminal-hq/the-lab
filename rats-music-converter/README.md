@@ -14,7 +14,7 @@ The system is built as a hybrid Rust/JavaScript application.
 graph TD
     User[User] -->|Uploads File| UI[Web UI]
     UI -->|Decodes Audio| JS[JavaScript]
-    JS -->|Sends PCM Data| WASM[Rust (WASM)]
+    JS -->|Sends PCM Data| WASM["Rust (WASM)"]
     WASM -->|FFT Analysis| RustFFT[RustFFT]
     RustFFT -->|Top Frequencies| WASM
     WASM -->|Returns JSON| JS
