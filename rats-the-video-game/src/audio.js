@@ -16,6 +16,7 @@ export class AudioEngine {
         this.isPlaying = false;
         this.musicEnabled = true;
         this.sfxEnabled = true;
+        this.musicInterval = null;
     }
 
     init() {
@@ -168,12 +169,18 @@ export class AudioEngine {
 
     stopMusic() {
         this.isPlaying = false;
-        // Interval clears automatically via check, but we could explicitly clear it if we stored the ID.
-        // For now, the loop just checks isPlaying.
+        if (this.musicInterval) {
+            clearInterval(this.musicInterval);
+            this.musicInterval = null;
+        }
     }
 
     startMusic() {
         if (this.isPlaying || !this.musicEnabled) return;
+
+        // Ensure we don't have lingering intervals
+        this.stopMusic();
+
         this.isPlaying = true;
         this.init();
 
@@ -186,7 +193,7 @@ export class AudioEngine {
         const bassLine = [110, 110, 146.83, 146.83, 98, 98, 130.81, 130.81]; // A2... Deep rumblings
         let beat = 0;
 
-        setInterval(() => {
+        this.musicInterval = setInterval(() => {
             if (!this.isPlaying) return;
 
             if (this.level === 'SUBWAY') {
