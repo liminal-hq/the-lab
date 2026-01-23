@@ -25,4 +25,8 @@ Welcome, Agent. You are now entering the domain of the Rat King. Please adhere t
 ## 5. Deployment
 *   Remember that this runs in a subdirectory. Always use relative paths (`./`) for assets.
 
+## 6. Verification Protocol
+*   **Viewport Checks:** You MUST verify the game layout and controls on both Desktop (wide screen) and Mobile (simulated narrow screen, touch events).
+*   **UI Scaling:** Ensure the Help Modal and Controls images scale correctly and remain readable on small screens.
+
 Good luck. Squeak on.

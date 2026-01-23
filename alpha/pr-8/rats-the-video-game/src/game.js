@@ -77,8 +77,8 @@ function generateLevel() {
 function generateSurface() {
     let x = 0;
     // Generate a long city (plenty of hiding spots)
-    // Decreased from 200 to 100 for a shorter level
-    for (let i = 0; i < 100; i++) {
+    // Decreased from 100 to 50 for a shorter level
+    for (let i = 0; i < 50; i++) {
         const w = 100 + Math.random() * 200;
         const h = 100 + Math.random() * (canvas.height - 200);
         // Coloured like the gloom of night
@@ -460,7 +460,7 @@ function update() {
     // Update Turds (Physics & Collision)
     for (let i = state.turds.length - 1; i >= 0; i--) {
         const turd = state.turds[i];
-        turd.vy += GRAVITY * 0.5; // Falls slower than rat? No, gravity is gravity.
+        turd.vy -= GRAVITY * 0.2; // Gravity pulls down (negative Y)
         turd.y += turd.vy;
 
         // Ground collision (splat)
