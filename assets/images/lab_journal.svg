@@ -54,6 +54,13 @@
         <animate attributeName="opacity" values="0;1" begin="1.0s" dur="0.5s" fill="freeze"/>
     </g>
     <g>
+        <text x="50" y="195" font-family="Comic Sans MS, cursive, sans-serif" font-size="18" fill="#333">4. </text>
+        <!-- Typing effect cursor -->
+        <rect x="75" y="180" width="2" height="18" fill="black">
+            <animate attributeName="opacity" values="1;0;1" dur="0.8s" repeatCount="indefinite"/>
+        </rect>
+    </g>
+    <g>
         <!-- Musical note doodle -->
         <path d="M 300 150 Q 310 140 320 150 L 320 130 Q 330 120 330 130 L 330 150" fill="none" stroke="#333" stroke-width="2">
              <animate attributeName="opacity" values="0;1" begin="1.5s" dur="0.5s" fill="freeze"/>

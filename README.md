@@ -29,6 +29,16 @@ A procedural open-world city game where you assume the role of an escaped lab ra
 *   **Inspiration**: Suzanne Vega's "Rats".
 *   **Access**: [Enter the Simulation](./rats-the-video-game)
 
+### Rats Music Converter
+
+**Status:** *Beta Testing*
+
+A specialized tool to transform high-fidelity audio into the 16-channel "Rat-Bit" frequency format used by the game engine.
+
+*   **Objective**: Demake songs for the rat world.
+*   **Tech Stack**: Rust, WebAssembly (WASM), rustfft.
+*   **Access**: [Launch Converter](./rats-music-converter)
+
 ---
 
 ## 📝 Living Visual Journal
