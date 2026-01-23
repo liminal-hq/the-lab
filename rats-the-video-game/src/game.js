@@ -97,9 +97,11 @@ window.addEventListener('keyup', (e) => {
 });
 
 // Touch Input: For the modern rat on the go
+let lastTouchDebug = { x: 0, count: 0 };
+
 function handleTouch(e) {
     // Ignore touches on UI elements (like the tutorial modal buttons)
-    if (e.target.closest('#tutorial-modal') || e.target.tagName === 'BUTTON') {
+    if (e.target.closest('#tutorial-modal') || e.target.closest('button')) {
         return;
     }
 
@@ -110,9 +112,12 @@ function handleTouch(e) {
     let touchRight = false;
     let touchJump = false;
 
+    lastTouchDebug.count = e.touches.length;
+
     for (let i = 0; i < e.touches.length; i++) {
         const touch = e.touches[i];
         const x = touch.clientX;
+        lastTouchDebug.x = x; // Track for debug
         const width = window.innerWidth;
 
         if (x < width * 0.5) {
@@ -244,6 +249,20 @@ function loop() {
     graphics.drawCity(state.buildings);
     graphics.drawObstacles(state.obstacles);
     graphics.drawRat(state.rat.x, state.rat.y, state.rat.facingRight);
+
+    // Debug Overlay
+    if (window.DEBUG_MODE) {
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+        ctx.fillRect(10, 10, 300, 100);
+        ctx.fillStyle = 'lime';
+        ctx.font = '12px monospace';
+        ctx.fillText(`Viewport: ${window.innerWidth}x${window.innerHeight}`, 20, 30);
+        ctx.fillText(`Touches: ${lastTouchDebug.count} | Last X: ${Math.round(lastTouchDebug.x)}`, 20, 50);
+        ctx.fillText(`Input: L:${state.input.left} R:${state.input.right} J:${state.input.jump}`, 20, 70);
+        ctx.fillText(`Rat: ${Math.round(state.rat.x)}, ${Math.round(state.rat.y)}`, 20, 90);
+    }
+
     requestAnimationFrame(loop);
 }
 
