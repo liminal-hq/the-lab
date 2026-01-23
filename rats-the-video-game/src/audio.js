@@ -48,6 +48,52 @@ export class AudioEngine {
         osc.stop(this.ctx.currentTime + duration);
     }
 
+    playChew() {
+        if (!this.ctx) return;
+        // The sound of cardboard destruction
+        //      (\_/)
+        //      ( 'x')
+        //      c(" ")(" ")
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth'; // Gritty, like the fibre in our diet
+        osc.frequency.setValueAtTime(150, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(50, this.ctx.currentTime + 0.1);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.1);
+    }
+
+    playSnap() {
+        if (!this.ctx) return;
+        // The sound of danger!
+        //      / \
+        //     / ! \
+        //    /_____\
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle'; // Sharp, like a trap's behaviour
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.2);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.8, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.2);
+    }
+
     startMusic() {
         if (this.isPlaying) return;
         this.isPlaying = true;
