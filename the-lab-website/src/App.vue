@@ -27,6 +27,7 @@
 
     <footer>
       <p>© The Lab - Canadian Spelling Enforced</p>
+      <p><a href="https://github.com/liminal-hq/the-lab" target="_blank" rel="noopener noreferrer">View Source on GitHub 🐀</a></p>
     </footer>
   </div>
 </template>
@@ -107,7 +108,18 @@ h2 {
 
 footer {
   margin-top: 4rem;
-  opacity: 0.5;
+  opacity: 0.8;
   font-size: 0.8rem;
+}
+
+footer a {
+  color: #33ff00;
+  text-decoration: none;
+  border-bottom: 1px dotted #33ff00;
+  transition: all 0.3s ease;
+}
+
+footer a:hover {
+  background: rgba(51, 255, 0, 0.2);
 }
 </style>
