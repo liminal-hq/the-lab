@@ -163,6 +163,30 @@ export class AudioEngine {
         osc.stop(this.ctx.currentTime + 0.2);
     }
 
+    playCollect() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // The sound of pure joy (Pizza!)
+        //      (\_/)
+        //      ( ^.^ )
+        //      c(")_(")
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine'; // Smooth and tasty
+        osc.frequency.setValueAtTime(1200, now);
+        osc.frequency.exponentialRampToValueAtTime(1800, now + 0.1);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.1);
+
+        osc.start(now);
+        osc.stop(now + 0.1);
+    }
+
     setLevel(level) {
         this.level = level;
     }

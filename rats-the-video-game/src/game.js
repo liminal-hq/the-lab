@@ -104,6 +104,17 @@ function generateSurface() {
         //     ( \/ )  <-- "Watch your step!"
         //      \  /
         const gap = Math.random() * 50 + 50; // Ensure enough space
+
+        // Collectible Pizza! (A rat's dream)
+        //      (\_/)
+        //      (o.o)  <-- "Is that pepperoni?"
+        //      (> <)
+        if (Math.random() < 0.25) {
+             const pizzaX = x + w + gap / 2 + (Math.random() * 40 - 20);
+             // Floating slightly above ground logically (h=40)
+             state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
+        }
+
         if (Math.random() < 0.4) {
             const obsX = x + w + gap / 2 - 15; // Center in the gap
             const rand = Math.random();
@@ -395,6 +406,14 @@ function update() {
 
         // Simple AABB overlap check
         if (ratR > obsL && ratL < obsR && ratB < obsT) {
+             if (obs.type === 'PIZZA') {
+                 // NOM NOM NOM!
+                 state.obstacles.splice(i, 1);
+                 state.score += 10; // 10x points for pizza
+                 if (audio && audio.playCollect) audio.playCollect();
+                 continue; // It's gone, move on
+             }
+
              if (obs.type === 'BOX' || obs.type === 'PRIUS' || obs.type === 'TRASH_PILE') {
                  if (state.input.chew) {
                      // Nom nom nom
