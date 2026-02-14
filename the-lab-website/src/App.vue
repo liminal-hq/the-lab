@@ -3,12 +3,13 @@
 
 <template>
   <div class="lab-container">
+    <a href="#main-content" class="skip-link">Skip to main content</a>
     <header>
       <h1>🧪 The Lab</h1>
       <p>Experimental Projects & Weird Science</p>
     </header>
 
-    <main>
+    <main id="main-content">
       <div class="experiments-grid">
         <a href="./rats-the-video-game/" class="experiment-card">
           <div class="icon">🐀</div>
@@ -27,12 +28,36 @@
 
     <footer>
       <p>© The Lab - Canadian Spelling Enforced</p>
-      <p><a href="https://github.com/liminal-hq/the-lab" target="_blank" rel="noopener noreferrer">View Source on GitHub 🐀</a></p>
+      <p><a href="https://github.com/liminal-hq/the-lab" target="_blank" rel="noopener noreferrer">View Source on GitHub <span aria-hidden="true">🐀</span></a></p>
     </footer>
   </div>
 </template>
 
 <style scoped>
+/*
+   (\_/)
+   (o.o)
+   (> <)
+*/
+.skip-link {
+  position: absolute;
+  top: -100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #33ff00;
+  color: #000;
+  padding: 1rem;
+  z-index: 1000;
+  font-weight: bold;
+  text-decoration: none;
+  transition: top 0.3s ease;
+  border-radius: 0 0 10px 10px;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
 .lab-container {
   font-family: 'Courier New', Courier, monospace;
   color: #33ff00;
@@ -75,10 +100,16 @@ header p {
   align-items: center;
 }
 
-.experiment-card:hover {
+.experiment-card:hover,
+.experiment-card:focus-visible {
   background: rgba(0, 100, 0, 0.5);
   transform: translateY(-5px);
   box-shadow: 0 0 20px rgba(51, 255, 0, 0.4);
+  outline: none; /* Custom focus style handles visibility */
+}
+
+.experiment-card:focus-visible {
+  border-color: #fff;
 }
 
 .icon {
@@ -119,7 +150,30 @@ footer a {
   transition: all 0.3s ease;
 }
 
-footer a:hover {
+footer a:hover,
+footer a:focus-visible {
   background: rgba(51, 255, 0, 0.2);
+  outline: none; /* Custom focus style handles visibility */
+}
+
+footer a:focus-visible {
+  border-bottom-style: solid;
+  font-weight: bold;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .experiment-card,
+  .experiment-card:hover,
+  .experiment-card:focus-visible,
+  footer a,
+  footer a:hover,
+  footer a:focus-visible {
+    transition: none;
+    transform: none;
+  }
+
+  .skip-link {
+    transition: none;
+  }
 }
 </style>
