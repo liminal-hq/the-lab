@@ -162,6 +162,44 @@ export class GraphicsEngine {
                      this.ctx.fillStyle = '#D2B48C'; // Tan tape
                      this.ctx.fillRect(screenX, screenY + obs.h/2 - 2, obs.w, 4);
 
+                 } else if (obs.type === 'PIZZA') {
+                     // The Holy Grail (Pizza Slice)
+                     //      / \
+                     //     / o \
+                     //    /_____\
+                     const bob = Math.sin(Date.now() / 200) * 5;
+                     const pY = screenY + bob; // Bobbing effect
+
+                     // Crust (The Handle)
+                     this.ctx.fillStyle = '#DAA520'; // Goldenrod
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX, pY);
+                     this.ctx.lineTo(screenX + obs.w, pY);
+                     this.ctx.lineTo(screenX + obs.w / 2, pY + obs.h);
+                     this.ctx.fill();
+
+                     // Cheese (The Good Stuff)
+                     this.ctx.fillStyle = '#FFD700'; // Gold
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + 4, pY + 4);
+                     this.ctx.lineTo(screenX + obs.w - 4, pY + 4);
+                     this.ctx.lineTo(screenX + obs.w / 2, pY + obs.h - 4);
+                     this.ctx.fill();
+
+                     // Pepperoni (The Vitamins)
+                     this.ctx.fillStyle = '#B22222'; // Firebrick
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w / 2, pY + 12, 4, 0, Math.PI * 2); // Center
+                     this.ctx.fill();
+
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.35, pY + 6, 3, 0, Math.PI * 2); // Top Left
+                     this.ctx.fill();
+
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
+                     this.ctx.fill();
+
                  } else if (obs.type === 'TRAP') {
                      // A nasty trap
                      this.ctx.fillStyle = '#708090'; // SlateGrey
