@@ -111,9 +111,15 @@ function generateSurface() {
             if (rand < 0.4) {
                 // A Box to chew
                 state.obstacles.push({ x: obsX, w: 30, h: 30, type: 'BOX' });
-            } else if (rand < 0.7) {
+            } else if (rand < 0.6) {
                 // A Trap to jump
                 state.obstacles.push({ x: obsX, w: 40, h: 10, type: 'TRAP' });
+            } else if (rand < 0.8) {
+                // Pizza!
+                //      / \
+                //     / o \  <-- Tasty Slice
+                //    /_____\
+                state.obstacles.push({ x: obsX, w: 30, h: 30, type: 'PIZZA' });
             } else {
                 // Prius!
                 state.obstacles.push({ x: obsX - 25, w: 80, h: 40, type: 'PRIUS' });
@@ -146,10 +152,14 @@ function generateSubway() {
         // Obstacles on tracks
         if (Math.random() < 0.6) {
              const obsX = x + w/2;
-             if (Math.random() < 0.5) {
+             const rand = Math.random();
+             if (rand < 0.4) {
                  state.obstacles.push({ x: obsX, w: 40, h: 30, type: 'TRASH_PILE' });
-             } else {
+             } else if (rand < 0.8) {
                  state.obstacles.push({ x: obsX, w: 120, h: 5, type: 'THIRD_RAIL' });
+             } else {
+                 // Subway Pizza (floor spice makes everything nice)
+                 state.obstacles.push({ x: obsX, w: 30, h: 30, type: 'PIZZA' });
              }
         }
         x += w;
@@ -441,6 +451,11 @@ function update() {
                  state.rat.vy = 10;
                  state.rat.vx = state.rat.facingRight ? -10 : 10;
                  state.rat.grounded = false;
+             } else if (obs.type === 'PIZZA') {
+                 // Tasty!
+                 state.obstacles.splice(i, 1);
+                 state.score += 10; // Big points
+                 audio.playCollect();
              } else if (obs.type === 'SUBWAY_ENTRANCE') {
                  if (!state.levelCompleted) {
                      state.levelCompleted = true;

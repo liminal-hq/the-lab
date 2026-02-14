@@ -143,6 +143,30 @@ export class AudioEngine {
         osc.stop(this.ctx.currentTime + 0.1);
     }
 
+    playCollect() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // A tasty treat!
+        //      (\_/)
+        //      ( ^.^ )
+        //     c( " )o
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine'; // Pure joy
+        osc.frequency.setValueAtTime(1200, now);
+        osc.frequency.exponentialRampToValueAtTime(1800, now + 0.1);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.3, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.15);
+
+        osc.start(now);
+        osc.stop(now + 0.15);
+    }
+
     playHonk() {
         if (!this.ctx || !this.sfxEnabled) return;
         // BEEP! Get out of the road!

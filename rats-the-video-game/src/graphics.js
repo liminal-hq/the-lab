@@ -280,6 +280,30 @@ export class GraphicsEngine {
                      // Flies
                      this.ctx.fillStyle = '#000';
                      if (Math.random() > 0.5) this.ctx.fillRect(screenX + Math.random()*obs.w, screenY - 5, 2, 2);
+                 } else if (obs.type === 'PIZZA') {
+                     // Pizza Time!
+                     const bob = Math.sin(Date.now() / 200) * 5; // Float
+                     const py = screenY + bob; // Base Y
+
+                     // Crust (Top Bar)
+                     this.ctx.fillStyle = '#A0522D'; // Darker crust
+                     this.ctx.fillRect(screenX, py, obs.w, 5);
+
+                     // Cheese Triangle
+                     this.ctx.fillStyle = '#FFD700'; // Gold
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + 2, py + 5);
+                     this.ctx.lineTo(screenX + obs.w - 2, py + 5);
+                     this.ctx.lineTo(screenX + obs.w/2, py + obs.h);
+                     this.ctx.fill();
+
+                     // Pepperoni
+                     this.ctx.fillStyle = '#B22222'; // Spicy red
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w/2, py + 15, 3, 0, Math.PI*2);
+                     this.ctx.arc(screenX + obs.w/3 + 2, py + 10, 3, 0, Math.PI*2);
+                     this.ctx.arc(screenX + obs.w*2/3 - 2, py + 20, 3, 0, Math.PI*2);
+                     this.ctx.fill();
                  }
             }
         }
