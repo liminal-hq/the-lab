@@ -566,8 +566,16 @@ function loop() {
         ctx.stroke();
     }
 
-    requestAnimationFrame(loop);
+    // Safety check: Prevent stacking loops (double speed bug)
+    if (window.gameLoopId) {
+        cancelAnimationFrame(window.gameLoopId);
+    }
+    window.gameLoopId = requestAnimationFrame(loop);
 }
 
 // Start the chaos
+// Cancel any existing loop first (in case of HMR or double-execution)
+if (window.gameLoopId) {
+    cancelAnimationFrame(window.gameLoopId);
+}
 loop();
