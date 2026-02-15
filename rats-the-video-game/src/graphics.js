@@ -383,6 +383,24 @@ export class GraphicsEngine {
         }
     }
 
+    drawParticles(particles) {
+        // Drawing the bits and pieces of a broken world
+        //      .  .
+        //    .      .
+        for (const p of particles) {
+             const screenX = p.x - this.cameraX;
+             const screenY = this.height - 20 - p.y;
+
+             if (screenX > -10 && screenX < this.width + 10) {
+                 this.ctx.save();
+                 this.ctx.globalAlpha = p.life;
+                 this.ctx.fillStyle = p.color;
+                 this.ctx.fillRect(screenX, screenY, p.size, p.size);
+                 this.ctx.restore();
+             }
+        }
+    }
+
     drawUI(score) {
         // Score (The spoils of war)
         this.ctx.fillStyle = '#fff';
