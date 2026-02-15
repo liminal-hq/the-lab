@@ -11,9 +11,15 @@ extern "C" {
 }
 
 #[derive(Serialize)]
+struct ChannelData {
+    freq: f32,
+    amp: f32,
+}
+
+#[derive(Serialize)]
 struct FrameData {
     time: f32,
-    channels: Vec<f32>,
+    channels: Vec<ChannelData>,
 }
 
 /// Converts audio samples into a sequence of dominant frequencies.
@@ -29,13 +35,22 @@ struct FrameData {
 pub fn convert_audio(samples: &[f32], sample_rate: u32, num_channels: u8) -> String {
     // 125ms per beat/frame
     let window_size_ms = 0.125;
+    if sample_rate == 0 {
+        return "[]".to_string();
+    }
     let chunk_size = (sample_rate as f32 * window_size_ms) as usize;
+    if chunk_size < 2 {
+        return "[]".to_string();
+    }
 
     let mut planner = FftPlanner::new();
     let fft = planner.plan_fft_forward(chunk_size);
 
     let mut result_frames = Vec::new();
     let num_chunks = samples.len() / chunk_size;
+    let channel_limit = num_channels.clamp(1, 16) as usize;
+    let min_freq = 20.0;
+    let max_freq = 20_000.0;
 
     for i in 0..num_chunks {
         let start = i * chunk_size;
@@ -60,23 +75,41 @@ pub fn convert_audio(samples: &[f32], sample_rate: u32, num_channels: u8) -> Str
         let mut magnitudes: Vec<(usize, f32)> = buffer.iter()
             .take(half_size)
             .enumerate()
-            .map(|(idx, c)| (idx, c.norm()))
+            .filter_map(|(idx, c)| {
+                if idx == 0 {
+                    return None;
+                }
+                let freq = idx as f32 * sample_rate as f32 / chunk_size as f32;
+                if freq < min_freq || freq > max_freq {
+                    return None;
+                }
+                Some((idx, c.norm()))
+            })
             .collect();
 
         // Sort by magnitude descending to find peaks
         magnitudes.sort_by(|a, b| b.1.partial_cmp(&a.1).unwrap_or(std::cmp::Ordering::Equal));
+        let max_mag = magnitudes
+            .iter()
+            .map(|(_, mag)| *mag)
+            .fold(0.0, f32::max);
 
         // Extract top N frequencies
-        let mut top_freqs: Vec<f32> = magnitudes.iter()
-            .take(num_channels as usize)
-            .map(|(idx, _)| {
+        let mut top_freqs: Vec<ChannelData> = magnitudes.iter()
+            .take(channel_limit)
+            .map(|(idx, mag)| {
                 let freq = *idx as f32 * sample_rate as f32 / chunk_size as f32;
-                freq
+                let amp = if max_mag > 0.0 {
+                    (mag / max_mag).sqrt().min(1.0)
+                } else {
+                    0.0
+                };
+                ChannelData { freq, amp }
             })
             .collect();
 
         // Sort frequencies ascending for cleaner output (low to high pitch)
-        top_freqs.sort_by(|a, b| a.partial_cmp(b).unwrap_or(std::cmp::Ordering::Equal));
+        top_freqs.sort_by(|a, b| a.freq.partial_cmp(&b.freq).unwrap_or(std::cmp::Ordering::Equal));
 
         result_frames.push(FrameData {
             time: (i as f32 * window_size_ms),

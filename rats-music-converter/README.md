@@ -31,8 +31,8 @@ graph TD
     -   A Hamming window is applied to reduce spectral leakage.
     -   `rustfft` computes the frequency spectrum.
     -   The top N loudest frequencies are extracted.
-4.  **Output:** A JSON structure containing time codes and frequency arrays is returned.
-5.  **Playback:** The frontend synthesizes the result using simple square waves.
+4.  **Output:** A JSON structure containing time codes and channel objects (`{ freq, amp }`) is returned.
+5.  **Playback:** The frontend synthesizes the result using triangle waves, with amplitude-weighted gain for smoother behaviour.
 
 ```mermaid
 sequenceDiagram

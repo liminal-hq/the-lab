@@ -4,10 +4,10 @@ let audioContext;
 let audioBuffer;
 let convertedData = null;
 let isPlaying = false;
-let oscillators = [];
 let nextNoteTime = 0;
 let playbackInterval;
-let playbackStartTime = 0;
+let masterGain;
+let masterFilter;
 
 const fileInput = document.getElementById('audio-file');
 const channelSelect = document.getElementById('channel-count');
@@ -54,6 +54,16 @@ convertBtn.addEventListener('click', async () => {
     try {
         const arrayBuffer = await file.arrayBuffer();
         audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        masterGain = audioContext.createGain();
+        masterGain.gain.value = 0.2;
+
+        masterFilter = audioContext.createBiquadFilter();
+        masterFilter.type = 'lowpass';
+        masterFilter.frequency.value = 7000;
+        masterFilter.Q.value = 0.7;
+
+        masterGain.connect(masterFilter);
+        masterFilter.connect(audioContext.destination);
 
         statusText.innerText = "Decoding audio...";
         progressBar.value = 30;
@@ -71,7 +81,7 @@ convertBtn.addEventListener('click', async () => {
         // Give UI a moment to update
         setTimeout(() => {
             const jsonResult = convert_audio(rawData, sampleRate, channels);
-            convertedData = JSON.parse(jsonResult);
+            convertedData = normaliseFrames(JSON.parse(jsonResult));
 
             progressBar.value = 100;
             statusText.innerText = "Conversion Complete!";
@@ -86,6 +96,20 @@ convertBtn.addEventListener('click', async () => {
         convertBtn.disabled = false;
     }
 });
+
+function normaliseFrames(frames) {
+    return frames.map(frame => {
+        const channels = (frame.channels || []).map(channel => {
+            if (typeof channel === 'number') {
+                return { freq: channel, amp: 0.2 };
+            }
+            const freq = channel.freq ?? channel.frequency ?? 0;
+            const amp = channel.amp ?? channel.amplitude ?? 0.2;
+            return { freq, amp };
+        });
+        return { time: frame.time ?? 0, channels };
+    });
+}
 
 function displayResults() {
     resultSection.classList.remove('hidden');
@@ -115,7 +139,8 @@ function drawVisualizer() {
 
     convertedData.forEach((frame, i) => {
         const x = i * frameWidth;
-        frame.channels.forEach(freq => {
+        frame.channels.forEach(channel => {
+            const freq = channel.freq;
             if (freq < 20) return; // Skip sub-bass/DC offset
 
             // Map freq (approx 20Hz - 20000Hz) to Y position
@@ -126,7 +151,8 @@ function drawVisualizer() {
 
             const y = height - (normalizedFreq * height);
 
-            canvasCtx.fillStyle = '#33ff00';
+            const intensity = Math.max(0.2, Math.min(1, channel.amp ?? 0.2));
+            canvasCtx.fillStyle = `rgba(51, 255, 0, ${intensity})`;
             canvasCtx.fillRect(x, y, Math.max(1, frameWidth), 2);
         });
     });
@@ -151,7 +177,6 @@ function startPlayback() {
 
     const frameDuration = 0.125; // 125ms
     const startTime = audioContext.currentTime + 0.1;
-    playbackStartTime = startTime;
 
     // Schedule all oscillators
     // Note: For long files, scheduling everything at once might be heavy.
@@ -183,24 +208,31 @@ function startPlayback() {
 }
 
 function playFrame(frame, time, duration) {
-    frame.channels.forEach(freq => {
+    frame.channels.forEach(channel => {
+        const freq = channel.freq;
         if (freq < 20 || freq > 20000) return;
+        const amp = Math.max(0.05, Math.min(1, channel.amp ?? 0.2));
 
         const osc = audioContext.createOscillator();
         const gain = audioContext.createGain();
 
-        osc.type = 'square'; // NES/Rat-bit style
+        osc.type = 'triangle'; // Softer Rat-bit flavour.  __
+        //                                         ___( o)>
+        //                                          \ <_. )
+        //                                          `---'
         osc.frequency.value = freq;
 
         osc.connect(gain);
-        gain.connect(audioContext.destination);
+        gain.connect(masterGain);
 
         osc.start(time);
         osc.stop(time + duration - 0.01); // slight gap for articulation
 
         // Envelope to avoid clicks
-        gain.gain.setValueAtTime(0.1, time);
-        gain.gain.exponentialRampToValueAtTime(0.01, time + duration - 0.01);
+        const peak = 0.12 * amp;
+        gain.gain.setValueAtTime(0.0001, time);
+        gain.gain.linearRampToValueAtTime(peak, time + 0.01);
+        gain.gain.exponentialRampToValueAtTime(0.0001, time + duration - 0.01);
     });
 }
 
