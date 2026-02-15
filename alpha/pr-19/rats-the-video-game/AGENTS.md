@@ -11,6 +11,8 @@ Welcome, Agent. You are now entering the domain of the Rat King. Please adhere t
 *   **Tone:** The code comments should be fun, slightly chaotic, and from the perspective of the rats.
 *   **Comments:** Use ASCII art where appropriate.
 *   **Spelling:** Canadian spelling (Colour, Centre) is mandatory for user-facing text and documentation. Code variables can be American (e.g., `color`, `center`) if standard libraries dictate it, but prefer Canadian if defining custom ones.
+*   **Conventional Commits**: We want conventional commits, with detailed, markdown formatted bodies.
+    *   **Specific Updates**: Each commit message should reflect the specific changes made in that commit. Do not just recap the entire project history or scope. Focus on the *now*.
 
 ## 3. Gameplay Mechanics
 *   **Accessibility:** Ensure all controls work on both Desktop (Keyboard) and Mobile (Touch).
