@@ -1,0 +1,152 @@
+:root {
+    --primary-color: #33ff00;
+    --bg-color: #000000;
+    --panel-bg: rgba(0, 50, 0, 0.3);
+    --border-color: #33ff00;
+    --disabled-color: #005500;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: var(--bg-color);
+    color: var(--primary-color);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    border: 2px solid var(--border-color);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(51, 255, 0, 0.2);
+}
+
+header {
+    text-align: center;
+    border-bottom: 1px dashed var(--border-color);
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+}
+
+h1 {
+    text-shadow: 0 0 10px var(--primary-color);
+}
+
+.controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    background: var(--panel-bg);
+    padding: 20px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="file"], select, button {
+    background: black;
+    color: var(--primary-color);
+    border: 1px solid var(--border-color);
+    padding: 10px;
+    font-family: inherit;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+    background: var(--primary-color);
+    color: black;
+}
+
+button:disabled {
+    border-color: var(--disabled-color);
+    color: var(--disabled-color);
+    cursor: not-allowed;
+}
+
+#status-section {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+progress {
+    width: 100%;
+    height: 20px;
+    -webkit-appearance: none;
+    appearance: none;
+    border: 1px solid var(--border-color);
+    background: black;
+}
+
+progress::-webkit-progress-bar {
+    background: black;
+}
+
+progress::-webkit-progress-value {
+    background: var(--primary-color);
+}
+
+.hidden {
+    display: none;
+}
+
+.visualizer-container {
+    width: 100%;
+    height: 200px;
+    border: 1px solid var(--border-color);
+    margin-bottom: 15px;
+    background: black;
+}
+
+canvas {
+    width: 100%;
+    height: 100%;
+}
+
+.playback-controls {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.stats {
+    font-size: 0.8rem;
+    text-align: center;
+    opacity: 0.8;
+}
+
+footer {
+    margin-top: 40px;
+    text-align: center;
+    border-top: 1px dashed var(--border-color);
+    padding-top: 20px;
+}
+
+.tiny {
+    font-size: 0.7rem;
+    opacity: 0.6;
+}
+
+/*
+      __
+  ___( o)>
+  \ <_. )
+   `---'
+*/

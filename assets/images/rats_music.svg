@@ -1,0 +1,69 @@
+<svg width="800" height="300" viewBox="0 0 800 300" xmlns="http://www.w3.org/2000/svg" style="background-color: #000;">
+  <!-- Background Grid -->
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#003300" stroke-width="1"/>
+    </pattern>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect width="800" height="300" fill="url(#grid)"/>
+
+  <!-- Rat DJ Console -->
+  <g transform="translate(200, 50)">
+      <!-- Console Base -->
+      <rect x="0" y="100" width="400" height="150" fill="#222" stroke="#33ff00" stroke-width="3" filter="url(#glow)"/>
+
+      <!-- Screen with Waveform -->
+      <rect x="50" y="120" width="300" height="80" fill="#001100" stroke="#33ff00" stroke-width="1"/>
+      <path d="M 50 160 Q 75 120 100 160 T 150 160 T 200 160 T 250 160 T 300 160 T 350 160" fill="none" stroke="#33ff00" stroke-width="2">
+          <animate attributeName="d" values="M 50 160 Q 75 120 100 160 T 150 160 T 200 160 T 250 160 T 300 160 T 350 160; M 50 160 Q 75 200 100 160 T 150 160 T 200 160 T 250 160 T 300 160 T 350 160; M 50 160 Q 75 120 100 160 T 150 160 T 200 160 T 250 160 T 300 160 T 350 160" dur="0.5s" repeatCount="indefinite"/>
+      </path>
+
+      <!-- Rat DJ -->
+      <g transform="translate(150, 20)">
+         <!-- Body -->
+         <ellipse cx="50" cy="80" rx="40" ry="60" fill="#555" stroke="black" stroke-width="2"/>
+         <!-- Head -->
+         <circle cx="50" cy="40" r="30" fill="#555" stroke="black" stroke-width="2"/>
+         <!-- Ears -->
+         <circle cx="25" cy="25" r="15" fill="#777" stroke="black" stroke-width="2"/>
+         <circle cx="75" cy="25" r="15" fill="#777" stroke="black" stroke-width="2"/>
+         <!-- Sunglasses -->
+         <rect x="30" y="35" width="20" height="10" fill="black"/>
+         <rect x="55" y="35" width="20" height="10" fill="black"/>
+         <line x1="25" y1="40" x2="80" y2="40" stroke="black" stroke-width="2"/>
+         <!-- Headphones -->
+         <path d="M 15 40 Q 15 0 50 0 Q 85 0 85 40" fill="none" stroke="#33ff00" stroke-width="5"/>
+         <rect x="10" y="35" width="10" height="20" fill="#222" stroke="#33ff00"/>
+         <rect x="80" y="35" width="10" height="20" fill="#222" stroke="#33ff00"/>
+
+         <!-- Paw scratching record -->
+         <path d="M 80 80 Q 120 80 130 110" fill="none" stroke="#777" stroke-width="8" stroke-linecap="round">
+             <animateTransform attributeName="transform" type="rotate" values="0 80 80; 10 80 80; 0 80 80" dur="0.2s" repeatCount="indefinite"/>
+         </path>
+      </g>
+
+      <!-- Turntable -->
+      <circle cx="330" cy="120" r="40" fill="#111" stroke="#33ff00" stroke-width="2"/>
+      <circle cx="330" cy="120" r="15" fill="#333" stroke="#555">
+          <animateTransform attributeName="transform" type="rotate" from="0 330 120" to="360 330 120" dur="2s" repeatCount="indefinite"/>
+      </circle>
+  </g>
+
+  <!-- Musical Notes -->
+  <g fill="#33ff00" filter="url(#glow)">
+      <text x="100" y="100" font-size="40" font-family="monospace">♪</text>
+      <text x="650" y="80" font-size="50" font-family="monospace">♫</text>
+      <text x="50" y="250" font-size="60" font-family="monospace">♩</text>
+
+      <animateTransform attributeName="transform" type="translate" values="0 0; 0 -10; 0 0" dur="1s" repeatCount="indefinite"/>
+  </g>
+
+  <text x="400" y="280" font-family="Courier New, monospace" font-size="20" fill="#33ff00" text-anchor="middle" filter="url(#glow)">DROPPING THE BEAT (AND OTHER THINGS)</text>
+</svg>

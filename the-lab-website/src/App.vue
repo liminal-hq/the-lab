@@ -18,6 +18,13 @@
           <span class="tag">Play Now</span>
         </a>
 
+        <a href="./rats-music-converter/" class="experiment-card">
+          <div class="icon">🎵</div>
+          <h2>Rats Music Converter</h2>
+          <p>Turn high-fidelity audio into 16-channel Rat-Bit masterpieces.</p>
+          <span class="tag">Convert Now</span>
+        </a>
+
         <div class="experiment-card placeholder">
           <div class="icon">🚧</div>
           <h2>More Coming Soon</h2>

@@ -26,7 +26,7 @@ Create a web-based tool using **Rust** and **WASM** that allows users to:
     -   Perform a **Forward FFT** using `rustfft`.
     -   Calculate magnitudes of complex outputs.
     -   Identify the top `num_channels` (1, 4, 8, or 16) loudest frequencies.
-    -   Return a JSON string: `[{ "time": 0.0, "channels": [440.0, 880.0, ...] }, ...]`.
+    -   Return a JSON string: `[{ "time": 0.0, "channels": [{ "freq": 440.0, "amp": 0.8 }, ...] }, ...]`.
 
 ### 2. Web Frontend (`www/`)
 -   **`index.html`:**
@@ -45,7 +45,7 @@ Create a web-based tool using **Rust** and **WASM** that allows users to:
     -   Read file using `FileReader` -> `AudioContext.decodeAudioData`.
     -   Pass `Float32Array` (channel 0) to WASM.
     -   Parse returned JSON.
-    -   **Preview Player:** Use `AudioContext` to create `OscillatorNode`s for each channel in each frame. Schedule them with `setValueAtTime`.
+-   **Preview Player:** Use `AudioContext` to create `OscillatorNode`s for each channel in each frame, with amplitude-weighted gain for smoother behaviour.
 
 ### 3. Build & Deployment Integration
 -   **`.github/workflows/deploy.yml`:**
