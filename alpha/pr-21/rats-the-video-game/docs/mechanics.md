@@ -45,6 +45,13 @@ The city is dangerous. Humans have laid traps.
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
+*   **Squeak**: S (Happy Squeak)
+*   **Help**: ? (Toggle Tutorial)
+
+### Touch Controls (Mobile)
+*   **Move Left**: Touch Left side of screen (0-50%)
+*   **Move Right**: Touch Right side of screen (50-100%)
+*   **Jump**: Tap anywhere or Swipe Up
 
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.
