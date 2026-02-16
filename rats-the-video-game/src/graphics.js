@@ -200,6 +200,40 @@ export class GraphicsEngine {
                      this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
                      this.ctx.fill();
 
+                 } else if (obs.type === 'COFFEE') {
+                     // The Elixir of Speed
+                     //      )
+                     //     c[_]
+                     this.ctx.fillStyle = '#FFF'; // White cup
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + 2, screenY + obs.h);
+                     this.ctx.lineTo(screenX, screenY + 5);
+                     this.ctx.lineTo(screenX + obs.w, screenY + 5);
+                     this.ctx.lineTo(screenX + obs.w - 2, screenY + obs.h);
+                     this.ctx.fill();
+
+                     // Lid / Coffee
+                     this.ctx.fillStyle = '#6F4E37'; // Coffee brown
+                     this.ctx.beginPath();
+                     this.ctx.ellipse(screenX + obs.w / 2, screenY + 5, obs.w / 2, 3, 0, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     // Steam (Animated)
+                     this.ctx.strokeStyle = '#DDD';
+                     this.ctx.lineWidth = 2;
+                     const now = Date.now();
+                     const offset = Math.sin(now / 200) * 3;
+
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + 5, screenY);
+                     this.ctx.quadraticCurveTo(screenX + 8 + offset, screenY - 10, screenX + 5, screenY - 20);
+                     this.ctx.stroke();
+
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + 15, screenY);
+                     this.ctx.quadraticCurveTo(screenX + 18 - offset, screenY - 10, screenX + 15, screenY - 20);
+                     this.ctx.stroke();
+
                  } else if (obs.type === 'TRAP') {
                      // A nasty trap
                      this.ctx.fillStyle = '#708090'; // SlateGrey

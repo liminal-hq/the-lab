@@ -53,7 +53,9 @@ const state = {
     currentCycle: 0,
     input: { left: false, right: false, jump: false, chew: false }, // The human commands
     level: 'SURFACE', // SURFACE or SUBWAY
-    levelCompleted: false
+    levelCompleted: false,
+    speedBoost: false, // Is the rat on caffeine?
+    speedBoostTimer: 0 // How long until the crash?
 };
 
 // Expose state for debugging and testing
@@ -127,6 +129,13 @@ function generateSurface() {
         //     ( \/ )  <-- "Watch your step!"
         //      \  /
         const gap = Math.random() * 50 + 50; // Ensure enough space
+
+        // Coffee! (The fuel of champions)
+        //      c[_]
+        if (Math.random() < 0.05) {
+             const coffeeX = x + w + gap / 2 + (Math.random() * 60 - 30);
+             state.obstacles.push({ x: coffeeX, w: 20, h: 20, type: 'COFFEE' });
+        }
 
         // Collectible Pizza! (A rat's dream)
         //      (\_/)
@@ -387,12 +396,15 @@ function update() {
         state.currentCycle = 0; // Or handle subway cycles if needed
     }
 
+    // Calculate Speed (Are we caffeinated?)
+    const currentSpeed = state.speedBoost ? SPEED * 1.5 : SPEED;
+
     // Movement Logic
     if (state.input.right) {
-        state.rat.vx = SPEED;
+        state.rat.vx = currentSpeed;
         state.rat.facingRight = true;
     } else if (state.input.left) {
-        state.rat.vx = -SPEED;
+        state.rat.vx = -currentSpeed;
         state.rat.facingRight = false;
     } else if (state.rat.grounded) {
         // Friction / Decaying momentum (Only when grounded to preserve jump arc)
@@ -435,6 +447,16 @@ function update() {
                  state.score += 10; // 10x points for pizza
                  if (audio && audio.playCollect) audio.playCollect();
                  continue; // It's gone, move on
+             }
+
+             if (obs.type === 'COFFEE') {
+                 // SLURP!
+                 state.obstacles.splice(i, 1);
+                 state.score += 5;
+                 state.speedBoost = true;
+                 state.speedBoostTimer = 300; // 5 seconds
+                 if (audio && audio.playSlurp) audio.playSlurp();
+                 continue;
              }
 
              if (obs.type === 'BOX' || obs.type === 'PRIUS' || obs.type === 'TRASH_PILE') {
@@ -583,6 +605,18 @@ function update() {
         graphics.levelProgress = progress;
     } else {
         graphics.levelProgress = 0;
+    }
+
+    // Update Speed Boost
+    if (state.speedBoost) {
+        state.speedBoostTimer--;
+        if (state.speedBoostTimer <= 0) {
+            state.speedBoost = false;
+        }
+        // Trail particles (Steam)
+        if (state.frameCount % 5 === 0) {
+             spawnParticles(state.rat.x, state.rat.y + 10, '#FFF', 2);
+        }
     }
 }
 
