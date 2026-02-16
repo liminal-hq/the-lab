@@ -394,7 +394,7 @@ export class GraphicsEngine {
              if (screenX > -10 && screenX < this.width + 10) {
                  this.ctx.save();
                  this.ctx.globalAlpha = p.life;
-                 this.ctx.fillStyle = p.color;
+                 this.ctx.fillStyle = p.colour;
                  this.ctx.fillRect(screenX, screenY, p.size, p.size);
                  this.ctx.restore();
              }
