@@ -55,6 +55,9 @@ const state = {
     levelCompleted: false
 };
 
+// Expose state for testing/debugging
+window.gameState = state;
+
 // Procedural Generation: Building the Maze
 // "The city is a maze, and we are the masters." - Rat Proverb
 function generateLevel() {
