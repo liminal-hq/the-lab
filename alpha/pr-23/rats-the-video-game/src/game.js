@@ -88,7 +88,7 @@ function generateLevel() {
 //      .  .
 //    .  :  .
 //      '  '
-function spawnParticles(x, y, color, count) {
+function spawnParticles(x, y, colour, count) {
     for (let i = 0; i < count; i++) {
         state.particles.push({
             x: x,
@@ -96,7 +96,7 @@ function spawnParticles(x, y, color, count) {
             vx: (Math.random() - 0.5) * 10, // Random horizontal spread
             vy: Math.random() * 10 + 5,    // Upward burst
             life: 1.0,                     // Opacity / Life
-            color: color,
+            colour: colour,
             size: Math.random() * 3 + 2    // Random chunk size
         });
     }
