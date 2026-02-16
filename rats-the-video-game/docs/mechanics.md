@@ -41,7 +41,18 @@ The city is dangerous. Humans have laid traps.
      |______|  <-- Do Not Touch
 -->
 
-## 3. Controls Update
+## 3. Collectibles (Pizza & Coffee)
+The city is full of discarded treasures.
+
+*   **Item**: Pizza Slice.
+    *   **Effect**: +10 Score.
+    *   **Visual**: Golden slice with pepperoni.
+*   **Item**: Coffee Cup.
+    *   **Effect**: +5 Score & Speed Boost (1.5x speed for 5 seconds).
+    *   **Visual**: White cup with rising steam.
+    *   **Audio**: "Slurp" rising tone.
+
+## 4. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C

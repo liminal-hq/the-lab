@@ -187,6 +187,29 @@ export class AudioEngine {
         osc.stop(now + 0.1);
     }
 
+    playSlurp() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // The sound of caffeine hitting the bloodstream
+        //      (o.o)
+        //      ( > )~ c[_]
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        // Rapid rising tone
+        osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1000, this.ctx.currentTime + 0.3);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+        gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.3);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.3);
+    }
+
     setLevel(level) {
         this.level = level;
     }
