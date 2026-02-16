@@ -441,7 +441,8 @@ function update() {
                  if (state.input.chew) {
                      // Nom nom nom
                      if (obs.type === 'BOX') {
-                         spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#A0522D', 8);
+                         // Brighter colour (Burlywood) and more particles for visibility
+                         spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#DEB887', 20);
                      }
                      state.obstacles.splice(i, 1);
                      state.score++; // Delicious
