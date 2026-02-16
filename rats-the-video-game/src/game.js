@@ -45,6 +45,7 @@ const state = {
     obstacles: [], // The things in our way
     birds: [], // Sky vermin
     turds: [], // Aerial projectiles
+    particles: [], // Debris from our destruction
     score: 0, // Chewed items count
     frameCount: 0, // Debug timer
     cycleCheckpoints: [], // X positions of level cycles
@@ -55,6 +56,9 @@ const state = {
     levelCompleted: false
 };
 
+// Expose state for debugging and testing
+window.gameState = state;
+
 // Procedural Generation: Building the Maze
 // "The city is a maze, and we are the masters." - Rat Proverb
 function generateLevel() {
@@ -62,6 +66,7 @@ function generateLevel() {
     state.obstacles = [];
     state.birds = [];
     state.turds = [];
+    state.particles = [];
     state.cycleCheckpoints = [];
     state.rat.x = 100;
     state.rat.vx = 0;
@@ -76,6 +81,24 @@ function generateLevel() {
         generateSurface();
     } else {
         generateSubway();
+    }
+}
+
+// Particle System: The confetti of chaos
+//      .  .
+//    .  :  .
+//      '  '
+function spawnParticles(x, y, colour, count) {
+    for (let i = 0; i < count; i++) {
+        state.particles.push({
+            x: x,
+            y: y,
+            vx: (Math.random() - 0.5) * 10, // Random horizontal spread
+            vy: Math.random() * 10 + 5,    // Upward burst
+            life: 1.0,                     // Opacity / Life
+            colour: colour,
+            size: Math.random() * 3 + 2    // Random chunk size
+        });
     }
 }
 
@@ -417,6 +440,16 @@ function update() {
              if (obs.type === 'BOX' || obs.type === 'PRIUS' || obs.type === 'TRASH_PILE') {
                  if (state.input.chew) {
                      // Nom nom nom
+                     if (obs.type === 'BOX') {
+                         // Brighter colour (Burlywood) and more particles for visibility
+                         spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#DEB887', 20);
+                     } else if (obs.type === 'PRIUS') {
+                         // Blue metal scraps
+                         spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#5A9BD4', 20);
+                     } else if (obs.type === 'TRASH_PILE') {
+                         // Grey garbage bits
+                         spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#555', 20);
+                     }
                      state.obstacles.splice(i, 1);
                      state.score++; // Delicious
                      audio.playChew();
@@ -517,6 +550,25 @@ function update() {
         }
     }
 
+    // Update Particles (The dust settles... eventually)
+    for (let i = state.particles.length - 1; i >= 0; i--) {
+        const p = state.particles[i];
+        p.vy -= GRAVITY;
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life -= 0.02; // Fade out
+
+        // Ground bounce
+        if (p.y < 0) {
+            p.y = 0;
+            p.vy *= -0.5; // Dampen
+        }
+
+        if (p.life <= 0) {
+            state.particles.splice(i, 1);
+        }
+    }
+
     // Camera follow (keep our hero in the spotlight)
     // <( )_
     //  (   )
@@ -541,6 +593,7 @@ function loop() {
     graphics.drawCity(state.buildings, state.birds); // Birds fly in the city
     graphics.drawTurds(state.turds); // Danger from above
     graphics.drawObstacles(state.obstacles);
+    graphics.drawParticles(state.particles);
     graphics.drawRat(state.rat.x, state.rat.y, state.rat.facingRight);
     graphics.drawUI(state.score); // Draw score
 
