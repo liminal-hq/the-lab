@@ -443,6 +443,12 @@ function update() {
                      if (obs.type === 'BOX') {
                          // Brighter colour (Burlywood) and more particles for visibility
                          spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#DEB887', 20);
+                     } else if (obs.type === 'PRIUS') {
+                         // Blue metal scraps
+                         spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#5A9BD4', 20);
+                     } else if (obs.type === 'TRASH_PILE') {
+                         // Grey garbage bits
+                         spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#555', 20);
                      }
                      state.obstacles.splice(i, 1);
                      state.score++; // Delicious
