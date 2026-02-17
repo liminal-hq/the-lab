@@ -200,6 +200,41 @@ export class GraphicsEngine {
                      this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
                      this.ctx.fill();
 
+                 } else if (obs.type === 'COFFEE') {
+                     // Coffee Cup (The Nectar of Speed)
+                     //      ______
+                     //      \____/
+                     const bob = Math.sin(Date.now() / 150) * 3;
+                     const cY = screenY + bob;
+
+                     // Cup body
+                     this.ctx.fillStyle = '#EEE'; // Off-white
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX, cY + 5); // Top Left (below lid)
+                     this.ctx.lineTo(screenX + obs.w, cY + 5); // Top Right
+                     this.ctx.lineTo(screenX + obs.w * 0.8, cY + obs.h); // Bottom Right
+                     this.ctx.lineTo(screenX + obs.w * 0.2, cY + obs.h); // Bottom Left
+                     this.ctx.fill();
+
+                     // Sleeve
+                     this.ctx.fillStyle = '#D2691E'; // Chocolate/Cardboard
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + 2, cY + 10);
+                     this.ctx.lineTo(screenX + obs.w - 2, cY + 10);
+                     this.ctx.lineTo(screenX + obs.w * 0.85, cY + obs.h - 5);
+                     this.ctx.lineTo(screenX + obs.w * 0.15, cY + obs.h - 5);
+                     this.ctx.fill();
+
+                     // Lid
+                     this.ctx.fillStyle = '#3E2723'; // Dark Brown
+                     this.ctx.fillRect(screenX - 2, cY, obs.w + 4, 5);
+
+                     // Tiny steam
+                     if (Math.random() > 0.7) {
+                         this.ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                         this.ctx.fillRect(screenX + obs.w/2 - 2, cY - 5 - Math.random()*5, 4, 4);
+                     }
+
                  } else if (obs.type === 'TRAP') {
                      // A nasty trap
                      this.ctx.fillStyle = '#708090'; // SlateGrey
