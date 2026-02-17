@@ -26,3 +26,4 @@ window.addEventListener('keydown', (e) => {
 **Key Insight:**
 - Do **not** use `capture: true` if you want standard UI elements (buttons) to still handle `Enter`/`Space` naturally. The event must reach the target (button) and bubble up.
 - Use `stopImmediatePropagation()` on the bubbling phase at `window` level to intercept before the Game Engine sees it.
+- **Focus Indicators**: Use `:focus-visible { outline: 3px solid #f1c40f; outline-offset: 2px; }` for keyboard accessibility. This high-contrast yellow matches the game's aesthetic.
