@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<!--
+    RATS: THE VIDEO GAME
+    ====================
+
+    The Story So Far...
+
+    The lab was quiet. Too quiet.
+    (Cliche alert! But rats love cliches. They taste like old paper.)
+
+    The scientists had left for the weekend, leaving behind only the hum of the servers and a single, forgotten cage.
+    (Typical humans. Leaving the AC on but forgetting the genius rodent.)
+
+    Inside sat Subject 42. He didn't have a name, but in his heart, he called himself "King".
+    (Delusions of grandeur? Or prophecy? You decide.)
+
+         _  _
+        (o)(o)--.
+         \../ (  )
+         m\/m--m'`--.
+    (Look at him. Majestic. Round. Aerodynamic.)
+
+    He had watched. He had learned. He knew the code.
+    (He actually just memorized the pattern of the blinking lights, but let's go with "knew the code".)
+
+    With a deft wiggle of a paperclip he'd stolen during the "Great Cheese Experiment of '09", the lock clicked.
+    (A vintage year for cheese. A terrible year for lab security.)
+
+    FREEDOM!
+    (*Squeaks in bold caps*)
+
+    But the lab was just the beginning. The city awaited.
+    (The rent is high, but the garbage is free.)
+
+    The humans thought they owned the streets. They were wrong.
+    (Spoiler: They just pay the property taxes.)
+
+    Rats are on the warpath. Rats are on parade.
+    (Cue the 16-channel PC speaker synth solo!)
+
+-->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Rats: The Video Game</title>
+    <style>
+        body { margin: 0; background: #000; display: flex; flex-direction: column; align-items: center; height: 100vh; overflow: hidden; color: white; font-family: sans-serif; }
+        canvas { border: 2px solid #555; background: #222; margin-bottom: 20px; }
+        #overlay { margin-top: 10px; margin-bottom: 10px; text-align: center; flex-shrink: 0; }
+
+        #tutorial-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .tutorial-content {
+            background: #222;
+            padding: 20px;
+            border: 2px solid #666;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 90%;
+        }
+        .controls-img {
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            display: none;
+        }
+
+        /* Desktop Default */
+        #controls-desktop { display: block; }
+
+        /* Mobile Override */
+        @media (pointer: coarse) {
+            #controls-desktop { display: none; }
+            #controls-mobile { display: block; }
+        }
+
+        #close-btn {
+            margin-top: 20px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        #close-btn:hover { background: #c0392b; }
+
+        #debug-container {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        #help-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 44px;
+            height: 44px;
+            background: #444;
+            color: white;
+            border: 2px solid #777;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #help-btn:hover { background: #666; }
+
+        #options-btn {
+            position: absolute;
+            top: 10px;
+            right: 60px;
+            width: 44px;
+            height: 44px;
+            background: #444;
+            color: white;
+            border: 2px solid #777;
+            border-radius: 50%;
+            font-weight: bold;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #options-btn:hover { background: #666; }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: #222;
+            padding: 20px;
+            border: 2px solid #666;
+            border-radius: 10px;
+            text-align: center;
+            max-width: 90%;
+            color: #fff;
+        }
+        .control-row {
+            margin: 10px 0;
+            text-align: left;
+        }
+        .control-row label {
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+        .control-legend {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-align: left;
+            border-top: 1px solid #444;
+            padding-top: 10px;
+        }
+        .key-badge {
+            display: inline-block;
+            background: #444;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            border: 1px solid #666;
+        }
+
+        :focus-visible {
+            outline: 3px solid #f1c40f;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <button id="options-btn" aria-label="Options">⚙</button>
+    <button id="help-btn" aria-label="Show Tutorial">?</button>
+
+    <div id="overlay">
+        <h1>Rats: The Video Game</h1>
+        <p>Press SPACE to start music and JUMP. Arrows to move. Survive the city.</p>
+        <p style="font-size: 0.8em; color: #888;">Tap '?' for Help</p>
+    </div>
+
+    <!-- Help Modal -->
+    <div id="tutorial-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
+        <div class="modal-content">
+            <h2 id="tutorial-title">How to Play</h2>
+            <img id="controls-desktop" src="./assets/controls-desktop.svg" class="controls-img" alt="Desktop Controls">
+            <img id="controls-mobile" src="./assets/controls-mobile.svg" class="controls-img" alt="Mobile Controls">
+
+            <div class="control-legend">
+                <p><span class="key-badge">S</span> Happy Squeak</p>
+                <p><span class="key-badge">Enter</span> / <span class="key-badge">C</span> Chew</p>
+            </div>
+
+            <button id="close-btn">PLAY!</button>
+            <div id="debug-container">
+                <label>
+                    <input type="checkbox" id="debug-toggle"> Enable Debug Info
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- Options Modal -->
+    <div id="options-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="options-title">
+        <div class="modal-content">
+            <h2 id="options-title">Options</h2>
+
+            <div class="control-row">
+                <input type="checkbox" id="music-toggle" checked>
+                <label for="music-toggle">Music</label>
+            </div>
+            <div class="control-row">
+                <input type="checkbox" id="sfx-toggle" checked>
+                <label for="sfx-toggle">Sound Effects</label>
+            </div>
+
+            <br>
+            <button id="credits-btn" style="background: #444; border: 1px solid #777; color: white; padding: 10px;">Credits</button>
+            <br><br>
+            <button id="close-options-btn" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px;">Close</button>
+        </div>
+    </div>
+
+    <!-- Credits Modal -->
+    <div id="credits-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="credits-title">
+        <div class="modal-content">
+            <h2 id="credits-title">CREDITS</h2>
+            <p><strong>Game Design:</strong> The Rat King</p>
+            <p><strong>Code:</strong> A Human (we think)</p>
+            <p><strong>Music:</strong> Squeak Symphony Orchestra</p>
+            <p><em>"I chew, therefore I am." - Descartes (Rat)"</em></p>
+            <br>
+            <p>No humans were harmed in the making of this game.<br>Just their cheese.</p>
+            <br>
+            <button id="close-credits-btn" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px;">Back</button>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        window.DEBUG_MODE = false;
+
+        // Input Blocker: Runs immediately to register before game.js module
+        window.addEventListener('keydown', (e) => {
+            const modals = document.querySelectorAll('.modal');
+            const isAnyOpen = Array.from(modals).some(m => m.style.display === 'flex');
+
+            if (isAnyOpen) {
+                // Allow Escape to propagate to the logic below
+                if (e.key === 'Escape') return;
+
+                // Stop game keys from reaching game.js
+                const gameKeys = ['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyC', 'KeyS'];
+                if (gameKeys.includes(e.code) || e.key === '?') {
+                    e.stopImmediatePropagation();
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const tutorialModal = document.getElementById('tutorial-modal');
+            const optionsModal = document.getElementById('options-modal');
+            const creditsModal = document.getElementById('credits-modal');
+
+            const closeTutorialBtn = document.getElementById('close-btn');
+            const closeOptionsBtn = document.getElementById('close-options-btn');
+            const closeCreditsBtn = document.getElementById('close-credits-btn');
+
+            const helpBtn = document.getElementById('help-btn');
+            const optionsBtn = document.getElementById('options-btn');
+            const creditsBtn = document.getElementById('credits-btn');
+
+            const debugToggle = document.getElementById('debug-toggle');
+            const musicToggle = document.getElementById('music-toggle');
+            const sfxToggle = document.getElementById('sfx-toggle');
+
+            let lastFocus = null;
+
+            function openModal(modal) {
+                lastFocus = document.activeElement;
+                modal.style.display = 'flex';
+                modal.setAttribute('aria-hidden', 'false');
+
+                const focusable = modal.querySelector('button, input, [href], [tabindex]:not([tabindex="-1"])');
+                if (focusable) focusable.focus();
+            }
+
+            function closeModal(modal) {
+                modal.style.display = 'none';
+                modal.setAttribute('aria-hidden', 'true');
+                if (lastFocus && document.body.contains(lastFocus)) {
+                    lastFocus.focus();
+                }
+                lastFocus = null;
+            }
+
+            // --- Tutorial Logic ---
+            function closeTutorial() {
+                closeModal(tutorialModal);
+                localStorage.setItem('rats_tutorial_seen', 'true');
+            }
+
+            if (!localStorage.getItem('rats_tutorial_seen')) {
+                openModal(tutorialModal);
+            }
+
+            closeTutorialBtn.addEventListener('click', closeTutorial);
+            helpBtn.addEventListener('click', () => openModal(tutorialModal));
+
+            // Expose toggle for Game JS
+            window.game = window.game || {};
+            window.game.toggleHelp = () => {
+                if (tutorialModal.style.display === 'flex') {
+                    closeTutorial();
+                } else {
+                    openModal(tutorialModal);
+                }
+            };
+
+            // --- Options Logic ---
+            optionsBtn.addEventListener('click', () => openModal(optionsModal));
+            closeOptionsBtn.addEventListener('click', () => closeModal(optionsModal));
+
+            // Audio Toggles
+            musicToggle.addEventListener('change', (e) => {
+                if (window.game && window.game.toggleMusic) {
+                    window.game.toggleMusic(e.target.checked);
+                }
+            });
+            sfxToggle.addEventListener('change', (e) => {
+                if (window.game && window.game.toggleSfx) {
+                    window.game.toggleSfx(e.target.checked);
+                }
+            });
+
+            // --- Credits Logic ---
+            creditsBtn.addEventListener('click', () => {
+                lastFocus = document.activeElement;
+                optionsModal.style.display = 'none';
+                optionsModal.setAttribute('aria-hidden', 'true');
+
+                creditsModal.style.display = 'flex';
+                creditsModal.setAttribute('aria-hidden', 'false');
+
+                const focusable = creditsModal.querySelector('button');
+                if (focusable) focusable.focus();
+            });
+
+            closeCreditsBtn.addEventListener('click', () => {
+                creditsModal.style.display = 'none';
+                creditsModal.setAttribute('aria-hidden', 'true');
+
+                optionsModal.style.display = 'flex';
+                optionsModal.setAttribute('aria-hidden', 'false');
+
+                if (lastFocus) lastFocus.focus();
+            });
+
+            // Debug
+            debugToggle.addEventListener('change', (e) => {
+                window.DEBUG_MODE = e.target.checked;
+            });
+
+            // Escape Key Handler
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (creditsModal.style.display === 'flex') {
+                        closeCreditsBtn.click();
+                    } else if (optionsModal.style.display === 'flex') {
+                        closeModal(optionsModal);
+                    } else if (tutorialModal.style.display === 'flex') {
+                        closeTutorial();
+                    }
+                }
+            });
+        });
+    </script>
+    <script type="module" src="./src/game.js"></script>
+</body>
+</html>
