@@ -187,6 +187,28 @@ export class AudioEngine {
         osc.stop(now + 0.1);
     }
 
+    playSlurp() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // The sound of caffeine entering the bloodstream
+        //      (o_o) -> (O_O)
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle'; // Smooth but with character
+        osc.frequency.setValueAtTime(300, now);
+        osc.frequency.linearRampToValueAtTime(600, now + 0.15); // Rising pitch (intake)
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.15);
+
+        osc.start(now);
+        osc.stop(now + 0.15);
+    }
+
     setLevel(level) {
         this.level = level;
     }
