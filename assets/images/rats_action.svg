@@ -63,6 +63,28 @@
      </circle>
   </g>
 
+  <!-- Floating Pizza Collectible -->
+  <g transform="translate(600, 100)">
+     <animateTransform attributeName="transform" type="translate" values="600 100; 600 90; 600 100" dur="2s" repeatCount="indefinite" />
+
+     <!-- Pizza Shape -->
+     <g stroke="black" stroke-width="2">
+        <!-- Crust -->
+        <path d="M-15 -20 L15 -20 L0 20 Z" fill="#DAA520" stroke-linejoin="round"/>
+        <!-- Cheese -->
+        <path d="M-11 -16 L11 -16 L0 14 Z" fill="#FFD700" stroke="none"/>
+        <!-- Pepperoni -->
+        <circle cx="0" cy="-5" r="3" fill="#B22222" stroke="none"/>
+        <circle cx="-5" cy="5" r="2.5" fill="#B22222" stroke="none"/>
+        <circle cx="6" cy="2" r="2.5" fill="#B22222" stroke="none"/>
+     </g>
+
+     <!-- Shine -->
+     <path d="M-5 -25 L-2 -15 L-8 -15 Z" fill="white" stroke="none" opacity="0.8">
+         <animate attributeName="opacity" values="0.8;0.2;0.8" dur="1s" repeatCount="indefinite"/>
+     </path>
+  </g>
+
   <!-- Text -->
   <text x="400" y="60" font-family="Impact, sans-serif" font-size="50" fill="#ffcc00" stroke="black" stroke-width="2" text-anchor="middle" transform="rotate(-2 400 60)">RATS: THE VIDEO GAME</text>
   <text x="400" y="280" font-family="Comic Sans MS, cursive, sans-serif" font-size="20" fill="white" text-anchor="middle">ESCAPE THE LAB!</text>
