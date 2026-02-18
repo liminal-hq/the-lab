@@ -200,6 +200,45 @@ export class GraphicsEngine {
                      this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
                      this.ctx.fill();
 
+                 } else if (obs.type === 'COFFEE') {
+                     // Coffee Cup (The Nectar of Speed)
+                     //      )  )
+                     //     [____]
+                     const bob = Math.sin(Date.now() / 200) * 3;
+                     const cY = screenY + bob;
+
+                     // Cup Body (Trapezoid)
+                     this.ctx.fillStyle = '#fff'; // Paper cup
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + 2, cY);
+                     this.ctx.lineTo(screenX + obs.w - 2, cY);
+                     this.ctx.lineTo(screenX + obs.w - 5, cY + obs.h);
+                     this.ctx.lineTo(screenX + 5, cY + obs.h);
+                     this.ctx.fill();
+
+                     // Lid
+                     this.ctx.fillStyle = '#333'; // Dark Lid
+                     this.ctx.fillRect(screenX, cY - 2, obs.w, 4);
+
+                     // Sleeve (Cardboard)
+                     this.ctx.fillStyle = '#D2691E'; // Chocolate
+                     this.ctx.fillRect(screenX + 3, cY + 8, obs.w - 6, 10);
+
+                     // Steam (Sine wave)
+                     this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.6)';
+                     this.ctx.lineWidth = 2;
+                     this.ctx.beginPath();
+                     const steamOffset = (Date.now() / 200);
+
+                     for (let i = 0; i < 2; i++) {
+                        const startX = screenX + obs.w / 2 + (i === 0 ? -4 : 4);
+                        const startY = cY - 5;
+                        this.ctx.moveTo(startX, startY);
+                        // Simple wiggle
+                        this.ctx.quadraticCurveTo(startX + Math.sin(steamOffset + i) * 5, startY - 10, startX, startY - 20);
+                     }
+                     this.ctx.stroke();
+
                  } else if (obs.type === 'TRAP') {
                      // A nasty trap
                      this.ctx.fillStyle = '#708090'; // SlateGrey
