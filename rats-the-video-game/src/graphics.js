@@ -200,6 +200,42 @@ export class GraphicsEngine {
                      this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
                      this.ctx.fill();
 
+                 } else if (obs.type === 'COFFEE') {
+                     // The Elixir of Speed
+                     const bob = Math.sin(Date.now() / 200) * 5;
+                     const cY = screenY + bob; // Bobbing
+
+                     // Cup Body (White)
+                     this.ctx.fillStyle = '#FFF';
+                     this.ctx.fillRect(screenX, cY + 5, obs.w, obs.h - 5);
+
+                     // Sleeve (Cardboard Brown)
+                     this.ctx.fillStyle = '#D2B48C';
+                     this.ctx.fillRect(screenX, cY + 10, obs.w, 10);
+
+                     // Lid (White)
+                     this.ctx.fillStyle = '#EEE';
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX - 2, cY + 5);
+                     this.ctx.lineTo(screenX + obs.w + 2, cY + 5);
+                     this.ctx.lineTo(screenX + obs.w + 1, cY);
+                     this.ctx.lineTo(screenX - 1, cY);
+                     this.ctx.fill();
+
+                     // Steam (It's hot!)
+                     const time = Date.now() / 300;
+                     this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                     this.ctx.lineWidth = 2;
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + 5, cY);
+                     this.ctx.quadraticCurveTo(screenX + 10 + Math.sin(time)*5, cY - 10, screenX + 5, cY - 20);
+                     this.ctx.stroke();
+
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + 15, cY);
+                     this.ctx.quadraticCurveTo(screenX + 20 - Math.sin(time)*5, cY - 10, screenX + 15, cY - 20);
+                     this.ctx.stroke();
+
                  } else if (obs.type === 'TRAP') {
                      // A nasty trap
                      this.ctx.fillStyle = '#708090'; // SlateGrey
