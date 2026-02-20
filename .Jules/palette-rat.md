@@ -26,3 +26,13 @@ window.addEventListener('keydown', (e) => {
 **Key Insight:**
 - Do **not** use `capture: true` if you want standard UI elements (buttons) to still handle `Enter`/`Space` naturally. The event must reach the target (button) and bubble up.
 - Use `stopImmediatePropagation()` on the bubbling phase at `window` level to intercept before the Game Engine sees it.
+
+## 2. Accessible Focus & Button Patterns for `rats-the-video-game`
+
+**Pattern:** High-Contrast Focus Indicators
+- Use `outline: 3px solid #f1c40f` (Rat Cheese Yellow) and `outline-offset: 2px` for all interactive elements via `:focus-visible`.
+- This ensures visibility against the dark game background (`#000`).
+
+**Pattern:** Semantic Button Colors
+- Use **Emerald Green (`#2ecc71`)** with **Black text (`#000`)** for positive/start actions ("PLAY!").
+- Avoid Red (`#e74c3c`) for these actions as it conflicts with standard "Stop/Danger" semantics.
