@@ -200,6 +200,51 @@ export class GraphicsEngine {
                      this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
                      this.ctx.fill();
 
+                 } else if (obs.type === 'COFFEE') {
+                     // The Elixir of Life (Coffee)
+                     //      )
+                     //     \_/
+                     const cupHeight = obs.h;
+                     const cupWidth = obs.w;
+
+                     // Cup Body (White)
+                     this.ctx.fillStyle = '#FFF';
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX, screenY);
+                     this.ctx.lineTo(screenX + cupWidth, screenY);
+                     this.ctx.lineTo(screenX + cupWidth - 4, screenY + cupHeight);
+                     this.ctx.lineTo(screenX + 4, screenY + cupHeight);
+                     this.ctx.fill();
+
+                     // Sleeve (Brown)
+                     this.ctx.fillStyle = '#D2B48C';
+                     this.ctx.fillRect(screenX + 2, screenY + 8, cupWidth - 4, 10);
+
+                     // Lid (White)
+                     this.ctx.fillStyle = '#EEE';
+                     this.ctx.fillRect(screenX - 2, screenY - 2, cupWidth + 4, 4);
+
+                     // Steam (Hot!)
+                     this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                     this.ctx.lineWidth = 2;
+                     const now = Date.now();
+                     for (let i = 0; i < 3; i++) {
+                         const offset = i * 500;
+                         const steamY = (now + offset) % 1000 / 1000; // 0 to 1
+                         const wave = Math.sin((now + offset) / 200) * 3;
+                         const sX = screenX + cupWidth / 2 + wave;
+                         const sY = screenY - 5 - (steamY * 20);
+
+                         if (steamY < 0.8) { // Fade out at top
+                             this.ctx.globalAlpha = 1 - steamY;
+                             this.ctx.beginPath();
+                             this.ctx.moveTo(sX, sY);
+                             this.ctx.lineTo(sX, sY - 5);
+                             this.ctx.stroke();
+                             this.ctx.globalAlpha = 1.0;
+                         }
+                     }
+
                  } else if (obs.type === 'TRAP') {
                      // A nasty trap
                      this.ctx.fillStyle = '#708090'; // SlateGrey
