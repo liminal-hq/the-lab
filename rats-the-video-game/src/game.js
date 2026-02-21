@@ -107,10 +107,33 @@ function generateSurface() {
     // Generate a long city (plenty of hiding spots)
     // Decreased to 25 for a shorter level
     for (let i = 0; i < state.totalCycles; i++) {
+        // District Logic
+        // 0-8: "The Burbs" - Safer, Greenish
+        // 9-16: "Downtown" - Balanced, Blueish
+        // 17-25: "Industrial" - Dangerous, Reddish
+        let hueBase = 100;
+        let gapMin = 80;
+        let gapMax = 120;
+        let obsChance = 0.3;
+
+        if (i >= 17) {
+            hueBase = 0; // Red
+            gapMin = 50;
+            gapMax = 80;
+            obsChance = 0.7;
+        } else if (i >= 9) {
+            hueBase = 200; // Blue
+            gapMin = 60;
+            gapMax = 90;
+            obsChance = 0.5;
+        }
+
         const w = 100 + Math.random() * 200;
         const h = 100 + Math.random() * (canvas.height - 200);
-        // Coloured like the gloom of night
-        state.buildings.push({ x, w, h, color: `hsl(${Math.random() * 360}, 20%, 30%)` });
+
+        // Coloured like the gloom of night (with district flavor)
+        const hue = hueBase + (Math.random() * 40 - 20);
+        state.buildings.push({ x, w, h, color: `hsl(${hue}, 20%, 30%)` });
 
         // Decorations
         if (i === 2) {
@@ -126,7 +149,7 @@ function generateSurface() {
         //      _  _
         //     ( \/ )  <-- "Watch your step!"
         //      \  /
-        const gap = Math.random() * 50 + 50; // Ensure enough space
+        const gap = Math.random() * (gapMax - gapMin) + gapMin; // District-based spacing
 
         // Collectible Pizza! (A rat's dream)
         //      (\_/)
@@ -138,7 +161,7 @@ function generateSurface() {
              state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
         }
 
-        if (Math.random() < 0.4) {
+        if (Math.random() < obsChance) {
             const obsX = x + w + gap / 2 - 15; // Center in the gap
             const rand = Math.random();
 
