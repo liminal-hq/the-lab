@@ -162,6 +162,35 @@ export class GraphicsEngine {
                      this.ctx.fillStyle = '#D2B48C'; // Tan tape
                      this.ctx.fillRect(screenX, screenY + obs.h/2 - 2, obs.w, 4);
 
+                 } else if (obs.type === 'COFFEE') {
+                     // The Elixir of Life
+                     //      ) )
+                     //     |___|
+                     //
+                     // Cup
+                     this.ctx.fillStyle = '#FFF';
+                     this.ctx.fillRect(screenX, screenY, obs.w, obs.h);
+
+                     // Sleeve
+                     this.ctx.fillStyle = '#D2B48C'; // Tan
+                     this.ctx.fillRect(screenX, screenY + obs.h * 0.3, obs.w, obs.h * 0.4);
+
+                     // Steam (It's hot!)
+                     this.ctx.strokeStyle = '#DDD';
+                     this.ctx.lineWidth = 2;
+                     const now = Date.now();
+                     const steamY = Math.sin(now / 200) * 5;
+
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + 5, screenY - 5);
+                     this.ctx.quadraticCurveTo(screenX + 10, screenY - 15 + steamY, screenX + 5, screenY - 25);
+                     this.ctx.stroke();
+
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + 15, screenY - 5);
+                     this.ctx.quadraticCurveTo(screenX + 20, screenY - 15 - steamY, screenX + 15, screenY - 25);
+                     this.ctx.stroke();
+
                  } else if (obs.type === 'PIZZA') {
                      // The Holy Grail (Pizza Slice)
                      //      / \
