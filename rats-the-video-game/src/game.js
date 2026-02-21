@@ -53,7 +53,9 @@ const state = {
     currentCycle: 0,
     input: { left: false, right: false, jump: false, chew: false }, // The human commands
     level: 'SURFACE', // SURFACE or SUBWAY
-    levelCompleted: false
+    levelCompleted: false,
+    speedBoost: false, // Coffee power!
+    speedBoostTimer: 0 // How long the buzz lasts
 };
 
 // Expose state for debugging and testing
@@ -72,6 +74,8 @@ function generateLevel() {
     state.rat.vx = 0;
     state.rat.vy = 0;
     state.levelCompleted = false;
+    state.speedBoost = false;
+    state.speedBoostTimer = 0;
 
     if (audio && audio.setLevel) {
         audio.setLevel(state.level);
@@ -136,6 +140,14 @@ function generateSurface() {
              const pizzaX = x + w + gap / 2 + (Math.random() * 40 - 20);
              // Floating slightly above ground logically (h=40)
              state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
+        }
+
+        // Collectible Coffee! (The fuel of champions)
+        //      (  )
+        //     |____|  <-- "Caffeine!"
+        if (Math.random() < 0.15) {
+             const coffeeX = x + w + gap / 2 + (Math.random() * 40 - 20);
+             state.obstacles.push({ x: coffeeX, w: 20, h: 30, type: 'COFFEE' });
         }
 
         if (Math.random() < 0.4) {
@@ -388,11 +400,18 @@ function update() {
     }
 
     // Movement Logic
+    let currentSpeed = SPEED;
+    if (state.speedBoost) {
+        currentSpeed *= 1.5; // Zoom zoom!
+        state.speedBoostTimer--;
+        if (state.speedBoostTimer <= 0) state.speedBoost = false;
+    }
+
     if (state.input.right) {
-        state.rat.vx = SPEED;
+        state.rat.vx = currentSpeed;
         state.rat.facingRight = true;
     } else if (state.input.left) {
-        state.rat.vx = -SPEED;
+        state.rat.vx = -currentSpeed;
         state.rat.facingRight = false;
     } else if (state.rat.grounded) {
         // Friction / Decaying momentum (Only when grounded to preserve jump arc)
@@ -435,6 +454,16 @@ function update() {
                  state.score += 10; // 10x points for pizza
                  if (audio && audio.playCollect) audio.playCollect();
                  continue; // It's gone, move on
+             }
+
+             if (obs.type === 'COFFEE') {
+                 // SLURP!
+                 state.obstacles.splice(i, 1);
+                 state.score += 5;
+                 state.speedBoost = true;
+                 state.speedBoostTimer = 300; // 5 seconds
+                 if (audio && audio.playSlurp) audio.playSlurp();
+                 continue;
              }
 
              if (obs.type === 'BOX' || obs.type === 'PRIUS' || obs.type === 'TRASH_PILE') {
