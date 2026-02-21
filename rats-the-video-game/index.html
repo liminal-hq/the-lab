@@ -191,6 +191,15 @@
             font-family: monospace;
             border: 1px solid #666;
         }
+
+        :focus-visible {
+            outline: 3px solid #f1c40f;
+            outline-offset: 2px;
+        }
+
+        .control-row input, .control-row label {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -204,9 +213,9 @@
     </div>
 
     <!-- Help Modal -->
-    <div id="tutorial-modal" class="modal" role="dialog" aria-modal="true">
+    <div id="tutorial-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="tutorial-title">
         <div class="modal-content">
-            <h2>How to Play</h2>
+            <h2 id="tutorial-title">How to Play</h2>
             <img id="controls-desktop" src="./assets/controls-desktop.svg" class="controls-img" alt="Desktop Controls">
             <img id="controls-mobile" src="./assets/controls-mobile.svg" class="controls-img" alt="Mobile Controls">
 
@@ -225,9 +234,9 @@
     </div>
 
     <!-- Options Modal -->
-    <div id="options-modal" class="modal" role="dialog" aria-modal="true">
+    <div id="options-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="options-title">
         <div class="modal-content">
-            <h2>Options</h2>
+            <h2 id="options-title">Options</h2>
 
             <div class="control-row">
                 <input type="checkbox" id="music-toggle" checked>
@@ -246,9 +255,9 @@
     </div>
 
     <!-- Credits Modal -->
-    <div id="credits-modal" class="modal" role="dialog" aria-modal="true">
+    <div id="credits-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="credits-title">
         <div class="modal-content">
-            <h2>CREDITS</h2>
+            <h2 id="credits-title">CREDITS</h2>
             <p><strong>Game Design:</strong> The Rat King</p>
             <p><strong>Code:</strong> A Human (we think)</p>
             <p><strong>Music:</strong> Squeak Symphony Orchestra</p>

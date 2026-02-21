@@ -231,7 +231,7 @@ const activeSwipes = new Map(); // Track swipe start positions: identifier -> st
 
 function handleTouch(e) {
     // Ignore touches on UI elements (like the tutorial modal buttons)
-    if (e.target.closest('#tutorial-modal') || e.target.closest('button')) {
+    if (e.target.closest('.modal') || e.target.closest('button')) {
         return;
     }
 
@@ -341,7 +341,7 @@ function handleTouch(e) {
 
 // Handle Jump separately on touchstart (Tap anywhere)
 function handleJumpTap(e) {
-    if (e.target.closest('#tutorial-modal') || e.target.closest('button')) return;
+    if (e.target.closest('.modal') || e.target.closest('button')) return;
 
     // Trigger jump
     state.input.jump = true;
