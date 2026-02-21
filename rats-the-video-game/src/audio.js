@@ -99,6 +99,33 @@ export class AudioEngine {
         osc.stop(this.ctx.currentTime + 0.1);
     }
 
+    playTrashChew() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // The sound of delicious garbage
+        //      (\_/)
+        //      ($.$)
+        //      (> <)
+
+        // Two oscillators to create a "crinkle" interference
+        [100, 140].forEach((startFreq) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(startFreq, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(startFreq * 0.5, this.ctx.currentTime + 0.15);
+
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+
+            gain.gain.setValueAtTime(0.25, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+
+            osc.start(this.ctx.currentTime);
+            osc.stop(this.ctx.currentTime + 0.15);
+        });
+    }
+
     playSnap() {
         if (!this.ctx || !this.sfxEnabled) return;
         // The sound of danger!

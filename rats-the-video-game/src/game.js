@@ -452,7 +452,13 @@ function update() {
                      }
                      state.obstacles.splice(i, 1);
                      state.score++; // Delicious
-                     audio.playChew();
+
+                     if (obs.type === 'TRASH_PILE') {
+                         audio.playTrashChew();
+                     } else {
+                         audio.playChew();
+                     }
+
                      if (obs.type === 'PRIUS') audio.playHonk(); // Angry driver?
                  } else {
                      // Solid wall logic
