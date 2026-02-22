@@ -47,6 +47,8 @@ const state = {
     turds: [], // Aerial projectiles
     particles: [], // Debris from our destruction
     score: 0, // Chewed items count
+    speedBoostTimer: 0, // Caffeine rush
+    speedBoost: false, // Is the rat zooming?
     frameCount: 0, // Debug timer
     cycleCheckpoints: [], // X positions of level cycles
     totalCycles: 25,
@@ -136,6 +138,16 @@ function generateSurface() {
              const pizzaX = x + w + gap / 2 + (Math.random() * 40 - 20);
              // Floating slightly above ground logically (h=40)
              state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
+        }
+
+        // COFFEE: The Elixir of Life (15% chance)
+        //      (\_/)
+        //      (O.O)  <-- "GIMME"
+        //      (>c<)
+        if (Math.random() < 0.15) {
+             const coffeeX = x + w + gap / 2 + (Math.random() * 60 - 30);
+             // On the ground
+             state.obstacles.push({ x: coffeeX, w: 20, h: 30, type: 'COFFEE' });
         }
 
         if (Math.random() < 0.4) {
@@ -388,11 +400,13 @@ function update() {
     }
 
     // Movement Logic
+    const currentMaxSpeed = state.speedBoostTimer > 0 ? SPEED * 1.5 : SPEED;
+
     if (state.input.right) {
-        state.rat.vx = SPEED;
+        state.rat.vx = currentMaxSpeed;
         state.rat.facingRight = true;
     } else if (state.input.left) {
-        state.rat.vx = -SPEED;
+        state.rat.vx = -currentMaxSpeed;
         state.rat.facingRight = false;
     } else if (state.rat.grounded) {
         // Friction / Decaying momentum (Only when grounded to preserve jump arc)
@@ -435,6 +449,16 @@ function update() {
                  state.score += 10; // 10x points for pizza
                  if (audio && audio.playCollect) audio.playCollect();
                  continue; // It's gone, move on
+             }
+
+             if (obs.type === 'COFFEE') {
+                 // SLURP!
+                 state.obstacles.splice(i, 1);
+                 state.score += 5; // A modest boost
+                 if (audio && audio.playSlurp) audio.playSlurp();
+                 state.speedBoostTimer = 300; // 5 seconds of zoom
+                 state.speedBoost = true;
+                 continue;
              }
 
              if (obs.type === 'BOX' || obs.type === 'PRIUS' || obs.type === 'TRASH_PILE') {
@@ -583,6 +607,14 @@ function update() {
         graphics.levelProgress = progress;
     } else {
         graphics.levelProgress = 0;
+    }
+
+    // Caffeine crash imminent?
+    if (state.speedBoostTimer > 0) {
+        state.speedBoostTimer--;
+        if (state.speedBoostTimer === 0) {
+            state.speedBoost = false;
+        }
     }
 }
 
