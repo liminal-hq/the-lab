@@ -236,6 +236,41 @@ export class GraphicsEngine {
                      this.ctx.arc(screenX + obs.w - 15, screenY + obs.h, 7, 0, Math.PI*2);
                      this.ctx.fill();
 
+                 } else if (obs.type === 'COFFEE') {
+                     // The Elixir of Life
+                     //      |~|
+                     //     [===]
+                     //     |___|
+                     const cupW = obs.w * 0.8;
+                     const cupH = obs.h;
+                     const cupX = screenX + (obs.w - cupW) / 2;
+
+                     // Cup Body (White)
+                     this.ctx.fillStyle = '#FFF';
+                     this.ctx.fillRect(cupX, screenY, cupW, cupH);
+
+                     // Sleeve (Brown)
+                     this.ctx.fillStyle = '#D2B48C';
+                     this.ctx.fillRect(cupX, screenY + cupH * 0.3, cupW, cupH * 0.4);
+
+                     // Lid (White)
+                     this.ctx.fillStyle = '#EEE';
+                     this.ctx.fillRect(cupX - 2, screenY - 4, cupW + 4, 4);
+
+                     // Steam (Animated)
+                     this.ctx.strokeStyle = '#DDD';
+                     this.ctx.lineWidth = 2;
+                     const now = Date.now();
+                     for (let i = 0; i < 3; i++) {
+                         this.ctx.beginPath();
+                         const startX = cupX + 5 + i * 5;
+                         const startY = screenY - 5;
+                         const offset = Math.sin(now / 200 + i) * 3;
+                         this.ctx.moveTo(startX, startY);
+                         this.ctx.quadraticCurveTo(startX + offset, startY - 10, startX, startY - 20);
+                         this.ctx.stroke();
+                     }
+
                  } else if (obs.type === 'BARZINIS') {
                      // Background Storefront - Barzini's
                      // Note: We draw this 'behind' normally, but here it's an object.
