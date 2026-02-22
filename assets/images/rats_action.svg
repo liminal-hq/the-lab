@@ -63,6 +63,30 @@
      </circle>
   </g>
 
+  <!-- Pizza Slice Collectible -->
+  <g transform="translate(620, 130)">
+      <animateTransform attributeName="transform" type="translate" values="620,130; 620,120; 620,130" dur="2s" repeatCount="indefinite" />
+
+      <!-- Scent Lines (Wiggles) -->
+      <path d="M-10 -40 Q-15 -50 -10 -60" fill="none" stroke="#f39c12" stroke-width="2" opacity="0.8">
+        <animate attributeName="d" values="M-10 -40 Q-15 -50 -10 -60; M-10 -40 Q-5 -50 -10 -60; M-10 -40 Q-15 -50 -10 -60" dur="1s" repeatCount="indefinite"/>
+      </path>
+      <path d="M10 -40 Q5 -50 10 -60" fill="none" stroke="#f39c12" stroke-width="2" opacity="0.8">
+        <animate attributeName="d" values="M10 -40 Q5 -50 10 -60; M10 -40 Q15 -50 10 -60; M10 -40 Q5 -50 10 -60" dur="1.2s" repeatCount="indefinite"/>
+      </path>
+
+      <!-- Crust & Cheese Base -->
+      <!-- Triangle pointing down -->
+      <path d="M-25 -30 Q0 -40 25 -30 L0 30 Z" fill="#f1c40f" stroke="black" stroke-width="2"/>
+      <!-- Crust Top -->
+      <path d="M-25 -30 Q0 -40 25 -30 Q0 -15 -25 -30" fill="#e67e22" stroke="black" stroke-width="2"/>
+
+      <!-- Pepperoni -->
+      <circle cx="0" cy="-10" r="4" fill="#c0392b" stroke="none" opacity="0.9"/>
+      <circle cx="-8" cy="5" r="3" fill="#c0392b" stroke="none" opacity="0.9"/>
+      <circle cx="8" cy="-20" r="3" fill="#c0392b" stroke="none" opacity="0.9"/>
+  </g>
+
   <!-- Text -->
   <text x="400" y="60" font-family="Impact, sans-serif" font-size="50" fill="#ffcc00" stroke="black" stroke-width="2" text-anchor="middle" transform="rotate(-2 400 60)">RATS: THE VIDEO GAME</text>
   <text x="400" y="280" font-family="Comic Sans MS, cursive, sans-serif" font-size="20" fill="white" text-anchor="middle">ESCAPE THE LAB!</text>
