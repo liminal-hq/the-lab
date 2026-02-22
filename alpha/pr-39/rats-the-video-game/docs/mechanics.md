@@ -1,0 +1,60 @@
+# Game Mechanics: Obstacles & Interactions
+
+## Overview
+This document outlines the new mechanics for "Rats: The Video Game", specifically focusing on obstacles the player must overcome by jumping or chewing.
+
+## 1. Chewing Through Obstacles (Boxes, Trash, & Cars)
+Rats are famous for their teeth. They never stop growing, so they must chew!
+
+*   **Obstacles**:
+    *   **Cardboard Boxes**: Brown squares.
+    *   **Trash Piles**: Heaps of refuse (grey).
+    *   **Prius**: Blue cars. (Don't ask).
+*   **Behaviour**:
+    *   Blocks the player's horizontal movement (Solid).
+*   **Interaction**:
+    *   **Action**: Press `Enter` (or `C`) while standing next to the object.
+    *   **Result**: The object is destroyed.
+    *   **Audio**: A crunchy "Chew" sound (or a Honk for the Prius).
+    *   **Visual**: The object disappears in a burst of particles.
+
+<!--
+      ____
+     |    |
+     |____|  <-- Delicious Cardboard
+-->
+
+## 2. Jumping Over Hazards (Rat Traps)
+The city is dangerous. Humans have laid traps.
+
+*   **Hazard**: Rat Traps / Spikes.
+*   **Appearance**: Sharp, jagged shapes on the ground.
+*   **Behaviour**:
+    *   Dangerous to touch.
+*   **Interaction**:
+    *   **Action**: Jump (`Space`) over the trap.
+    *   **Result (Collision)**:
+        *   Player is knocked back.
+        *   "Hurt" audio plays (Snap!).
+        *   (Optional) Momentum loss.
+
+<!--
+      /\/\/\
+     |______|  <-- Do Not Touch
+-->
+
+## 3. Controls Update
+*   **Move**: Arrow Keys (Left/Right)
+*   **Jump**: Space
+*   **Chew**: Enter / C
+*   **Squeak**: S (Happy Squeak)
+*   **Help**: ? (Toggle Tutorial)
+
+### Touch Controls (Mobile)
+*   **Move Left**: Touch Left side of screen (0-50%)
+*   **Move Right**: Touch Right side of screen (50-100%)
+*   **Jump**: Tap anywhere or Swipe Up
+
+## Notes on Implementation
+*   Obstacles are generated procedurally along with the city buildings.
+*   We use Canadian spelling for all code comments and documentation (e.g., Colour, Centre).
