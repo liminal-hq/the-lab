@@ -3,18 +3,20 @@
 ## Overview
 This document outlines the new mechanics for "Rats: The Video Game", specifically focusing on obstacles the player must overcome by jumping or chewing.
 
-## 1. Chewing Through Obstacles (Boxes)
+## 1. Chewing Through Obstacles (Boxes, Trash, & Cars)
 Rats are famous for their teeth. They never stop growing, so they must chew!
 
-*   **Obstacle**: Cardboard Boxes.
-*   **Appearance**: Brown squares located on the ground level.
+*   **Obstacles**:
+    *   **Cardboard Boxes**: Brown squares.
+    *   **Trash Piles**: Heaps of refuse (grey).
+    *   **Prius**: Blue cars. (Don't ask).
 *   **Behaviour**:
     *   Blocks the player's horizontal movement (Solid).
 *   **Interaction**:
-    *   **Action**: Press `Enter` (or `C`) while standing next to the box.
-    *   **Result**: The box is destroyed.
-    *   **Audio**: A crunchy "Chew" sound.
-    *   **Visual**: The box disappears (potential particle effect in future versions).
+    *   **Action**: Press `Enter` (or `C`) while standing next to the object.
+    *   **Result**: The object is destroyed.
+    *   **Audio**: A crunchy "Chew" sound (or a Honk for the Prius).
+    *   **Visual**: The object disappears in a burst of particles.
 
 <!--
       ____
