@@ -26,3 +26,9 @@ window.addEventListener('keydown', (e) => {
 **Key Insight:**
 - Do **not** use `capture: true` if you want standard UI elements (buttons) to still handle `Enter`/`Space` naturally. The event must reach the target (button) and bubble up.
 - Use `stopImmediatePropagation()` on the bubbling phase at `window` level to intercept before the Game Engine sees it.
+
+## 2. High-Contrast Focus & Modal Labels
+
+**Pattern:**
+- For dark interfaces (black background), rely on a high-contrast focus ring (e.g., `#f1c40f` Yellow) with `outline: 3px solid; outline-offset: 2px;` to ensure visibility against varied content.
+- Always link modals (`role="dialog"`) to their headings (`h2`) using `aria-labelledby` for screen reader context.
