@@ -200,6 +200,40 @@ export class GraphicsEngine {
                      this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
                      this.ctx.fill();
 
+                 } else if (obs.type === 'COFFEE') {
+                     // The Elixir of Life
+                     //      )
+                     //     (__)
+                     const cupH = obs.h;
+                     const cupY = screenY;
+
+                     // Cup Body (White)
+                     this.ctx.fillStyle = '#FFF';
+                     this.ctx.fillRect(screenX, cupY, obs.w, cupH);
+
+                     // Sleeve (Brown)
+                     this.ctx.fillStyle = '#D2B48C';
+                     this.ctx.fillRect(screenX, cupY + 10, obs.w, 15);
+
+                     // Lid (Black)
+                     this.ctx.fillStyle = '#111';
+                     this.ctx.fillRect(screenX - 2, cupY, obs.w + 4, 5);
+
+                     // Steam (It's hot!)
+                     const now = Date.now();
+                     this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.5)';
+                     this.ctx.lineWidth = 2;
+                     this.ctx.beginPath();
+                     // Wavy line 1
+                     const steamY = Math.sin(now / 200) * 5;
+                     this.ctx.moveTo(screenX + 5, cupY - 5);
+                     this.ctx.quadraticCurveTo(screenX + 10, cupY - 15 + steamY, screenX + 5, cupY - 25);
+                     // Wavy line 2
+                     const steamY2 = Math.sin(now / 250 + 1) * 5;
+                     this.ctx.moveTo(screenX + 15, cupY - 5);
+                     this.ctx.quadraticCurveTo(screenX + 20, cupY - 15 + steamY2, screenX + 15, cupY - 25);
+                     this.ctx.stroke();
+
                  } else if (obs.type === 'TRAP') {
                      // A nasty trap
                      this.ctx.fillStyle = '#708090'; // SlateGrey
