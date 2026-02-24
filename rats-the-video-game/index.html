@@ -88,8 +88,8 @@
 
         #close-btn {
             margin-top: 20px;
-            background: #e74c3c;
-            color: white;
+            background: #2ecc71; /* Emerald Green for "Go" */
+            color: #000; /* Black text for high contrast */
             border: none;
             padding: 15px 30px;
             font-size: 1.5rem;
@@ -97,7 +97,13 @@
             border-radius: 5px;
             font-weight: bold;
         }
-        #close-btn:hover { background: #c0392b; }
+        #close-btn:hover { background: #27ae60; } /* Nephritis Green */
+
+        /* High-contrast focus for keyboard accessibility */
+        :focus-visible {
+            outline: 3px solid #f1c40f; /* Sunflower Yellow */
+            outline-offset: 2px;
+        }
 
         #debug-container {
             margin-top: 15px;
@@ -174,6 +180,10 @@
         .control-row label {
             font-size: 1.2rem;
             margin-left: 10px;
+            cursor: pointer; /* Improve click affordance */
+        }
+        .control-row input {
+            cursor: pointer;
         }
         .control-legend {
             margin-top: 10px;
