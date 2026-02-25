@@ -111,10 +111,32 @@ function generateSurface() {
     // Generate a long city (plenty of hiding spots)
     // Decreased to 25 for a shorter level
     for (let i = 0; i < state.totalCycles; i++) {
+        // District logic for visual identity + progression:
+        // 0-8: Burbs (green, safer)
+        // 9-16: Downtown (blue, moderate)
+        // 17+: Industrial (red, harder)
+        let hueBase = 100;
+        let gapMin = 80;
+        let gapMax = 120;
+        let obsChance = 0.3;
+
+        if (i >= 17) {
+            hueBase = 0;
+            gapMin = 50;
+            gapMax = 80;
+            obsChance = 0.7;
+        } else if (i >= 9) {
+            hueBase = 200;
+            gapMin = 60;
+            gapMax = 90;
+            obsChance = 0.5;
+        }
+
         const w = 100 + Math.random() * 200;
         const h = 100 + Math.random() * (canvas.height - 200);
-        // Coloured like the gloom of night
-        state.buildings.push({ x, w, h, color: `hsl(${Math.random() * 360}, 20%, 30%)` });
+        // Coloured like the gloom of night, with district flavour.
+        const hue = hueBase + (Math.random() * 40 - 20);
+        state.buildings.push({ x, w, h, color: `hsl(${hue}, 20%, 30%)` });
 
         // Decorations
         if (i === 2) {
@@ -130,7 +152,7 @@ function generateSurface() {
         //      _  _
         //     ( \/ )  <-- "Watch your step!"
         //      \  /
-        const gap = Math.random() * 50 + 50; // Ensure enough space
+        const gap = Math.random() * (gapMax - gapMin) + gapMin; // District-based spacing
 
         // Collectible Pizza! (A rat's dream)
         //      (\_/)
@@ -149,7 +171,7 @@ function generateSurface() {
              state.obstacles.push({ x: coffeeX, w: 20, h: 25, type: 'COFFEE' });
         }
 
-        if (Math.random() < 0.4) {
+        if (Math.random() < obsChance) {
             const obsX = x + w + gap / 2 - 15; // Center in the gap
             const rand = Math.random();
 
@@ -205,11 +227,20 @@ generateLevel();
 
 // Input: Translating human fingers to rat paws
 window.addEventListener('keydown', (e) => {
+    const startsMusic = e.code === 'ArrowRight'
+        || e.code === 'ArrowLeft'
+        || e.code === 'Space'
+        || e.code === 'Enter'
+        || e.code === 'KeyC'
+        || e.code === 'KeyS';
+
+    // Start music on first gameplay control interaction, not just jump.
+    if (startsMusic && !audio.isPlaying) audio.startMusic();
+
     if (e.code === 'ArrowRight') state.input.right = true; // Scurry right
     if (e.code === 'ArrowLeft') state.input.left = true;   // Scurry left
     if (e.code === 'Space') {
         state.input.jump = true; // LEAP!
-        if (!audio.isPlaying) audio.startMusic(); // Cue the dramatic squeaks
     }
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = true; // GNAW!
     if (e.code === 'KeyS') audio.playHappySqueak(); // SQUEAK!
@@ -484,7 +515,13 @@ function update() {
                      }
                      state.obstacles.splice(i, 1);
                      state.score++; // Delicious
-                     audio.playChew();
+
+                     if (obs.type === 'TRASH_PILE') {
+                         audio.playTrashChew();
+                     } else {
+                         audio.playChew();
+                     }
+
                      if (obs.type === 'PRIUS') audio.playHonk(); // Angry driver?
                  } else {
                      // Solid wall logic
