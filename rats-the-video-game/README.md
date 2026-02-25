@@ -30,6 +30,7 @@
 ---
 
 Welcome to the apocalypse man-made. You are a rat. The city is yours.
+Inspired by Suzanne Vega's "Rats" from *Flying with Angels* (2025).
 
 ## Features
 *   **Procedural City**: No two runs are the same. Infinite urban sprawl.
