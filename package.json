@@ -1,6 +1,7 @@
 {
   "name": "the-lab",
   "private": true,
+  "packageManager": "pnpm@10.29.3",
   "workspaces": [
     "rats-the-video-game",
     "the-lab-website"
