@@ -26,7 +26,7 @@ A procedural open-world city game where you assume the role of an escaped lab ra
 
 *   **Objective**: Escape the lab and rule the city.
 *   **Tech Stack**: HTML5 Canvas, Web Audio API (16-channel PC Speaker emulation).
-*   **Inspiration**: Suzanne Vega's "Rats".
+*   **Inspiration**: Suzanne Vega's "Rats" from *Flying with Angels* (2025).
 *   **Access**: [Enter the Simulation](./rats-the-video-game)
 
 ---

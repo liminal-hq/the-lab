@@ -1,15 +1,19 @@
 # Rats by Suzanne Vega
 
-**Copyright:** 2020 Amanuensis Productions / Amulet Records
-**Composer:** Suzanne Vega
-**Album:** An Evening of New York Songs and Stories (Live) / Beauty & Crime (Original 2007)
+**Primary Attribution (verified 2026-02-25):**
+*   **Songwriter / Performer:** Suzanne Vega
+*   **Album:** Flying with Angels (2025)
+*   **Album Release Date:** May 2, 2025
+*   **Label:** Amanuensis / Cooking Vinyl
+*   **Early Release:** Rats - Single (September 17, 2024)
+*   **Single Copyright:** (P) 2024 Amanuensis Productions Inc under exclusive licence to Cooking Vinyl Limited
+*   **Album Copyright:** (P) 2025 Amanuensis Productions, Inc. under exclusive licence to Cooking Vinyl Limited
 
-**Credits (Beauty & Crime Era):**
-*   **Suzanne Vega:** Vocals, Acoustic Guitar
-*   **Gerry Leonard:** Guitar
-*   **Graham Hawthorne:** Drums
-*   **Tony Shanahan:** Bass
-*   **Jimmy Hogg:** Banjo (on the original recording, adding that scuttling sound)
+**Source Notes:**
+*   Suzanne Vega official release page: https://suzannevega.com/music/
+*   Apple Music release metadata:
+    *   Rats - Single: https://music.apple.com/us/album/rats-single/1765312448
+    *   Flying with Angels: https://music.apple.com/us/album/flying-with-angels/1800900423
 
 ---
 
