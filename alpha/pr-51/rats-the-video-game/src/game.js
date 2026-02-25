@@ -227,11 +227,20 @@ generateLevel();
 
 // Input: Translating human fingers to rat paws
 window.addEventListener('keydown', (e) => {
+    const startsMusic = e.code === 'ArrowRight'
+        || e.code === 'ArrowLeft'
+        || e.code === 'Space'
+        || e.code === 'Enter'
+        || e.code === 'KeyC'
+        || e.code === 'KeyS';
+
+    // Start music on first gameplay control interaction, not just jump.
+    if (startsMusic && !audio.isPlaying) audio.startMusic();
+
     if (e.code === 'ArrowRight') state.input.right = true; // Scurry right
     if (e.code === 'ArrowLeft') state.input.left = true;   // Scurry left
     if (e.code === 'Space') {
         state.input.jump = true; // LEAP!
-        if (!audio.isPlaying) audio.startMusic(); // Cue the dramatic squeaks
     }
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = true; // GNAW!
     if (e.code === 'KeyS') audio.playHappySqueak(); // SQUEAK!
