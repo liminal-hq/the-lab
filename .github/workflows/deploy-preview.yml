@@ -20,6 +20,10 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: alpha-builds-preview
+  cancel-in-progress: false
+
 jobs:
   # -----------------------------------------------------------------------
   # Job: Deploy Alpha
@@ -106,7 +110,20 @@ jobs:
           if ! git diff-index --quiet HEAD; then
             echo "Committing changes..."
             git commit -m "feat(alpha): deploy preview for PR #${{ github.event.number }}"
-            git push origin alpha-builds
+            for attempt in 1 2 3 4 5; do
+              if git push origin alpha-builds; then
+                break
+              fi
+
+              if [ "$attempt" -eq 5 ]; then
+                echo "Push failed after 5 attempts."
+                exit 1
+              fi
+
+              echo "Push rejected (attempt $attempt). Rebasing onto latest alpha-builds and retrying..."
+              git pull --rebase origin alpha-builds
+              sleep 2
+            done
           else
              echo "No changes to deploy."
           fi
@@ -187,7 +204,20 @@ jobs:
             if [ -d "$TARGET_DIR" ]; then
               git rm -rf "$TARGET_DIR"
               git commit -m "chore(alpha): remove preview for PR #${{ github.event.number }}"
-              git push origin alpha-builds
+              for attempt in 1 2 3 4 5; do
+                if git push origin alpha-builds; then
+                  break
+                fi
+
+                if [ "$attempt" -eq 5 ]; then
+                  echo "Push failed after 5 attempts."
+                  exit 1
+                fi
+
+                echo "Push rejected (attempt $attempt). Rebasing onto latest alpha-builds and retrying..."
+                git pull --rebase origin alpha-builds
+                sleep 2
+              done
             else
               echo "Directory $TARGET_DIR already gone."
             fi
