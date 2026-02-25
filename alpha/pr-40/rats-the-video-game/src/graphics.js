@@ -200,6 +200,35 @@ export class GraphicsEngine {
                      this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
                      this.ctx.fill();
 
+                 } else if (obs.type === 'COFFEE') {
+                     // The Elixir of Life
+                     //      )  )
+                     //     c[__]
+                     const cupColor = '#FFF';
+                     const sleeveColor = '#D2B48C';
+
+                     // Cup
+                     this.ctx.fillStyle = cupColor;
+                     this.ctx.fillRect(screenX, screenY, obs.w, obs.h);
+
+                     // Sleeve
+                     this.ctx.fillStyle = sleeveColor;
+                     this.ctx.fillRect(screenX, screenY + 5, obs.w, 10);
+
+                     // Lid
+                     this.ctx.fillStyle = '#EEE';
+                     this.ctx.fillRect(screenX - 2, screenY - 2, obs.w + 4, 4);
+
+                     // Steam (It's hot!)
+                     this.ctx.strokeStyle = '#EEE';
+                     this.ctx.lineWidth = 1;
+                     this.ctx.beginPath();
+                     const now = Date.now();
+                     const steamY = Math.sin(now / 200) * 3;
+                     this.ctx.moveTo(screenX + 5, screenY - 5);
+                     this.ctx.quadraticCurveTo(screenX + 10, screenY - 10 + steamY, screenX + 5, screenY - 15);
+                     this.ctx.stroke();
+
                  } else if (obs.type === 'TRAP') {
                      // A nasty trap
                      this.ctx.fillStyle = '#708090'; // SlateGrey

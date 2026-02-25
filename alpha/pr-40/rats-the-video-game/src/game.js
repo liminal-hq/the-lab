@@ -53,7 +53,9 @@ const state = {
     currentCycle: 0,
     input: { left: false, right: false, jump: false, chew: false }, // The human commands
     level: 'SURFACE', // SURFACE or SUBWAY
-    levelCompleted: false
+    levelCompleted: false,
+    speedBoost: false,
+    speedBoostTimer: 0
 };
 
 // Expose state for debugging and testing
@@ -72,6 +74,8 @@ function generateLevel() {
     state.rat.vx = 0;
     state.rat.vy = 0;
     state.levelCompleted = false;
+    state.speedBoost = false;
+    state.speedBoostTimer = 0;
 
     if (audio && audio.setLevel) {
         audio.setLevel(state.level);
@@ -136,6 +140,13 @@ function generateSurface() {
              const pizzaX = x + w + gap / 2 + (Math.random() * 40 - 20);
              // Floating slightly above ground logically (h=40)
              state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
+        }
+
+        // Coffee! (The fuel of the developer... and now the rat)
+        //      c[_]
+        if (Math.random() < 0.15) {
+             const coffeeX = x + w + gap / 2 + (Math.random() * 40 - 20);
+             state.obstacles.push({ x: coffeeX, w: 20, h: 25, type: 'COFFEE' });
         }
 
         if (Math.random() < 0.4) {
@@ -231,7 +242,7 @@ const activeSwipes = new Map(); // Track swipe start positions: identifier -> st
 
 function handleTouch(e) {
     // Ignore touches on UI elements (like the tutorial modal buttons)
-    if (e.target.closest('#tutorial-modal') || e.target.closest('button')) {
+    if (e.target.closest('.modal') || e.target.closest('button')) {
         return;
     }
 
@@ -341,7 +352,7 @@ function handleTouch(e) {
 
 // Handle Jump separately on touchstart (Tap anywhere)
 function handleJumpTap(e) {
-    if (e.target.closest('#tutorial-modal') || e.target.closest('button')) return;
+    if (e.target.closest('.modal') || e.target.closest('button')) return;
 
     // Trigger jump
     state.input.jump = true;
@@ -387,12 +398,22 @@ function update() {
         state.currentCycle = 0; // Or handle subway cycles if needed
     }
 
+    // Speed Boost Logic
+    if (state.speedBoostTimer > 0) {
+        state.speedBoostTimer--;
+        if (state.speedBoostTimer <= 0) {
+            state.speedBoost = false;
+        }
+    }
+
+    const currentSpeed = state.speedBoost ? SPEED * 1.5 : SPEED;
+
     // Movement Logic
     if (state.input.right) {
-        state.rat.vx = SPEED;
+        state.rat.vx = currentSpeed;
         state.rat.facingRight = true;
     } else if (state.input.left) {
-        state.rat.vx = -SPEED;
+        state.rat.vx = -currentSpeed;
         state.rat.facingRight = false;
     } else if (state.rat.grounded) {
         // Friction / Decaying momentum (Only when grounded to preserve jump arc)
@@ -435,6 +456,17 @@ function update() {
                  state.score += 10; // 10x points for pizza
                  if (audio && audio.playCollect) audio.playCollect();
                  continue; // It's gone, move on
+             }
+
+             if (obs.type === 'COFFEE') {
+                 // SLURP!
+                 state.obstacles.splice(i, 1);
+                 state.score += 5;
+                 state.speedBoost = true;
+                 state.speedBoostTimer = 300; // 5 seconds
+                 if (audio && audio.playSlurp) audio.playSlurp();
+                 spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#6F4E37', 20);
+                 continue;
              }
 
              if (obs.type === 'BOX' || obs.type === 'PRIUS' || obs.type === 'TRASH_PILE') {
