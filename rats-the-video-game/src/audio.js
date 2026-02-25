@@ -235,6 +235,33 @@ export class AudioEngine {
         osc.stop(this.ctx.currentTime + 0.2);
     }
 
+    playBoing() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // BOING! The sound of a rat defying gravity
+        //      o
+        //     /|\
+        //     / \
+        //    ~~~~
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        // A quick sweep up then wobble
+        const now = this.ctx.currentTime;
+        osc.frequency.setValueAtTime(200, now);
+        osc.frequency.linearRampToValueAtTime(400, now + 0.1);
+        osc.frequency.linearRampToValueAtTime(300, now + 0.3);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.5, now);
+        gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+
+        osc.start(now);
+        osc.stop(now + 0.3);
+    }
+
     setLevel(level) {
         this.level = level;
     }

@@ -229,6 +229,33 @@ export class GraphicsEngine {
                      this.ctx.quadraticCurveTo(screenX + 10, screenY - 10 + steamY, screenX + 5, screenY - 15);
                      this.ctx.stroke();
 
+                 } else if (obs.type === 'SPRING') {
+                     // A bouncy spring (Rat-apult)
+                     //      \/\
+                     //      /_/
+                     const coilColor = '#A9A9A9'; // DarkGrey
+                     const baseColor = '#696969'; // DimGrey
+
+                     // Base
+                     this.ctx.fillStyle = baseColor;
+                     this.ctx.fillRect(screenX, screenY + obs.h - 5, obs.w, 5);
+
+                     // Coil
+                     this.ctx.strokeStyle = coilColor;
+                     this.ctx.lineWidth = 3;
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + 2, screenY + obs.h - 5);
+                     // Zigzag
+                     this.ctx.lineTo(screenX + obs.w * 0.2, screenY + 2);
+                     this.ctx.lineTo(screenX + obs.w * 0.5, screenY + obs.h - 5);
+                     this.ctx.lineTo(screenX + obs.w * 0.8, screenY + 2);
+                     this.ctx.lineTo(screenX + obs.w - 2, screenY + obs.h - 5);
+                     this.ctx.stroke();
+
+                     // Top Plate
+                     this.ctx.fillStyle = coilColor;
+                     this.ctx.fillRect(screenX, screenY, obs.w, 3);
+
                  } else if (obs.type === 'TRAP') {
                      // A nasty trap
                      this.ctx.fillStyle = '#708090'; // SlateGrey

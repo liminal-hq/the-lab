@@ -175,10 +175,13 @@ function generateSurface() {
             const obsX = x + w + gap / 2 - 15; // Center in the gap
             const rand = Math.random();
 
-            if (rand < 0.4) {
+            if (rand < 0.3) {
                 // A Box to chew
                 state.obstacles.push({ x: obsX, w: 30, h: 30, type: 'BOX' });
-            } else if (rand < 0.7) {
+            } else if (rand < 0.5) {
+                // A SPRING! (Rat-apult)
+                state.obstacles.push({ x: obsX, w: 30, h: 20, type: 'SPRING' });
+            } else if (rand < 0.8) {
                 // A Trap to jump
                 state.obstacles.push({ x: obsX, w: 40, h: 10, type: 'TRAP' });
             } else {
@@ -500,8 +503,25 @@ function update() {
                  continue;
              }
 
-             if (obs.type === 'BOX' || obs.type === 'PRIUS' || obs.type === 'TRASH_PILE') {
-                 if (state.input.chew) {
+             if (obs.type === 'BOX' || obs.type === 'PRIUS' || obs.type === 'TRASH_PILE' || obs.type === 'SPRING') {
+                 // Spring Logic (Rat-apult)
+                 if (obs.type === 'SPRING') {
+                     const overlapY = obsT - ratB;
+                     const overlapXLeft = ratR - obsL;
+                     const overlapXRight = obsR - ratL;
+
+                     // If landing on top
+                     if (state.rat.vy <= 0 && overlapY > 0 && overlapY < 20 && overlapY < Math.min(overlapXLeft, overlapXRight)) {
+                         state.rat.vy = JUMP_FORCE * 1.5; // BOING!
+                         state.rat.grounded = false;
+                         state.rat.y = obsT + 5; // Pop up
+                         if (audio && audio.playBoing) audio.playBoing();
+                         spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#A9A9A9', 10);
+                         continue;
+                     }
+                 }
+
+                 if (state.input.chew && obs.type !== 'SPRING') {
                      // Nom nom nom
                      if (obs.type === 'BOX') {
                          // Brighter colour (Burlywood) and more particles for visibility
