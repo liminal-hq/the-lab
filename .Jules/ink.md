@@ -11,4 +11,11 @@
 
 ### Collectibles
 - **Pizza:** Represents the ultimate prize. Rendered with cheese (`#f1c40f`), crust (`#e67e22`), and pepperoni (`#c0392b`).
+- **Coffee:** Secondary boost collectible. Render with a white cup, neutral lid, warm sleeve, and gentle steam cues.
 - **Glow:** Key items should have a subtle glow or "scent lines" to indicate importance.
+
+```
+ (\_/)
+ (o.o)  "Coffee first, then pizza."
+ (> <)
+```
