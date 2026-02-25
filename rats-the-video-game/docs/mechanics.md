@@ -41,7 +41,26 @@ The city is dangerous. Humans have laid traps.
      |______|  <-- Do Not Touch
 -->
 
-## 3. Controls Update
+## 3. Coffee Break (Power-Up)
+Even rats need a pick-me-up.
+
+*   **Item**: Coffee Cup.
+*   **Appearance**: White cup with a lid and steam.
+*   **Behaviour**:
+    *   Collectible (pass through).
+*   **Interaction**:
+    *   **Action**: Walk into it.
+    *   **Result**:
+        *   +5 Points.
+        *   **Speed Boost**: Move 1.5x faster for 5 seconds.
+    *   **Audio**: "Slurp" sound.
+
+<!--
+      )  )
+     [____]  <-- Zoom Zoom
+-->
+
+## 4. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
