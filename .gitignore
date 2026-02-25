@@ -117,4 +117,5 @@ dist
 
 # Project specific
 _site/
+rats-the-video-game/playwright-report/
 .DS_Store
