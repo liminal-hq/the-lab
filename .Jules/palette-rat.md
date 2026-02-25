@@ -45,3 +45,6 @@ Ensure every modal has an internal heading (e.g., `<h2>`) with a unique `id`, an
 
 **Key Insight:**
 - Explicitly associating the visible heading avoids redundant `aria-label` text and keeps the accessible name synchronized with the visual UI.
+
+## Update
+This work was superseded by #49, which consolidates updates.
