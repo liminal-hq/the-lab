@@ -26,3 +26,33 @@ window.addEventListener('keydown', (e) => {
 **Key Insight:**
 - Do **not** use `capture: true` if you want standard UI elements (buttons) to still handle `Enter`/`Space` naturally. The event must reach the target (button) and bubble up.
 - Use `stopImmediatePropagation()` on the bubbling phase at `window` level to intercept before the Game Engine sees it.
+
+## 2. Modal Accessibility and Clear Action Colour
+
+**Pattern:**
+- Use `aria-labelledby` on each modal dialog and map it to the modal heading ID.
+- Keep the primary "PLAY!" action visually positive with Emerald Green (`#2ecc71`) and high-contrast Black text.
+- Add clear keyboard focus visibility with a Yellow `:focus-visible` outline (`#f1c40f`).
+
+**Why this helps:**
+- Screen readers announce each dialog with context instead of a generic "dialog".
+- Players can immediately understand that "PLAY!" is a go action, not a destructive one.
+- Keyboard navigation remains visible on dark backgrounds.
+
+## 3. Touch Behaviour Guard Rails
+
+**Problem:** Touches inside modal content were still being interpreted as gameplay input.
+
+**Fix:**
+- Gate touch handlers with `.modal` checks, not just `#tutorial-modal`.
+- Keep gameplay taps and swipes active only for the main game surface.
+
+```javascript
+if (e.target.closest('.modal') || e.target.closest('button')) return;
+```
+
+```
+ (\_/)
+ (o.o)  "No rogue jumps in the Options centre."
+ (> <)
+```
