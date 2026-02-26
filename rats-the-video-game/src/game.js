@@ -40,7 +40,7 @@ resize();
 //      (o.o)
 //     ( > < )
 const state = {
-    rat: { x: 100, y: 0, vx: 0, vy: 0, grounded: true, facingRight: true }, // The protagonist
+    rat: { x: 100, y: 0, vx: 0, vy: 0, grounded: true, facingRight: true, canDoubleJump: true }, // The protagonist
     buildings: [], // The concrete jungle
     obstacles: [], // The things in our way
     birds: [], // Sky vermin
@@ -51,7 +51,7 @@ const state = {
     cycleCheckpoints: [], // X positions of level cycles
     totalCycles: 25,
     currentCycle: 0,
-    input: { left: false, right: false, jump: false, chew: false }, // The human commands
+    input: { left: false, right: false, jump: false, jumpPressed: false, chew: false }, // The human commands
     level: 'SURFACE', // SURFACE or SUBWAY
     levelCompleted: false,
     speedBoost: false,
@@ -73,6 +73,7 @@ function generateLevel() {
     state.rat.x = 100;
     state.rat.vx = 0;
     state.rat.vy = 0;
+    state.rat.canDoubleJump = true;
     state.levelCompleted = false;
     state.speedBoost = false;
     state.speedBoostTimer = 0;
@@ -243,6 +244,7 @@ window.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowRight') state.input.right = true; // Scurry right
     if (e.code === 'ArrowLeft') state.input.left = true;   // Scurry left
     if (e.code === 'Space') {
+        if (!state.input.jump) state.input.jumpPressed = true; // Fresh press
         state.input.jump = true; // LEAP!
     }
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = true; // GNAW!
@@ -255,7 +257,10 @@ window.addEventListener('keydown', (e) => {
 window.addEventListener('keyup', (e) => {
     if (e.code === 'ArrowRight') state.input.right = false;
     if (e.code === 'ArrowLeft') state.input.left = false;
-    if (e.code === 'Space') state.input.jump = false;
+    if (e.code === 'Space') {
+        state.input.jump = false;
+        state.input.jumpPressed = false;
+    }
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = false;
 });
 
@@ -322,7 +327,11 @@ function handleTouch(e) {
             if (!swipeData.hasJumped && isSwipeUp) {
                 // SWIPE UP DETECTED!
                 state.input.jump = true;
-                setTimeout(() => { state.input.jump = false; }, 100);
+                state.input.jumpPressed = true;
+                setTimeout(() => {
+                    state.input.jump = false;
+                    state.input.jumpPressed = false;
+                }, 100);
 
                 swipeData.hasJumped = true;
             }
@@ -390,12 +399,14 @@ function handleJumpTap(e) {
 
     // Trigger jump
     state.input.jump = true;
+    state.input.jumpPressed = true;
 
     // Reset jump input after a short delay to prevent "flying" if logic requires toggle
     // But game loop checks `state.input.jump` every frame.
     // We need to ensure it's true for at least one update.
     setTimeout(() => {
         state.input.jump = false;
+        state.input.jumpPressed = false;
     }, 100);
 }
 
@@ -460,7 +471,19 @@ function update() {
         state.rat.vy = JUMP_FORCE;
         state.rat.grounded = false;
         audio.playTone(660, 0.1, 15); // *Squeak!* (Jump sound)
+    } else if (state.input.jumpPressed && state.rat.canDoubleJump && !state.rat.grounded) {
+        // Double Jump!
+        //      (\ /)
+        //      (o.o)  <-- "I believe I can fly!"
+        //      (> <)
+        state.rat.vy = JUMP_FORCE * 0.8;
+        state.rat.canDoubleJump = false;
+        spawnParticles(state.rat.x, state.rat.y - 10, '#FFF', 10); // Cloud step
+        audio.playTone(880, 0.1, 15); // Higher pitch squeak
     }
+
+    // Clear jumpPressed frame flag
+    state.input.jumpPressed = false;
 
     // Gravity: The invisible paw pushing us down
     state.rat.vy -= GRAVITY;
@@ -557,6 +580,7 @@ function update() {
                          state.rat.y = obsT;
                          state.rat.vy = 0;
                          state.rat.grounded = true;
+                         state.rat.canDoubleJump = true; // Reset double jump
                      } else {
                          // Wall Logic: Push to closest side
                          if (overlapXLeft < overlapXRight) {
@@ -598,6 +622,7 @@ function update() {
         state.rat.y = 0;
         state.rat.vy = 0;
         state.rat.grounded = true;
+        state.rat.canDoubleJump = true; // Reset double jump
     }
 
     // Update Birds
