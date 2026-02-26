@@ -62,7 +62,25 @@ Even rats need a pick-me-up.
      [____]  <-- Zoom Zoom
 -->
 
-## 4. Controls Update
+## 4. Springboard (Rat-apult)
+Reaching new heights.
+
+*   **Obstacle**: Spring.
+*   **Appearance**: Grey base with a coiled spring.
+*   **Behaviour**:
+    *   Solid-ish (can land on it).
+*   **Interaction**:
+    *   **Action**: Jump/Land on top.
+    *   **Result**:
+        *   **Super Jump**: Launch upwards with 1.5x Jump Force.
+    *   **Audio**: "Boing" sound.
+
+<!--
+      \/\
+      /_/
+-->
+
+## 5. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
