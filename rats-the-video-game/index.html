@@ -80,12 +80,14 @@
         /* Desktop Default */
         #controls-desktop { display: block; }
         .desktop-only { display: block; }
+        .mobile-only { display: none; }
 
         /* Mobile Override */
         @media (pointer: coarse) {
             #controls-desktop { display: none; }
             #controls-mobile { display: block; }
             .desktop-only { display: none; }
+            .mobile-only { display: block; }
         }
 
         #close-btn {
@@ -225,6 +227,8 @@
                 <p class="desktop-only"><span class="key-badge">Space</span> Jump</p>
                 <p class="desktop-only"><span class="key-badge">S</span> Happy Squeak</p>
                 <p class="desktop-only"><span class="key-badge">Enter</span> / <span class="key-badge">C</span> Chew</p>
+                <p class="mobile-only"><span class="key-badge">Tap / Swipe Up</span> Jump & Chew</p>
+                <p class="mobile-only"><span class="key-badge">Touch Sides</span> Move</p>
                 <p style="margin-top: 10px; color: #DAA520;">Collect 🍕 and ☕ for points!</p>
             </div>
 
