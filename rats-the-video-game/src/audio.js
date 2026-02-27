@@ -262,6 +262,28 @@ export class AudioEngine {
         osc.stop(now + 0.3);
     }
 
+    playDoubleJump() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // A lighter, quicker squeak for the double jump
+        //      o   o
+        //       \_/
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine'; // Pure tone for airiness
+        osc.frequency.setValueAtTime(880, this.ctx.currentTime); // Higher start
+        osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.1); // Quick zip up
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.1);
+    }
+
     setLevel(level) {
         this.level = level;
     }
