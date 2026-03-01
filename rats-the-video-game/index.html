@@ -106,6 +106,9 @@
             font-size: 0.9rem;
             color: #aaa;
         }
+        #debug-container label, #debug-container input {
+            cursor: pointer;
+        }
 
         #help-btn {
             position: absolute;
@@ -205,8 +208,8 @@
     </style>
 </head>
 <body>
-    <button id="options-btn" aria-label="Options">⚙</button>
-    <button id="help-btn" aria-label="Show Tutorial">?</button>
+    <button id="options-btn" aria-label="Options"><span aria-hidden="true">⚙</span></button>
+    <button id="help-btn" aria-label="Show Tutorial"><span aria-hidden="true">?</span></button>
 
     <div id="overlay">
         <h1>Rats: The Video Game</h1>
@@ -225,7 +228,7 @@
                 <p class="desktop-only"><span class="key-badge">Space</span> Jump</p>
                 <p class="desktop-only"><span class="key-badge">S</span> Happy Squeak</p>
                 <p class="desktop-only"><span class="key-badge">Enter</span> / <span class="key-badge">C</span> Chew</p>
-                <p style="margin-top: 10px; color: #DAA520;">Collect 🍕 and ☕ for points!</p>
+                <p style="margin-top: 10px; color: #DAA520;">Collect <span role="img" aria-label="pizza">🍕</span> and <span role="img" aria-label="coffee">☕</span> for points!</p>
             </div>
 
             <button id="close-btn">PLAY!</button>
@@ -252,7 +255,7 @@
             </div>
 
             <br>
-            <button id="credits-btn" style="background: #444; border: 1px solid #777; color: white; padding: 10px;">Credits</button>
+            <button id="credits-btn" style="background: #444; border: 1px solid #777; color: white; padding: 10px; cursor: pointer; border-radius: 5px;">Credits</button>
             <br><br>
             <button id="close-options-btn" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px;">Close</button>
         </div>
