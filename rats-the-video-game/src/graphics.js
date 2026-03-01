@@ -162,6 +162,32 @@ export class GraphicsEngine {
                      this.ctx.fillStyle = '#D2B48C'; // Tan tape
                      this.ctx.fillRect(screenX, screenY + obs.h/2 - 2, obs.w, 4);
 
+                 } else if (obs.type === 'CHEESE') {
+                     // The wedge of destiny
+                     const cY = screenY + Math.sin(Date.now() / 200) * 5; // Bobbing effect
+
+                     // Cheese Wedge
+                     this.ctx.fillStyle = '#FFD700'; // Gold
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX, cY + obs.h);
+                     this.ctx.lineTo(screenX + obs.w, cY + obs.h);
+                     this.ctx.lineTo(screenX + obs.w, cY);
+                     this.ctx.fill();
+
+                     // Cheese Holes
+                     this.ctx.fillStyle = '#DAA520'; // Goldenrod
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.7, cY + obs.h * 0.7, 3, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.9, cY + obs.h * 0.4, 2, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.4, cY + obs.h * 0.9, 2, 0, Math.PI * 2);
+                     this.ctx.fill();
+
                  } else if (obs.type === 'PIZZA') {
                      // The Holy Grail (Pizza Slice)
                      //      / \
