@@ -200,6 +200,36 @@ export class GraphicsEngine {
                      this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
                      this.ctx.fill();
 
+                 } else if (obs.type === 'CHEESE') {
+                     // The Jackpot (Cheese Wedge)
+                     //      |\
+                     //      | \
+                     //      |__\
+                     const bob = Math.sin(Date.now() / 200) * 5;
+                     const cY = screenY + bob; // Bobbing effect
+
+                     // Wedge
+                     this.ctx.fillStyle = '#FFD700'; // Gold
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX, cY);
+                     this.ctx.lineTo(screenX + obs.w, cY + obs.h);
+                     this.ctx.lineTo(screenX, cY + obs.h);
+                     this.ctx.fill();
+
+                     // Holes
+                     this.ctx.fillStyle = '#DAA520'; // Goldenrod
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.3, cY + obs.h * 0.5, 3, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.2, cY + obs.h * 0.8, 2, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.6, cY + obs.h * 0.8, 2.5, 0, Math.PI * 2);
+                     this.ctx.fill();
+
                  } else if (obs.type === 'COFFEE') {
                      // The Elixir of Life
                      //      )  )

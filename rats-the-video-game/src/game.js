@@ -164,6 +164,15 @@ function generateSurface() {
              state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
         }
 
+        // CHEESE! (The ultimate prize)
+        //      (\_/)
+        //      (^.^)  <-- "Jackpot!"
+        //      (> <)
+        if (Math.random() < 0.10) {
+             const cheeseX = x + w + gap / 2 + (Math.random() * 40 - 20);
+             state.obstacles.push({ x: cheeseX, w: 20, h: 20, type: 'CHEESE' });
+        }
+
         // Coffee! (The fuel of the developer... and now the rat)
         //      c[_]
         if (Math.random() < 0.15) {
@@ -492,6 +501,15 @@ function update() {
                  continue; // It's gone, move on
              }
 
+             if (obs.type === 'CHEESE') {
+                 // JACKPOT!
+                 state.obstacles.splice(i, 1);
+                 state.score += 50; // 50 points for cheese
+                 if (audio && audio.playCollect) audio.playCollect();
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#FFD700', 20);
+                 continue; // It's gone, move on
+             }
+
              if (obs.type === 'COFFEE') {
                  // SLURP!
                  state.obstacles.splice(i, 1);
@@ -499,7 +517,7 @@ function update() {
                  state.speedBoost = true;
                  state.speedBoostTimer = 300; // 5 seconds
                  if (audio && audio.playSlurp) audio.playSlurp();
-                 spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#6F4E37', 20);
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#6F4E37', 20);
                  continue;
              }
 
