@@ -200,6 +200,36 @@ export class GraphicsEngine {
                      this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
                      this.ctx.fill();
 
+                 } else if (obs.type === 'CHEESE') {
+                     // The Holy Grail of the Rat World
+                     //      /|
+                     //     / |
+                     //    /__|
+                     const bob = Math.sin(Date.now() / 150) * 5;
+                     const cY = screenY + bob;
+
+                     // Main Cheese Body (Wedge)
+                     this.ctx.fillStyle = '#FFD700'; // Gold / Yellow
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX + obs.w, cY); // Top right
+                     this.ctx.lineTo(screenX + obs.w, cY + obs.h); // Bottom right
+                     this.ctx.lineTo(screenX, cY + obs.h); // Bottom left
+                     this.ctx.fill();
+
+                     // Cheese Holes
+                     this.ctx.fillStyle = '#DAA520'; // Goldenrod (darker yellow)
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.7, cY + obs.h * 0.4, 3, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.8, cY + obs.h * 0.7, 4, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.4, cY + obs.h * 0.8, 2, 0, Math.PI * 2);
+                     this.ctx.fill();
+
                  } else if (obs.type === 'COFFEE') {
                      // The Elixir of Life
                      //      )  )
