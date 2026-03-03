@@ -40,3 +40,90 @@ test('verify palette-rat UX and accessibility improvements', async ({ page }) =>
   expect(labelCursor).toBe('pointer');
   expect(inputCursor).toBe('pointer');
 });
+
+//   (\_/)
+//   (o.o)
+//   (> <)
+// Squeak! Making the tests accessible!
+test.describe('Screen Reader Accessibility Verification', () => {
+    test('Icons have aria-hidden attribute', async ({ page }) => {
+        await page.goto('/rats-the-video-game/index.html');
+
+        // Verify options button icon
+        const optionsIcon = page.locator('#options-btn span');
+        await expect(optionsIcon).toHaveAttribute('aria-hidden', 'true');
+
+        // Verify help button icon
+        const helpIcon = page.locator('#help-btn span');
+        await expect(helpIcon).toHaveAttribute('aria-hidden', 'true');
+    });
+
+    test('Emojis have role and aria-label attributes', async ({ page }) => {
+        await page.goto('/rats-the-video-game/index.html');
+
+        // Wait for modal to be visible
+        await page.waitForSelector('#tutorial-modal', { state: 'visible' });
+
+        // Verify Pizza emoji
+        const pizzaEmoji = page.locator('span[aria-label="Pizza"]');
+        await expect(pizzaEmoji).toHaveAttribute('role', 'img');
+        await expect(pizzaEmoji).toHaveText('🍕');
+
+        // Verify Coffee emoji
+        const coffeeEmoji = page.locator('span[aria-label="Coffee"]');
+        await expect(coffeeEmoji).toHaveAttribute('role', 'img');
+        await expect(coffeeEmoji).toHaveText('☕');
+    });
+
+    test('Keyboard navigation works correctly', async ({ page }) => {
+        await page.goto('/rats-the-video-game/index.html');
+
+        // Close tutorial
+        const closeBtn = page.locator('#close-btn');
+        await expect(closeBtn).toBeFocused();
+        await page.keyboard.press('Enter');
+        await expect(page.locator('#tutorial-modal')).not.toBeVisible();
+
+        // Tab to options button (since it's first in DOM)
+        await page.keyboard.press('Tab');
+        const optionsBtn = page.locator('#options-btn');
+        await expect(optionsBtn).toBeFocused();
+
+        // Tab to help button
+        await page.keyboard.press('Tab');
+        const helpBtn = page.locator('#help-btn');
+        await expect(helpBtn).toBeFocused();
+
+        // Open tutorial
+        await page.keyboard.press('Enter');
+        await expect(page.locator('#tutorial-modal')).toBeVisible();
+
+        // Check focus moves into modal
+        await page.waitForTimeout(100); // Give time for focus to move
+        await expect(closeBtn).toBeFocused();
+
+        // Close tutorial
+        await page.keyboard.press('Enter');
+        await expect(page.locator('#tutorial-modal')).not.toBeVisible();
+    });
+
+    test('Mobile view works correctly', async ({ page }) => {
+        // Set viewport to mobile size
+        await page.setViewportSize({ width: 375, height: 667 });
+
+        await page.goto('/rats-the-video-game/index.html');
+
+        // Wait for modal to be visible
+        await page.waitForSelector('#tutorial-modal', { state: 'visible' });
+
+        // Check mobile controls are visible, desktop are hidden
+        // Can't easily check CSS media query for pointer: coarse here without specific setup,
+        // but we can ensure the layout doesn't break.
+        await expect(page.locator('#tutorial-modal')).toBeVisible();
+
+        const closeBtn = page.locator('#close-btn');
+        await closeBtn.click();
+
+        await expect(page.locator('#tutorial-modal')).not.toBeVisible();
+    });
+});

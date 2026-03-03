@@ -205,8 +205,8 @@
     </style>
 </head>
 <body>
-    <button id="options-btn" aria-label="Options">⚙</button>
-    <button id="help-btn" aria-label="Show Tutorial">?</button>
+    <button id="options-btn" aria-label="Options"><span aria-hidden="true">⚙</span></button>
+    <button id="help-btn" aria-label="Show Tutorial"><span aria-hidden="true">?</span></button>
 
     <div id="overlay">
         <h1>Rats: The Video Game</h1>
@@ -215,6 +215,11 @@
     </div>
 
     <!-- Help Modal -->
+    <!--
+      (\_/)
+      (o.o)
+      (> <)
+    -->
     <div id="tutorial-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="tutorial-title" aria-hidden="true">
         <div class="modal-content">
             <h2 id="tutorial-title">How to Play</h2>
@@ -225,7 +230,7 @@
                 <p class="desktop-only"><span class="key-badge">Space</span> Jump</p>
                 <p class="desktop-only"><span class="key-badge">S</span> Happy Squeak</p>
                 <p class="desktop-only"><span class="key-badge">Enter</span> / <span class="key-badge">C</span> Chew</p>
-                <p style="margin-top: 10px; color: #DAA520;">Collect 🍕 and ☕ for points!</p>
+                <p style="margin-top: 10px; color: #DAA520;">Collect <span role="img" aria-label="Pizza">🍕</span> and <span role="img" aria-label="Coffee">☕</span> for points!</p>
             </div>
 
             <button id="close-btn">PLAY!</button>
