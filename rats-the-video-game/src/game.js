@@ -171,6 +171,12 @@ function generateSurface() {
              state.obstacles.push({ x: coffeeX, w: 20, h: 25, type: 'COFFEE' });
         }
 
+        // CHEESE! (The ultimate prize)
+        if (Math.random() < 0.10) {
+             const cheeseX = x + w + gap / 2 + (Math.random() * 40 - 20);
+             state.obstacles.push({ x: cheeseX, w: 20, h: 20, type: 'CHEESE' });
+        }
+
         if (Math.random() < obsChance) {
             const obsX = x + w + gap / 2 - 15; // Center in the gap
             const rand = Math.random();
@@ -499,7 +505,16 @@ function update() {
                  state.speedBoost = true;
                  state.speedBoostTimer = 300; // 5 seconds
                  if (audio && audio.playSlurp) audio.playSlurp();
-                 spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#6F4E37', 20);
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#6F4E37', 20);
+                 continue;
+             }
+
+             if (obs.type === 'CHEESE') {
+                 // SQUEAK! (Jackpot)
+                 state.obstacles.splice(i, 1);
+                 state.score += 50;
+                 if (audio && audio.playCollect) audio.playCollect();
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#FFD700', 30);
                  continue;
              }
 
