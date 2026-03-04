@@ -56,3 +56,25 @@ if (e.target.closest('.modal') || e.target.closest('button')) return;
  (o.o)  "No rogue jumps in the Options centre."
  (> <)
 ```
+
+## 4. Emoji and Icon Accessibility
+
+**Problem:** Standard emojis and decorative icons in buttons can be read poorly by screen readers or cause redundant announcements if the element already has an `aria-label`.
+
+**Solution:**
+- Wrap emojis in a `<span role="img" aria-label="description">` to ensure screen readers announce them properly instead of misinterpreting or skipping them.
+- For purely decorative icons inside interactive elements (like buttons) that already have an `aria-label`, wrap the icon in a `<span aria-hidden="true">` to prevent redundant screen reader announcements.
+
+```html
+<!-- Bad: "Options gear" or just "gear" in some readers -->
+<button aria-label="Options">⚙</button>
+
+<!-- Good: Cleanly announced as "Options" -->
+<button aria-label="Options"><span aria-hidden="true">⚙</span></button>
+
+<!-- Bad: Might be skipped or read strangely -->
+<p>Collect 🍕 and ☕ for points!</p>
+
+<!-- Good: Explicitly labeled as images -->
+<p>Collect <span role="img" aria-label="pizza">🍕</span> and <span role="img" aria-label="coffee">☕</span> for points!</p>
+```
