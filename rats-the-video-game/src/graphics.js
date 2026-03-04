@@ -153,7 +153,34 @@ export class GraphicsEngine {
             if (screenX + obs.w > -100 && screenX < this.width + 100) {
                  const screenY = this.height - 20 - obs.h; // On the ground
 
-                 if (obs.type === 'BOX') {
+             if (obs.type === 'CHEESE') {
+                 // The Holy Grail (Cheese Wedge)
+                 const bob = Math.sin(Date.now() / 200) * 5;
+                 const cY = screenY + bob; // Bobbing effect
+
+                 // Wedge
+                 this.ctx.fillStyle = '#FFD700'; // Gold
+                 this.ctx.beginPath();
+                 this.ctx.moveTo(screenX, cY + obs.h); // Bottom Left
+                 this.ctx.lineTo(screenX + obs.w, cY + obs.h); // Bottom Right
+                 this.ctx.lineTo(screenX + obs.w / 2, cY); // Top Center
+                 this.ctx.fill();
+
+                 // Holes
+                 this.ctx.fillStyle = '#DAA520'; // Goldenrod
+                 this.ctx.beginPath();
+                 this.ctx.arc(screenX + obs.w / 2, cY + obs.h * 0.4, 3, 0, Math.PI * 2); // Top hole
+                 this.ctx.fill();
+
+                 this.ctx.beginPath();
+                 this.ctx.arc(screenX + obs.w * 0.3, cY + obs.h * 0.7, 4, 0, Math.PI * 2); // Bottom left hole
+                 this.ctx.fill();
+
+                 this.ctx.beginPath();
+                 this.ctx.arc(screenX + obs.w * 0.7, cY + obs.h * 0.8, 2, 0, Math.PI * 2); // Bottom right hole
+                 this.ctx.fill();
+
+             } else if (obs.type === 'BOX') {
                      // A delicious cardboard box
                      this.ctx.fillStyle = '#A0522D'; // Sienna
                      this.ctx.fillRect(screenX, screenY, obs.w, obs.h);

@@ -154,6 +154,13 @@ function generateSurface() {
         //      \  /
         const gap = Math.random() * (gapMax - gapMin) + gapMin; // District-based spacing
 
+        // CHEESE! (The ultimate prize)
+        //      🧀
+        if (Math.random() < 0.10) {
+             const cheeseX = x + w + gap / 2 + (Math.random() * 40 - 20);
+             state.obstacles.push({ x: cheeseX, w: 25, h: 30, type: 'CHEESE' });
+        }
+
         // Collectible Pizza! (A rat's dream)
         //      (\_/)
         //      (o.o)  <-- "Is that pepperoni?"
@@ -484,6 +491,15 @@ function update() {
 
         // Simple AABB overlap check
         if (ratR > obsL && ratL < obsR && ratB < obsT) {
+             if (obs.type === 'CHEESE') {
+                 // GOUDA GRAB!
+                 state.obstacles.splice(i, 1);
+                 state.score += 50; // 50 points, high value
+                 if (audio && audio.playCollect) audio.playCollect();
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#FFD700', 30);
+                 continue;
+             }
+
              if (obs.type === 'PIZZA') {
                  // NOM NOM NOM!
                  state.obstacles.splice(i, 1);
