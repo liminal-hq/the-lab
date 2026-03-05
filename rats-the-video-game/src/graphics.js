@@ -162,6 +162,34 @@ export class GraphicsEngine {
                      this.ctx.fillStyle = '#D2B48C'; // Tan tape
                      this.ctx.fillRect(screenX, screenY + obs.h/2 - 2, obs.w, 4);
 
+                 } else if (obs.type === 'CHEESE') {
+                     // The Golden Wedge (Cheese)
+                     const bob = Math.sin(Date.now() / 200) * 5;
+                     const cY = screenY + bob; // Bobbing effect
+
+                     // Wedge shape
+                     this.ctx.fillStyle = '#FFD700'; // Gold / Yellow
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX, cY + obs.h);
+                     this.ctx.lineTo(screenX + obs.w, cY + obs.h);
+                     this.ctx.lineTo(screenX + obs.w * 0.8, cY);
+                     this.ctx.lineTo(screenX, cY + obs.h * 0.4);
+                     this.ctx.fill();
+
+                     // Cheese holes
+                     this.ctx.fillStyle = '#DAA520'; // Darker gold for holes
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.4, cY + obs.h * 0.6, 4, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.7, cY + obs.h * 0.8, 3, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + obs.w * 0.2, cY + obs.h * 0.8, 5, 0, Math.PI * 2);
+                     this.ctx.fill();
+
                  } else if (obs.type === 'PIZZA') {
                      // The Holy Grail (Pizza Slice)
                      //      / \
