@@ -5,3 +5,6 @@
 
 ## Coffee Speed Boost
 - **Learning**: Increasing speed by 1.5x significantly alters the jump arc, making gaps easier to clear but precision landings harder. This forces the player to adapt their muscle memory quickly. The 5-second duration feels just long enough to be exciting but short enough not to be overwhelming.
+
+## Cheese (High-Value Collectible)
+- **Learning**: Adding a rare, high-value collectible (50 points, 10% spawn chance) creates a stronger incentive for exploration and taking risks, while the bright visual feedback (particles) and distinct audio cue reinforce the feeling of a significant reward, shifting the player's focus momentarily from mere survival to score chasing.

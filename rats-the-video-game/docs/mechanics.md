@@ -92,6 +92,27 @@ Reaching new heights.
 *   **Move Right**: Touch Right side of screen (50-100%)
 *   **Jump**: Tap anywhere or Swipe Up
 
+## 6. Cheese (The Holy Grail)
+Because what is a rat without cheese?
+
+*   **Item**: Cheese Wedge.
+*   **Appearance**: Yellow wedge with darker holes.
+*   **Behaviour**:
+    *   Collectible (pass through).
+    *   Rare spawn (10% chance).
+*   **Interaction**:
+    *   **Action**: Walk into it.
+    *   **Result**:
+        *   +50 Points.
+    *   **Audio**: "Collect" sound.
+    *   **Visual**: Burst of golden particles.
+
+<!--
+      |\___/|
+      | o _ |
+      \_/ \_/
+-->
+
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.
 *   We use Canadian spelling for all code comments and documentation (e.g., Colour, Centre).
