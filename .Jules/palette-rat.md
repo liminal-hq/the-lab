@@ -51,6 +51,16 @@ window.addEventListener('keydown', (e) => {
 if (e.target.closest('.modal') || e.target.closest('button')) return;
 ```
 
+## 4. Screen Reader Accessibility for Icons and Emojis
+
+**Pattern:**
+- Wrap purely decorative characters or icons inside interactive elements (like buttons) that already have an `aria-label` in `<span aria-hidden="true">`.
+- Wrap emojis used in text in `<span role="img" aria-label="...">` tags.
+
+**Why this helps:**
+- Prevents redundant screen reader announcements for decorative icons inside buttons that already have an explicit `aria-label`.
+- Ensures that screen readers correctly interpret and announce the meaning of emojis instead of ignoring them or reading them as obscure Unicode characters.
+
 ```
  (\_/)
  (o.o)  "No rogue jumps in the Options centre."
