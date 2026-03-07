@@ -1,0 +1,1 @@
+- Procedural audio can use a DynamicsCompressorNode before the destination to act as a limiter and prevent clipping.

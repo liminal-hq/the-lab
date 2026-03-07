@@ -432,6 +432,11 @@ function update() {
         state.currentCycle = 0; // Or handle subway cycles if needed
     }
 
+    // Sync current cycle with audio engine for district-based motifs
+    if (audio) {
+        audio.currentCycle = state.currentCycle;
+    }
+
     // Speed Boost Logic
     if (state.speedBoostTimer > 0) {
         state.speedBoostTimer--;

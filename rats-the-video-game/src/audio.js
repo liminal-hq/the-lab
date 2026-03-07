@@ -17,6 +17,7 @@ export class AudioEngine {
         this.musicEnabled = true;
         this.sfxEnabled = true;
         this.musicInterval = null;
+        this.currentCycle = 0; // The rat's progress, for musical motifs
     }
 
     init() {
@@ -25,7 +26,15 @@ export class AudioEngine {
             this.ctx = new (window.AudioContext || window.webkitAudioContext)();
             this.masterGain = this.ctx.createGain();
             this.masterGain.gain.value = 0.1; // Keep it low, humans startle easily
-            this.masterGain.connect(this.ctx.destination);
+
+            // DynamicsCompressorNode as a limiter to prevent harsh clipping
+            if (this.ctx.createDynamicsCompressor) {
+                this.compressor = this.ctx.createDynamicsCompressor();
+                this.masterGain.connect(this.compressor);
+                this.compressor.connect(this.ctx.destination);
+            } else {
+                this.masterGain.connect(this.ctx.destination);
+            }
         }
     }
 
@@ -326,7 +335,11 @@ export class AudioEngine {
 
                 // Channel 1: Lead (Random pentatonic scurrying)
                 if (Math.random() > 0.4) {
-                    const scale = [440, 523.25, 587.33, 659.25, 783.99, 880];
+                    let scale = [440, 523.25, 587.33, 659.25, 783.99, 880]; // Am pentatonic
+                    if (this.currentCycle >= 19) {
+                        // Industrial District: switch to a darker Phrygian scale
+                        scale = [440, 466.16, 523.25, 587.33, 659.25, 698.46, 783.99]; // A Phrygian
+                    }
                     const note = scale[Math.floor(Math.random() * scale.length)];
                     this.playTone(note, 0.1, 1);
                 }
