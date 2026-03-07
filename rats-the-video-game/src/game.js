@@ -112,20 +112,26 @@ function generateSurface() {
     // Decreased to 25 for a shorter level
     for (let i = 0; i < state.totalCycles; i++) {
         // District logic for visual identity + progression:
-        // 0-8: Burbs (green, safer)
-        // 9-16: Downtown (blue, moderate)
-        // 17+: Industrial (red, harder)
+        // 0-6: Burbs (green, safer)
+        // 7-12: Downtown (blue, moderate)
+        // 13-18: Construction (orange-ish, tricky)
+        // 19+: Industrial (red, harder)
         let hueBase = 100;
         let gapMin = 80;
         let gapMax = 120;
         let obsChance = 0.3;
 
-        if (i >= 17) {
+        if (i >= 19) {
             hueBase = 0;
             gapMin = 50;
             gapMax = 80;
             obsChance = 0.7;
-        } else if (i >= 9) {
+        } else if (i >= 13) {
+            hueBase = 30; // Orange-ish
+            gapMin = 55;
+            gapMax = 85;
+            obsChance = 0.6;
+        } else if (i >= 7) {
             hueBase = 200;
             gapMin = 60;
             gapMax = 90;
@@ -185,8 +191,13 @@ function generateSurface() {
                 // A Trap to jump
                 state.obstacles.push({ x: obsX, w: 40, h: 10, type: 'TRAP' });
             } else {
-                // Prius!
-                state.obstacles.push({ x: obsX - 25, w: 80, h: 40, type: 'PRIUS' });
+                // Prius! Only spawn if there's enough room to react
+                if (gap >= 85) {
+                    state.obstacles.push({ x: obsX - 25, w: 80, h: 40, type: 'PRIUS' });
+                } else {
+                    // Default to a narrower obstacle for readability
+                    state.obstacles.push({ x: obsX, w: 40, h: 10, type: 'TRAP' });
+                }
             }
         }
         x += w + gap;

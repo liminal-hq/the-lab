@@ -12,19 +12,29 @@ test('verify district generation colour bands', async ({ page }) => {
     return match ? parseFloat(match[1]) : null;
   };
 
-  for (let i = 0; i <= 8; i++) {
+  // Burbs: 0-6
+  for (let i = 0; i <= 6; i++) {
     const hue = getHue(buildings[i].color);
     expect(hue).toBeGreaterThanOrEqual(80);
     expect(hue).toBeLessThanOrEqual(120);
   }
 
-  for (let i = 9; i <= 16; i++) {
+  // Downtown: 7-12
+  for (let i = 7; i <= 12; i++) {
     const hue = getHue(buildings[i].color);
     expect(hue).toBeGreaterThanOrEqual(180);
     expect(hue).toBeLessThanOrEqual(220);
   }
 
-  for (let i = 17; i < buildings.length; i++) {
+  // Construction: 13-18
+  for (let i = 13; i <= 18; i++) {
+    const hue = getHue(buildings[i].color);
+    expect(hue).toBeGreaterThanOrEqual(10);
+    expect(hue).toBeLessThanOrEqual(50);
+  }
+
+  // Industrial: 19+
+  for (let i = 19; i < buildings.length; i++) {
     if (buildings[i].type === 'TUNNEL') continue;
     const hue = getHue(buildings[i].color);
     expect(hue).toBeGreaterThanOrEqual(-20);
