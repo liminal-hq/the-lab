@@ -171,6 +171,15 @@ function generateSurface() {
              state.obstacles.push({ x: coffeeX, w: 20, h: 25, type: 'COFFEE' });
         }
 
+        // CHEESE! (The Jackpot)
+        //     //\
+        //    //  \
+        //   /_____\
+        if (Math.random() < 0.10) {
+             const cheeseX = x + w + gap / 2 + (Math.random() * 40 - 20);
+             state.obstacles.push({ x: cheeseX, w: 25, h: 25, type: 'CHEESE' });
+        }
+
         if (Math.random() < obsChance) {
             const obsX = x + w + gap / 2 - 15; // Center in the gap
             const rand = Math.random();
@@ -492,6 +501,15 @@ function update() {
                  continue; // It's gone, move on
              }
 
+             if (obs.type === 'CHEESE') {
+                 // JACKPOT!
+                 state.obstacles.splice(i, 1);
+                 state.score += 50; // 50 points for cheese
+                 if (audio && audio.playCollect) audio.playCollect();
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#FFD700', 30);
+                 continue; // It's gone, move on
+             }
+
              if (obs.type === 'COFFEE') {
                  // SLURP!
                  state.obstacles.splice(i, 1);
@@ -499,7 +517,7 @@ function update() {
                  state.speedBoost = true;
                  state.speedBoostTimer = 300; // 5 seconds
                  if (audio && audio.playSlurp) audio.playSlurp();
-                 spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#6F4E37', 20);
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#6F4E37', 20);
                  continue;
              }
 
@@ -516,7 +534,7 @@ function update() {
                          state.rat.grounded = false;
                          state.rat.y = obsT + 5; // Pop up
                          if (audio && audio.playBoing) audio.playBoing();
-                         spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#A9A9A9', 10);
+                         spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#A9A9A9', 10);
                          continue;
                      }
                  }
@@ -525,13 +543,13 @@ function update() {
                      // Nom nom nom
                      if (obs.type === 'BOX') {
                          // Brighter colour (Burlywood) and more particles for visibility
-                         spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#DEB887', 20);
+                         spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#DEB887', 20);
                      } else if (obs.type === 'PRIUS') {
                          // Blue metal scraps
-                         spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#5A9BD4', 20);
+                         spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#5A9BD4', 20);
                      } else if (obs.type === 'TRASH_PILE') {
                          // Grey garbage bits
-                         spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#555', 20);
+                         spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#555', 20);
                      }
                      state.obstacles.splice(i, 1);
                      state.score++; // Delicious
