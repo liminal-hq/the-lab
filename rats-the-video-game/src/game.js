@@ -171,6 +171,12 @@ function generateSurface() {
              state.obstacles.push({ x: coffeeX, w: 20, h: 25, type: 'COFFEE' });
         }
 
+        // CHEESE! (The ultimate prize)
+        if (Math.random() < 0.10) {
+             const cheeseX = x + w + gap / 2 + (Math.random() * 40 - 20);
+             state.obstacles.push({ x: cheeseX, w: 30, h: 40, type: 'CHEESE' });
+        }
+
         if (Math.random() < obsChance) {
             const obsX = x + w + gap / 2 - 15; // Center in the gap
             const rand = Math.random();
@@ -490,6 +496,15 @@ function update() {
                  state.score += 10; // 10x points for pizza
                  if (audio && audio.playCollect) audio.playCollect();
                  continue; // It's gone, move on
+             }
+
+             if (obs.type === 'CHEESE') {
+                 // THE MOTHERLODE!
+                 state.obstacles.splice(i, 1);
+                 state.score += 50; // 50 points for cheese
+                 if (audio && audio.playCollect) audio.playCollect();
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#FFD700', 30);
+                 continue;
              }
 
              if (obs.type === 'COFFEE') {

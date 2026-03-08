@@ -186,18 +186,37 @@ export class GraphicsEngine {
                      this.ctx.lineTo(screenX + obs.w / 2, pY + obs.h - 4);
                      this.ctx.fill();
 
-                     // Pepperoni (The Vitamins)
+                     // Pepperoni (Flavor spots)
                      this.ctx.fillStyle = '#B22222'; // Firebrick
                      this.ctx.beginPath();
-                     this.ctx.arc(screenX + obs.w / 2, pY + 12, 4, 0, Math.PI * 2); // Center
+                     this.ctx.arc(screenX + obs.w / 2, pY + 10, 3, 0, Math.PI * 2);
+                     this.ctx.arc(screenX + obs.w / 2 - 5, pY + 18, 3, 0, Math.PI * 2);
+                     this.ctx.arc(screenX + obs.w / 2 + 6, pY + 15, 3, 0, Math.PI * 2);
                      this.ctx.fill();
 
+                 } else if (obs.type === 'CHEESE') {
+                     // The ultimate rat prize
+                     //      ___
+                     //     / o \
+                     //    /_____\
+                     const bob = Math.sin(Date.now() / 200) * 5;
+                     const cY = screenY + bob; // Bobbing effect
+
+                     // Wedge body
+                     this.ctx.fillStyle = '#FFD700'; // Gold
                      this.ctx.beginPath();
-                     this.ctx.arc(screenX + obs.w * 0.35, pY + 6, 3, 0, Math.PI * 2); // Top Left
+                     this.ctx.moveTo(screenX + obs.w / 2, cY);
+                     this.ctx.lineTo(screenX + obs.w, cY + obs.h);
+                     this.ctx.lineTo(screenX, cY + obs.h);
+                     this.ctx.closePath();
                      this.ctx.fill();
 
+                     // Cheese holes
+                     this.ctx.fillStyle = '#DAA520'; // Goldenrod holes
                      this.ctx.beginPath();
-                     this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
+                     this.ctx.arc(screenX + obs.w / 2, cY + 15, 4, 0, Math.PI * 2);
+                     this.ctx.arc(screenX + obs.w / 2 - 6, cY + 28, 3, 0, Math.PI * 2);
+                     this.ctx.arc(screenX + obs.w / 2 + 7, cY + 24, 5, 0, Math.PI * 2);
                      this.ctx.fill();
 
                  } else if (obs.type === 'COFFEE') {
