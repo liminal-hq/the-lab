@@ -31,6 +31,27 @@ A procedural open-world city game where you assume the role of an escaped lab ra
 
 ---
 
+### Incident Report: The smdu Breach
+
+![Containment Breach](assets/images/rats_containment_breach.svg)
+
+**Status:** *Under Investigation*
+
+The containment breach has spread beyond the city. Lab specimens have been observed scurrying through CAT-6 cables, navigating `node_modules/ink/build/`, and nesting inside [smdu](https://github.com/liminal-hq/smdu) — a terminal disk usage analyser built with Ink and React.
+
+The rats appear to have followed the resize event pipeline (SIGWINCH → PTY → Node streams → Ink runtime → smdu components), leaving paw prints across the entire render path. They were last seen chewing on Yoga layout nodes and have reportedly claimed `stdout` as their new burrow.
+
+*   **Subjects**: 3+ escaped specimens (one wearing goggles)
+*   **Entry Point**: Broken specimen housing → ethernet cable → `process.stdout`
+*   **Current Location**: Somewhere between `reconciler.resetAfterCommit()` and `log-update.js`
+*   **Terminal Output**: `WARNING: RATS DETECTED`
+
+<!--
+     ᘛ⁐̤ᕐᐷ  <-- they're in the comments too
+-->
+
+---
+
 ## 📝 Living Visual Journal
 
 ![Living Journal](assets/images/lab_journal.svg)
