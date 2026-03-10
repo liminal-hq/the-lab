@@ -154,23 +154,7 @@ function generateSurface() {
         //      \  /
         const gap = Math.random() * (gapMax - gapMin) + gapMin; // District-based spacing
 
-        // Collectible Pizza! (A rat's dream)
-        //      (\_/)
-        //      (o.o)  <-- "Is that pepperoni?"
-        //      (> <)
-        if (Math.random() < 0.25) {
-             const pizzaX = x + w + gap / 2 + (Math.random() * 40 - 20);
-             // Floating slightly above ground logically (h=40)
-             state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
-        }
-
-        // Coffee! (The fuel of the developer... and now the rat)
-        //      c[_]
-        if (Math.random() < 0.15) {
-             const coffeeX = x + w + gap / 2 + (Math.random() * 40 - 20);
-             state.obstacles.push({ x: coffeeX, w: 20, h: 25, type: 'COFFEE' });
-        }
-
+        // Collectibles are mutually exclusive with standard obstacles to avoid traps
         if (Math.random() < obsChance) {
             const obsX = x + w + gap / 2 - 15; // Center in the gap
             const rand = Math.random();
@@ -187,6 +171,25 @@ function generateSurface() {
             } else {
                 // Prius!
                 state.obstacles.push({ x: obsX - 25, w: 80, h: 40, type: 'PRIUS' });
+            }
+        } else {
+            // Collectible Pizza! (A rat's dream)
+            //      (\_/)
+            //      (o.o)  <-- "Is that pepperoni?"
+            //      (> <)
+            if (Math.random() < 0.25) {
+                 const pizzaX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 // Floating slightly above ground logically (h=40)
+                 state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
+            } else if (Math.random() < 0.15) {
+                 // Coffee! (The fuel of the developer... and now the rat)
+                 //      c[_]
+                 const coffeeX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 state.obstacles.push({ x: coffeeX, w: 20, h: 25, type: 'COFFEE' });
+            } else if (Math.random() < 0.10) {
+                 // CHEESE! (The high-value prize)
+                 const cheeseX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 state.obstacles.push({ x: cheeseX, w: 25, h: 30, type: 'CHEESE' });
             }
         }
         x += w + gap;
@@ -490,6 +493,15 @@ function update() {
                  state.score += 10; // 10x points for pizza
                  if (audio && audio.playCollect) audio.playCollect();
                  continue; // It's gone, move on
+             }
+
+             if (obs.type === 'CHEESE') {
+                 // THE MOTHERLODE!
+                 state.obstacles.splice(i, 1);
+                 state.score += 50; // 50 points for cheese!
+                 if (audio && audio.playCollect) audio.playCollect();
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#FFD700', 30);
+                 continue;
              }
 
              if (obs.type === 'COFFEE') {

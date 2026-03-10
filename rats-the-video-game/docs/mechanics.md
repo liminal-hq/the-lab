@@ -62,7 +62,26 @@ Even rats need a pick-me-up.
      [____]  <-- Zoom Zoom
 -->
 
-## 4. Springboard (Rat-apult)
+## 4. Cheese (The Motherlode)
+The highest value prize in the city.
+
+*   **Item**: Cheese Wedge.
+*   **Appearance**: A golden wedge of cheese with holes.
+*   **Behaviour**:
+    *   Collectible (pass through).
+*   **Interaction**:
+    *   **Action**: Walk into it.
+    *   **Result**:
+        *   +50 Points.
+    *   **Audio**: "Collect" sound.
+
+<!--
+       /|
+      / |
+     /__|  <-- Delicious
+-->
+
+## 5. Springboard (Rat-apult)
 Reaching new heights.
 
 *   **Obstacle**: Spring.
@@ -80,7 +99,7 @@ Reaching new heights.
       /_/
 -->
 
-## 5. Controls Update
+## 6. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
