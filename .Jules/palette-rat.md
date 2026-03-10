@@ -56,3 +56,14 @@ if (e.target.closest('.modal') || e.target.closest('button')) return;
  (o.o)  "No rogue jumps in the Options centre."
  (> <)
 ```
+
+## 4. Emoji and Decorative Icon Accessibility
+
+**Pattern:**
+- Wrap emojis in `<span role="img" aria-label="...">` to ensure screen readers announce them properly rather than reading out their unicode names.
+- For buttons that already have `aria-label` describing their function (like a "Options" button), wrap any decorative text or icons inside the button with `<span aria-hidden="true">` to prevent screen readers from announcing redundant information (e.g., avoiding "Options, gear icon").
+
+**Why this helps:**
+- Screen reader users get concise, contextually accurate descriptions of interactive elements.
+- It prevents annoying "double read" scenarios where an icon's name is read right after the button's label.
+- Emojis are explicitly announced based on their semantic meaning in the app, rather than relying on browser-dependent default pronunciation.
