@@ -617,7 +617,7 @@ function update() {
             // Double Jump!
             state.rat.vy = JUMP_FORCE * 0.9; // Slightly weaker than first jump
             state.rat.canDoubleJump = false;
-            audio.playTone(880, 0.1, 15); // Higher pitch for second jump
+            if (audio && audio.playDoubleJump) audio.playDoubleJump();
             // Air jump particles
             spawnParticles(state.rat.x, state.rat.y - 10, '#FFF', 10);
         }
