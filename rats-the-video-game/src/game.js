@@ -157,20 +157,30 @@ function generateSurface() {
     // Decreased to 25 for a shorter level
     for (let i = 0; i < state.totalCycles; i++) {
         // District logic for visual identity + progression:
-        // 0-8: Burbs (green, safer)
-        // 9-16: Downtown (blue, moderate)
-        // 17+: Industrial (red, harder)
+        // 0-6: Burbs (green, safer)
+        // 7-12: Downtown (blue, moderate)
+        // 13-18: Construction (orange, chaotic)
+        // 19+: Industrial (red, harder)
         let hueBase = 100;
         let gapMin = 80;
         let gapMax = 120;
         let obsChance = 0.3;
+        let district = 'BURBS';
 
-        if (i >= 17) {
+        if (i >= 19) {
+            district = 'INDUSTRIAL';
             hueBase = 0;
             gapMin = 50;
             gapMax = 80;
             obsChance = 0.7;
-        } else if (i >= 9) {
+        } else if (i >= 13) {
+            district = 'CONSTRUCTION';
+            hueBase = 35; // Orange
+            gapMin = 60;
+            gapMax = 100;
+            obsChance = 0.6;
+        } else if (i >= 7) {
+            district = 'DOWNTOWN';
             hueBase = 200;
             gapMin = 60;
             gapMax = 90;
@@ -201,22 +211,44 @@ function generateSurface() {
 
         // Collectibles are mutually exclusive with standard obstacles to avoid traps
         if (Math.random() < obsChance) {
-            const obsX = x + w + gap / 2 - 15; // Center in the gap
-            const rand = Math.random();
+            let rand = Math.random();
+            let type = '';
+            let objW = 30;
+            let objH = 30;
 
-            if (rand < 0.3) {
-                // A Box to chew
-                state.obstacles.push({ x: obsX, w: 30, h: 30, type: 'BOX' });
-            } else if (rand < 0.5) {
-                // A SPRING! (Rat-apult)
-                state.obstacles.push({ x: obsX, w: 30, h: 20, type: 'SPRING' });
-            } else if (rand < 0.8) {
-                // A Trap to jump
-                state.obstacles.push({ x: obsX, w: 40, h: 10, type: 'TRAP' });
+            // District-specific obstacle weighting
+            if (district === 'CONSTRUCTION') {
+                if (rand < 0.5) type = 'BOX';
+                else if (rand < 0.8) type = 'SPRING';
+                else type = 'TRAP';
+            } else if (district === 'INDUSTRIAL') {
+                if (rand < 0.4) type = 'TRASH_PILE'; // Trash piles fit small gaps better
+                else if (rand < 0.7) type = 'TRAP';
+                else type = 'BOX';
             } else {
-                // Prius!
-                state.obstacles.push({ x: obsX - 25, w: 80, h: 40, type: 'PRIUS' });
+                if (rand < 0.3) type = 'BOX';
+                else if (rand < 0.5) type = 'SPRING';
+                else if (rand < 0.8) type = 'TRAP';
+                else type = 'PRIUS';
             }
+
+            // Set dimensions based on chosen type
+            if (type === 'BOX') { objW = 30; objH = 30; }
+            else if (type === 'SPRING') { objW = 30; objH = 20; }
+            else if (type === 'TRAP') { objW = 40; objH = 10; }
+            else if (type === 'PRIUS') { objW = 80; objH = 40; }
+            else if (type === 'TRASH_PILE') { objW = 40; objH = 30; }
+
+            // Readability constraint: fallback if obstacle is too large for the gap
+            if (objW > gap - 10) {
+                type = 'BOX';
+                objW = 30;
+                objH = 30;
+            }
+
+            // Centre correctly based on the final object width.
+            const obsX = x + w + (gap / 2) - (objW / 2);
+            state.obstacles.push({ x: obsX, w: objW, h: objH, type: type });
         } else {
             // Collectible Pizza! (A rat's dream)
             //      (\_/)
