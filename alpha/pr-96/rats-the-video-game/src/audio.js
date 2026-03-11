@@ -296,6 +296,26 @@ export class AudioEngine {
         osc.stop(now + 0.3);
     }
 
+    playDoubleJump() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // A lighter, quicker squeak for the air jump.
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.1);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.1);
+    }
+
     setLevel(level) {
         this.level = level;
     }
