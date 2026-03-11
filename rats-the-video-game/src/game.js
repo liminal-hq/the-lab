@@ -58,6 +58,48 @@ const state = {
     speedBoostTimer: 0
 };
 
+// Saved for the third level after the subway.
+// We are staging the code path now, but the current game still stops at the subway.
+//      (\_/)
+//      (o.o)  "No opening this tunnel yet."
+//      (> <)
+const THIRD_LEVEL_ENABLED = false;
+const THIRD_LEVEL_NAME = 'THIRD_LEVEL';
+const THIRD_LEVEL_BLUEPRINT = Object.freeze({
+    totalCycles: 18,
+    minimumClearance: 10,
+    districts: [
+        {
+            name: 'CONSTRUCTION',
+            cycleStart: 0,
+            cycleEnd: 7,
+            hueBase: 35,
+            gapMin: 60,
+            gapMax: 100,
+            obsChance: 0.6,
+            obstacleWeights: [
+                { type: 'BOX', threshold: 0.5, w: 30, h: 30 },
+                { type: 'SPRING', threshold: 0.8, w: 30, h: 20 },
+                { type: 'TRAP', threshold: 1.0, w: 40, h: 10 }
+            ]
+        },
+        {
+            name: 'INDUSTRIAL',
+            cycleStart: 8,
+            cycleEnd: 17,
+            hueBase: 0,
+            gapMin: 50,
+            gapMax: 80,
+            obsChance: 0.7,
+            obstacleWeights: [
+                { type: 'TRASH_PILE', threshold: 0.4, w: 40, h: 30 },
+                { type: 'TRAP', threshold: 0.7, w: 40, h: 10 },
+                { type: 'BOX', threshold: 1.0, w: 30, h: 30 }
+            ]
+        }
+    ]
+});
+
 // Expose state for debugging and testing
 window.gameState = state;
 
@@ -83,8 +125,10 @@ function generateLevel() {
 
     if (state.level === 'SURFACE') {
         generateSurface();
-    } else {
+    } else if (state.level === 'SUBWAY') {
         generateSubway();
+    } else if (state.level === THIRD_LEVEL_NAME) {
+        generateThirdLevel();
     }
 }
 
@@ -223,6 +267,60 @@ function generateSubway() {
              }
         }
         x += w;
+    }
+
+    if (THIRD_LEVEL_ENABLED) {
+        // Saved for the future third level after the subway.
+        state.obstacles.push({ x: x + 120, w: 80, h: 90, type: 'THIRD_LEVEL_EXIT' });
+    }
+}
+
+function getThirdLevelDistrict(cycle) {
+    return THIRD_LEVEL_BLUEPRINT.districts.find((district) =>
+        cycle >= district.cycleStart && cycle <= district.cycleEnd
+    ) || THIRD_LEVEL_BLUEPRINT.districts[THIRD_LEVEL_BLUEPRINT.districts.length - 1];
+}
+
+function chooseThirdLevelObstacle(district, gap) {
+    const roll = Math.random();
+    let choice = district.obstacleWeights[district.obstacleWeights.length - 1];
+
+    for (const candidate of district.obstacleWeights) {
+        if (roll <= candidate.threshold) {
+            choice = candidate;
+            break;
+        }
+    }
+
+    if (choice.w > gap - THIRD_LEVEL_BLUEPRINT.minimumClearance) {
+        return { type: 'BOX', w: 30, h: 30 };
+    }
+
+    return { type: choice.type, w: choice.w, h: choice.h };
+}
+
+function generateThirdLevel() {
+    let x = 0;
+
+    state.totalCycles = THIRD_LEVEL_BLUEPRINT.totalCycles;
+
+    for (let i = 0; i < state.totalCycles; i++) {
+        const district = getThirdLevelDistrict(i);
+        const w = 140 + Math.random() * 180;
+        const h = 120 + Math.random() * (canvas.height - 220);
+        const hue = district.hueBase + (Math.random() * 30 - 15);
+        const gap = Math.random() * (district.gapMax - district.gapMin) + district.gapMin;
+
+        state.buildings.push({ x, w, h, color: `hsl(${hue}, 25%, 28%)` });
+
+        if (Math.random() < district.obsChance) {
+            const obstacle = chooseThirdLevelObstacle(district, gap);
+            const obsX = x + w + (gap / 2) - (obstacle.w / 2);
+            state.obstacles.push({ x: obsX, w: obstacle.w, h: obstacle.h, type: obstacle.type });
+        }
+
+        x += w + gap;
+        state.cycleCheckpoints.push(x);
     }
 }
 
@@ -428,8 +526,11 @@ function update() {
     if (state.level === 'SURFACE') {
         const cycleIdx = state.cycleCheckpoints.findIndex(cp => state.rat.x < cp);
         state.currentCycle = cycleIdx === -1 ? state.totalCycles : cycleIdx + 1;
-    } else {
+    } else if (state.level === 'SUBWAY') {
         state.currentCycle = 0; // Or handle subway cycles if needed
+    } else if (state.level === THIRD_LEVEL_NAME) {
+        const cycleIdx = state.cycleCheckpoints.findIndex(cp => state.rat.x < cp);
+        state.currentCycle = cycleIdx === -1 ? state.totalCycles : cycleIdx + 1;
     }
 
     // Speed Boost Logic
@@ -588,6 +689,13 @@ function update() {
                      state.level = 'SUBWAY';
                      generateLevel(); // Transition!
                      return; // Skip rest of update frame
+                 }
+             } else if (obs.type === 'THIRD_LEVEL_EXIT') {
+                 if (!state.levelCompleted && THIRD_LEVEL_ENABLED) {
+                     state.levelCompleted = true;
+                     state.level = THIRD_LEVEL_NAME;
+                     generateLevel(); // Saved for the future third level after the subway.
+                     return;
                  }
              }
         }

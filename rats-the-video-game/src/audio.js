@@ -17,6 +17,21 @@ export class AudioEngine {
         this.musicEnabled = true;
         this.sfxEnabled = true;
         this.musicInterval = null;
+        this.level = 'SURFACE';
+        // Saved for the third level after the subway unlocks.
+        // The motifs are staged here, but the level branch stays disabled until the route exists.
+        this.futureThirdLevelMotifs = Object.freeze({
+            construction: {
+                lead: [392, 440, 523.25, 587.33, 698.46],
+                bass: [98, 123.47, 146.83, 196],
+                drumBeat: 8
+            },
+            industrial: {
+                lead: [220, 261.63, 311.13, 329.63, 392],
+                bass: [55, 73.42, 82.41, 98],
+                drumBeat: 4
+            }
+        });
     }
 
     init() {
@@ -316,6 +331,26 @@ export class AudioEngine {
                      setTimeout(() => this.playTone(70, 0.1, 3), 100);
                 }
 
+            } else if (this.level === 'THIRD_LEVEL') {
+                // Saved for the future third level after the subway.
+                // We are parking the motif work from the cleanup queue here until the route is enabled.
+                const motif = beat < 64
+                    ? this.futureThirdLevelMotifs.construction
+                    : this.futureThirdLevelMotifs.industrial;
+
+                if (beat % motif.drumBeat === 0) {
+                    const bass = motif.bass[(beat / motif.drumBeat) % motif.bass.length];
+                    this.playTone(bass, 0.2, 0);
+                }
+
+                if (Math.random() > 0.35) {
+                    const lead = motif.lead[Math.floor(Math.random() * motif.lead.length)];
+                    this.playTone(lead, 0.12, 1);
+                }
+
+                if (beat % motif.drumBeat === motif.drumBeat / 2) {
+                    this.playTone(90, 0.05, 3);
+                }
             } else {
                 // SURFACE Theme (Original)
                 // Channel 0: Bass (The heavy footsteps of the exterminator... or a fat rat)

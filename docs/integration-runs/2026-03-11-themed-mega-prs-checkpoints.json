@@ -1,0 +1,33 @@
+{
+  "runDate": "2026-03-11",
+  "repository": "liminal-hq/the-lab",
+  "mode": "audit",
+  "plannedIntegrationBranch": "integration/themed-pr-consolidation",
+  "status": "in-progress",
+  "checkpoints": [
+    {
+      "ts": "2026-03-11T05:36:00Z",
+      "step": "create integration branch",
+      "status": "completed",
+      "details": "Created integration/themed-pr-consolidation from fd9f4d5 with planned local fold payload intact"
+    },
+    {
+      "ts": "2026-03-11T05:37:00Z",
+      "step": "apply changes-requested labels",
+      "status": "completed",
+      "details": "Added changes-requested to PRs #58 and #80"
+    },
+    {
+      "ts": "2026-03-11T05:39:00Z",
+      "step": "post PR status comments",
+      "status": "completed",
+      "details": "Commented on consolidation, fold, supersede, and changes-requested PRs per execution sequence"
+    },
+    {
+      "ts": "2026-03-11T05:40:00Z",
+      "step": "commit local fold payload",
+      "status": "completed",
+      "details": "Committed local groundwork, journal update, and integration artefacts as 3e4ce06 with Jules as primary author"
+    }
+  ]
+}

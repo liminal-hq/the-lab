@@ -1,0 +1,224 @@
+{
+  "runDate": "2026-03-11",
+  "repository": "liminal-hq/the-lab",
+  "mode": "audit",
+  "requestedBy": "scott",
+  "generatedBy": "Codex GPT-5",
+  "plannedIntegrationBranch": "integration/themed-pr-consolidation",
+  "branchNamingCheck": "pass",
+  "mainSnapshot": {
+    "currentBranch": "main",
+    "currentMainHead": {
+      "sha": "fd9f4d5",
+      "subject": "Containment breach — rats escape into `smdu` (#91)"
+    },
+    "workingTreeClean": true,
+    "auditStartedFromMain": true,
+    "branchProtection": "none configured",
+    "allowedMergeMethods": [
+      "merge",
+      "rebase"
+    ]
+  },
+  "labelBootstrapChecks": {
+    "changesRequestedExists": true,
+    "changesRequestedDescription": "Review feedback requested before merge",
+    "manualFollowUpExists": true,
+    "manualFollowUpDescription": "Needs manual attention outside automated integration workflow"
+  },
+  "themes": [
+    {
+      "name": "gameplay-movement",
+      "recommendedTitle": "🧱 Scurry: Add double jump movement (#62)",
+      "baselinePrs": [62],
+      "supersededPrs": [56, 58],
+      "state": "CLEAN",
+      "notes": [
+        "Use #62 as the clean baseline.",
+        "Do not merge #58 directly because it drags in audio and verification artefacts."
+      ]
+    },
+    {
+      "name": "gameplay-cheese",
+      "recommendedTitle": "🐀 Scurry: Add high-value cheese collectibles (#94)",
+      "baselinePrs": [94],
+      "supersededPrs": [66, 68, 70, 72, 74, 79, 83, 89, 92],
+      "state": "CLEAN",
+      "notes": [
+        "Use #94 as the representative branch.",
+        "This is the strongest coherent cheese branch and already includes docs.",
+        "#79 differs mainly by keeping cheese in the older pizza-and-coffee spawn flow."
+      ]
+    },
+    {
+      "name": "ux-accessibility",
+      "recommendedTitle": "🎨🐀 Palette-Rat: Improve mobile instructions and icon accessibility (#63, #95)",
+      "baselinePrs": [63, 95],
+      "supersededPrs": [67, 69, 71, 73, 84, 90, 93],
+      "state": "CLEAN",
+      "notes": [
+        "Keep #63 for device-specific instruction text.",
+        "Keep #95 for semantic wrappers around icons and emojis.",
+        "#57 is distinct because it changes touch jump-plus-chew behaviour.",
+        "Treat #57 and #80 as changes-requested because they include noisy files."
+      ]
+    },
+    {
+      "name": "world-generation",
+      "recommendedTitle": "🚇 Tunneller: Add construction district pacing (#61)",
+      "baselinePrs": [61],
+      "supersededPrs": [82],
+      "state": "CLEAN",
+      "notes": [
+        "#61 is broader than #82 and is the preferred representative.",
+        "#82 should be folded into dormant third-level groundwork instead of the current route."
+      ]
+    },
+    {
+      "name": "audio-motifs",
+      "recommendedTitle": "🎛️ Chord: Add district audio motifs and compression (#60)",
+      "baselinePrs": [60],
+      "supersededPrs": [81],
+      "state": "CLEAN",
+      "notes": [
+        "#60 is broader than #81 and is the preferred representative.",
+        "Merge after world-generation because both touch game state.",
+        "#81 should be folded into dormant third-level groundwork instead of the current route."
+      ]
+    },
+    {
+      "name": "verification",
+      "recommendedTitle": "🧪 Nibble: Expand gameplay verification coverage (#65, #88)",
+      "baselinePrs": [65, 88],
+      "supersededPrs": [],
+      "state": "CLEAN",
+      "notes": [
+        "These are additive test changes and can be merged together."
+      ]
+    },
+    {
+      "name": "docs-journal",
+      "recommendedTitle": "📜🖋️ Archivist-Ink: Refresh controls docs and visual journal (#85, #86, #87)",
+      "baselinePrs": [85, 86, 87],
+      "supersededPrs": [64],
+      "state": "CLEAN",
+      "notes": [
+        "Prefer #87 over #64 for the visual journal update."
+      ]
+    }
+  ],
+  "requiredFixesBeforeMerge": [
+    {
+      "pr": 57,
+      "fix": "Fold touch jump-plus-chew behaviour into the UX mega PR and drop root dependency churn plus stale test-results deletion."
+    },
+    {
+      "pr": 58,
+      "fix": "Split or discard audio and verification artefacts; keep #62 as the movement baseline."
+    },
+    {
+      "pr": 80,
+      "fix": "Move verification work into the repo test structure and drop generated PNG artefacts."
+    },
+    {
+      "prRange": "58-84",
+      "fix": "Rewrite commits so Jules is the primary author wherever that is not already true."
+    },
+    {
+      "prs": [81, 82],
+      "fix": "Port the ideas into dormant third-level scaffolding and keep that route disabled for now."
+    }
+  ],
+  "themeComparisonFindings": {
+    "doubleJump": "62 is the best clean baseline; 56 is a narrower duplicate and 58 adds extra audio and verification files.",
+    "cheese": "94 is the strongest representative; 79 mainly differs by keeping cheese in the older collectible spawn flow, and the chosen direction is still 94.",
+    "paletteRat": "90, 93, and 95 converge on the same accessibility HTML outcome; 57 is being folded for touch behaviour and 80 remains a noisy verification branch.",
+    "audio": "60 is broader than 81 and becomes the preferred baseline, while 81 moves into dormant third-level groundwork.",
+    "tunneller": "61 is broader than 82 and becomes the preferred baseline, while 82 moves into dormant third-level groundwork."
+  },
+  "authorAudit": {
+    "alreadyJulesPrimary": [56, 57, 85, 86, 87, 88, 89, 90, 92, 93, 94, 95],
+    "needsJulesPrimaryRewriteIfRetained": [58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 79, 80, 81, 82, 83, 84]
+  },
+  "commitRewritePlan": [
+    {
+      "prRange": "58-84",
+      "status": "author rewrite needed if retained",
+      "method": "git rebase -i --root --exec 'git commit --amend --no-edit --author=\"google-labs-jules[bot] <161369871+google-labs-jules[bot]@users.noreply.github.com>\"'",
+      "primaryAuthor": "google-labs-jules[bot] <161369871+google-labs-jules[bot]@users.noreply.github.com>",
+      "forcePush": true
+    },
+    {
+      "pr": 61,
+      "status": "fail",
+      "method": "git rebase -i --reword origin/main",
+      "primaryAuthor": "google-labs-jules[bot] <161369871+google-labs-jules[bot]@users.noreply.github.com>",
+      "forcePush": true
+    },
+    {
+      "pr": 64,
+      "status": "fail",
+      "method": "git rebase -i --reword origin/main",
+      "primaryAuthor": "google-labs-jules[bot] <161369871+google-labs-jules[bot]@users.noreply.github.com>",
+      "forcePush": true
+    },
+    {
+      "pr": 75,
+      "status": "fail",
+      "method": "git rebase -i --reword origin/main",
+      "primaryAuthor": "google-labs-jules[bot] <161369871+google-labs-jules[bot]@users.noreply.github.com>",
+      "forcePush": true
+    },
+    {
+      "pr": 86,
+      "status": "fail",
+      "method": "git rebase -i --reword origin/main",
+      "primaryAuthor": "google-labs-jules[bot] <161369871+google-labs-jules[bot]@users.noreply.github.com>",
+      "forcePush": true
+    },
+    {
+      "pr": 87,
+      "status": "fail",
+      "method": "git rebase -i --reword origin/main",
+      "primaryAuthor": "google-labs-jules[bot] <161369871+google-labs-jules[bot]@users.noreply.github.com>",
+      "forcePush": true
+    }
+  ],
+  "labelPlan": {
+    "consolidation": [60, 61, 62, 85, 88, 94, 95],
+    "changes-requested": [58, 80],
+    "manual-follow-up": [],
+    "fold-into-mega-pr-after-comment": [57, 63, 65, 86, 87],
+    "fold-into-future-third-level-after-comment": [81, 82],
+    "supersede-close-after-comment": [
+      56, 59, 64, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 79, 83, 84, 89, 90, 92, 93
+    ]
+  },
+  "closureDestinations": {
+    "57": "🎨🐀 Palette-Rat: Improve mobile instructions and icon accessibility (#63, #95)",
+    "59": "🎨🐀 Palette-Rat: Improve mobile instructions and icon accessibility (#63, #95)",
+    "63": "🎨🐀 Palette-Rat: Improve mobile instructions and icon accessibility (#63, #95)",
+    "65": "🧪 Nibble: Expand gameplay verification coverage (#65, #88)",
+    "75": "🎨🐀 Palette-Rat: Improve mobile instructions and icon accessibility (#63, #95)",
+    "79": "🐀 Scurry: Add high-value cheese collectibles (#94)",
+    "81": "🚧🐀 After-Subway: Stage third-level generation and audio hooks (#81, #82)",
+    "82": "🚧🐀 After-Subway: Stage third-level generation and audio hooks (#81, #82)",
+    "86": "📜🖋️ Archivist-Ink: Refresh controls docs and visual journal (#85, #86, #87)",
+    "87": "📜🖋️ Archivist-Ink: Refresh controls docs and visual journal (#85, #86, #87)"
+  },
+  "mergeOrderProposal": [
+    "Gameplay movement mega PR from #62",
+    "Gameplay cheese mega PR from #94",
+    "UX and accessibility mega PR from #63 + #95",
+    "World generation mega PR from #61",
+    "Audio motif mega PR from #60",
+    "Verification mega PR from #65 + #88",
+    "Docs and visual journal mega PR from #85 + #86 + #87"
+  ],
+  "executionSequenceArtifact": {
+    "markdown": "docs/integration-runs/2026-03-11-themed-mega-prs-execution-sequence.md",
+    "json": "docs/integration-runs/2026-03-11-themed-mega-prs-execution-sequence.json"
+  },
+  "executeReady": true,
+  "executeBlockedBy": []
+}
