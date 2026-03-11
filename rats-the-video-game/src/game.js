@@ -578,6 +578,11 @@ function update() {
         state.currentCycle = cycleIdx === -1 ? state.totalCycles : cycleIdx + 1;
     }
 
+    // Sync current cycle with audio engine for dynamic music
+    if (audio && audio.setCycle) {
+        audio.setCycle(state.currentCycle);
+    }
+
     // Speed Boost Logic
     if (state.speedBoostTimer > 0) {
         state.speedBoostTimer--;
