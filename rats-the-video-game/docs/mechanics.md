@@ -43,7 +43,28 @@ The city is dangerous. Humans have laid traps.
      |______|  <-- Do Not Touch
 -->
 
-## 3. Coffee Break (Power-Up)
+## 3. Pizza Slice (Collectible)
+A rat's ultimate dream.
+
+*   **Item**: Pizza.
+*   **Appearance**: Floating cheese wedge with crust and pepperoni.
+*   **Behaviour**:
+    *   Collectible (pass through).
+*   **Interaction**:
+    *   **Action**: Walk into or jump into it.
+    *   **Result**:
+        *   +10 Points.
+    *   **Audio**: "Collect" chime.
+
+<!--
+       // ""--.._
+      ||  (_)  _ "-._
+      ||    _ (_)    '-.
+      ||   (_)   __..-'
+       \\__..--""    <-- Nom Nom
+-->
+
+## 4. Coffee Break (Power-Up)
 Even rats need a pick-me-up.
 
 *   **Item**: Coffee Cup.
@@ -62,7 +83,7 @@ Even rats need a pick-me-up.
      [____]  <-- Zoom Zoom
 -->
 
-## 4. Cheese (The Motherlode)
+## 5. Cheese (The Motherlode)
 The highest value prize in the city.
 
 *   **Item**: Cheese Wedge.
@@ -81,7 +102,7 @@ The highest value prize in the city.
      /__|  <-- Delicious
 -->
 
-## 5. Springboard (Rat-apult)
+## 6. Springboard (Rat-apult)
 Reaching new heights.
 
 *   **Obstacle**: Spring.
@@ -99,7 +120,7 @@ Reaching new heights.
       /_/
 -->
 
-## 6. Controls Update
+## 7. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
@@ -109,7 +130,7 @@ Reaching new heights.
 ### Touch Controls (Mobile)
 *   **Move Left**: Touch Left side of screen (0-50%)
 *   **Move Right**: Touch Right side of screen (50-100%)
-*   **Jump**: Tap anywhere or Swipe Up
+*   **Jump & Chew**: Tap anywhere or Swipe Up (triggers both simultaneously to save space)
 
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.
