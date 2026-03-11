@@ -426,7 +426,11 @@ function handleTouch(e) {
                 // SWIPE UP DETECTED!
                 state.input.jumpPressed = true;
                 state.input.jump = true;
-                setTimeout(() => { state.input.jump = false; }, 100);
+                state.input.chew = true; // Also Chew on swipe up!
+                setTimeout(() => {
+                    state.input.jump = false;
+                    state.input.chew = false;
+                }, 100);
 
                 swipeData.hasJumped = true;
             }
@@ -492,15 +496,17 @@ function handleTouch(e) {
 function handleJumpTap(e) {
     if (e.target.closest('.modal') || e.target.closest('button')) return;
 
-    // Trigger jump
+    // Trigger jump and chew together on touch so mobile play keeps pace with the smaller control surface.
     state.input.jumpPressed = true;
     state.input.jump = true;
+    state.input.chew = true;
 
     // Reset jump input after a short delay to prevent "flying" if logic requires toggle
     // But game loop checks `state.input.jump` every frame.
     // We need to ensure it's true for at least one update.
     setTimeout(() => {
         state.input.jump = false;
+        state.input.chew = false;
     }, 100);
 }
 
