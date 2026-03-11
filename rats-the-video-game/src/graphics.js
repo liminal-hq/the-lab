@@ -200,6 +200,33 @@ export class GraphicsEngine {
                      this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
                      this.ctx.fill();
 
+                 } else if (obs.type === 'CHEESE') {
+                     // The Motherlode
+                     const bob = Math.sin(Date.now() / 200) * 5;
+                     const cY = screenY + bob; // Bobbing effect
+
+                     // Wedge base
+                     this.ctx.fillStyle = '#FFD700'; // Gold
+                     this.ctx.beginPath();
+                     this.ctx.moveTo(screenX, cY);
+                     this.ctx.lineTo(screenX + obs.w, cY + obs.h / 2);
+                     this.ctx.lineTo(screenX, cY + obs.h);
+                     this.ctx.fill();
+
+                     // Cheese holes (darker)
+                     this.ctx.fillStyle = '#DAA520'; // Goldenrod
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + 8, cY + 8, 3, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + 15, cY + 18, 4, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     this.ctx.beginPath();
+                     this.ctx.arc(screenX + 5, cY + 22, 2, 0, Math.PI * 2);
+                     this.ctx.fill();
+
                  } else if (obs.type === 'COFFEE') {
                      // The Elixir of Life
                      //      )  )
