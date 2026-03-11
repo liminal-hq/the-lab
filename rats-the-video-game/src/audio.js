@@ -17,6 +17,22 @@ export class AudioEngine {
         this.musicEnabled = true;
         this.sfxEnabled = true;
         this.musicInterval = null;
+        this.level = 'SURFACE';
+        // Saved for the third level after the subway unlocks.
+        // The motifs are staged here, but the level branch stays disabled until the route exists.
+        this.futureThirdLevelMotifs = Object.freeze({
+            construction: {
+                lead: [392, 440, 523.25, 587.33, 698.46],
+                bass: [98, 123.47, 146.83, 196],
+                drumBeat: 8
+            },
+            industrial: {
+                lead: [220, 261.63, 311.13, 329.63, 392],
+                bass: [55, 73.42, 82.41, 98],
+                drumBeat: 4
+            }
+        });
+        this.cycle = 0;
     }
 
     init() {
@@ -25,8 +41,26 @@ export class AudioEngine {
             this.ctx = new (window.AudioContext || window.webkitAudioContext)();
             this.masterGain = this.ctx.createGain();
             this.masterGain.gain.value = 0.1; // Keep it low, humans startle easily
-            this.masterGain.connect(this.ctx.destination);
+
+            // Compressor to prevent loud squeaks from causing distortion
+            if (this.ctx.createDynamicsCompressor) {
+                this.compressor = this.ctx.createDynamicsCompressor();
+                this.compressor.threshold.setValueAtTime(-20, this.ctx.currentTime);
+                this.compressor.knee.setValueAtTime(10, this.ctx.currentTime);
+                this.compressor.ratio.setValueAtTime(12, this.ctx.currentTime);
+                this.compressor.attack.setValueAtTime(0, this.ctx.currentTime);
+                this.compressor.release.setValueAtTime(0.2, this.ctx.currentTime);
+
+                this.masterGain.connect(this.compressor);
+                this.compressor.connect(this.ctx.destination);
+            } else {
+                this.masterGain.connect(this.ctx.destination);
+            }
         }
+    }
+
+    setCycle(cycle) {
+        this.cycle = cycle;
     }
 
     playTone(frequency, duration, channelIdx = 0) {
@@ -262,6 +296,26 @@ export class AudioEngine {
         osc.stop(now + 0.3);
     }
 
+    playDoubleJump() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // A lighter, quicker squeak for the air jump.
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(880, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(1200, this.ctx.currentTime + 0.1);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.1);
+    }
+
     setLevel(level) {
         this.level = level;
     }
@@ -316,28 +370,69 @@ export class AudioEngine {
                      setTimeout(() => this.playTone(70, 0.1, 3), 100);
                 }
 
+            } else if (this.level === 'THIRD_LEVEL') {
+                // Saved for the future third level after the subway.
+                // We are parking the motif work from the cleanup queue here until the route is enabled.
+                const motif = beat < 64
+                    ? this.futureThirdLevelMotifs.construction
+                    : this.futureThirdLevelMotifs.industrial;
+
+                if (beat % motif.drumBeat === 0) {
+                    const bass = motif.bass[(beat / motif.drumBeat) % motif.bass.length];
+                    this.playTone(bass, 0.2, 0);
+                }
+
+                if (Math.random() > 0.35) {
+                    const lead = motif.lead[Math.floor(Math.random() * motif.lead.length)];
+                    this.playTone(lead, 0.12, 1);
+                }
+
+                if (beat % motif.drumBeat === motif.drumBeat / 2) {
+                    this.playTone(90, 0.05, 3);
+                }
             } else {
-                // SURFACE Theme (Original)
-                // Channel 0: Bass (The heavy footsteps of the exterminator... or a fat rat)
+                // SURFACE Theme with District Variations
+
+                let currentScale = [440, 523.25, 587.33, 659.25, 783.99, 880]; // Am pentatonic (Burbs)
+                let bassNoteMod = 1;
+                let squeakFreqMod = 0;
+                let beatDrums = false;
+
+                if (this.cycle >= 17) {
+                    // Industrial (Red, harder): Dissonant, faster bass, heavy drums
+                    currentScale = [440, 466.16, 554.37, 622.25, 739.99, 880]; // Phrygian dominant feel
+                    bassNoteMod = 0.5; // lower pitch bass
+                    squeakFreqMod = 1000; // more high pitched chaos
+                    beatDrums = beat % 4 === 2; // faster drums
+                } else if (this.cycle >= 9) {
+                    // Downtown (Blue, moderate): More minor, busy
+                    currentScale = [440, 493.88, 523.25, 587.33, 659.25, 783.99, 880]; // Aeolian
+                    squeakFreqMod = 500;
+                    beatDrums = beat % 8 === 4;
+                } else {
+                    // Burbs (Green, safer) - default
+                    beatDrums = beat % 8 === 4;
+                }
+
+                // Channel 0: Bass
                 if (beat % 4 === 0) {
-                    const note = bassLine[(beat / 4) % bassLine.length];
+                    const note = bassLine[(beat / 4) % bassLine.length] * bassNoteMod;
                     this.playTone(note, 0.2, 0);
                 }
 
-                // Channel 1: Lead (Random pentatonic scurrying)
+                // Channel 1: Lead
                 if (Math.random() > 0.4) {
-                    const scale = [440, 523.25, 587.33, 659.25, 783.99, 880];
-                    const note = scale[Math.floor(Math.random() * scale.length)];
+                    const note = currentScale[Math.floor(Math.random() * currentScale.length)];
                     this.playTone(note, 0.1, 1);
                 }
 
-                // Channel 2: Squeaks (High pitch gossip)
+                // Channel 2: Squeaks
                 if (Math.random() > 0.9) {
-                     this.playTone(1500 + Math.random() * 500, 0.05, 2);
+                     this.playTone(1500 + squeakFreqMod + Math.random() * 500, 0.05, 2);
                 }
 
-                // Channel 3: Noise/Drums (Knocking over trash cans)
-                if (beat % 8 === 4) {
+                // Channel 3: Noise/Drums
+                if (beatDrums) {
                      this.playTone(100, 0.05, 3);
                 }
             }

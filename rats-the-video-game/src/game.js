@@ -40,7 +40,7 @@ resize();
 //      (o.o)
 //     ( > < )
 const state = {
-    rat: { x: 100, y: 0, vx: 0, vy: 0, grounded: true, facingRight: true }, // The protagonist
+    rat: { x: 100, y: 0, vx: 0, vy: 0, grounded: true, facingRight: true, canDoubleJump: true }, // The protagonist
     buildings: [], // The concrete jungle
     obstacles: [], // The things in our way
     birds: [], // Sky vermin
@@ -51,12 +51,54 @@ const state = {
     cycleCheckpoints: [], // X positions of level cycles
     totalCycles: 25,
     currentCycle: 0,
-    input: { left: false, right: false, jump: false, chew: false }, // The human commands
+    input: { left: false, right: false, jump: false, jumpPressed: false, chew: false }, // The human commands
     level: 'SURFACE', // SURFACE or SUBWAY
     levelCompleted: false,
     speedBoost: false,
     speedBoostTimer: 0
 };
+
+// Saved for the third level after the subway.
+// We are staging the code path now, but the current game still stops at the subway.
+//      (\_/)
+//      (o.o)  "No opening this tunnel yet."
+//      (> <)
+const THIRD_LEVEL_ENABLED = false;
+const THIRD_LEVEL_NAME = 'THIRD_LEVEL';
+const THIRD_LEVEL_BLUEPRINT = Object.freeze({
+    totalCycles: 18,
+    minimumClearance: 10,
+    districts: [
+        {
+            name: 'CONSTRUCTION',
+            cycleStart: 0,
+            cycleEnd: 7,
+            hueBase: 35,
+            gapMin: 60,
+            gapMax: 100,
+            obsChance: 0.6,
+            obstacleWeights: [
+                { type: 'BOX', threshold: 0.5, w: 30, h: 30 },
+                { type: 'SPRING', threshold: 0.8, w: 30, h: 20 },
+                { type: 'TRAP', threshold: 1.0, w: 40, h: 10 }
+            ]
+        },
+        {
+            name: 'INDUSTRIAL',
+            cycleStart: 8,
+            cycleEnd: 17,
+            hueBase: 0,
+            gapMin: 50,
+            gapMax: 80,
+            obsChance: 0.7,
+            obstacleWeights: [
+                { type: 'TRASH_PILE', threshold: 0.4, w: 40, h: 30 },
+                { type: 'TRAP', threshold: 0.7, w: 40, h: 10 },
+                { type: 'BOX', threshold: 1.0, w: 30, h: 30 }
+            ]
+        }
+    ]
+});
 
 // Expose state for debugging and testing
 window.gameState = state;
@@ -73,6 +115,7 @@ function generateLevel() {
     state.rat.x = 100;
     state.rat.vx = 0;
     state.rat.vy = 0;
+    state.rat.canDoubleJump = true;
     state.levelCompleted = false;
     state.speedBoost = false;
     state.speedBoostTimer = 0;
@@ -83,8 +126,10 @@ function generateLevel() {
 
     if (state.level === 'SURFACE') {
         generateSurface();
-    } else {
+    } else if (state.level === 'SUBWAY') {
         generateSubway();
+    } else if (state.level === THIRD_LEVEL_NAME) {
+        generateThirdLevel();
     }
 }
 
@@ -112,20 +157,30 @@ function generateSurface() {
     // Decreased to 25 for a shorter level
     for (let i = 0; i < state.totalCycles; i++) {
         // District logic for visual identity + progression:
-        // 0-8: Burbs (green, safer)
-        // 9-16: Downtown (blue, moderate)
-        // 17+: Industrial (red, harder)
+        // 0-6: Burbs (green, safer)
+        // 7-12: Downtown (blue, moderate)
+        // 13-18: Construction (orange, chaotic)
+        // 19+: Industrial (red, harder)
         let hueBase = 100;
         let gapMin = 80;
         let gapMax = 120;
         let obsChance = 0.3;
+        let district = 'BURBS';
 
-        if (i >= 17) {
+        if (i >= 19) {
+            district = 'INDUSTRIAL';
             hueBase = 0;
             gapMin = 50;
             gapMax = 80;
             obsChance = 0.7;
-        } else if (i >= 9) {
+        } else if (i >= 13) {
+            district = 'CONSTRUCTION';
+            hueBase = 35; // Orange
+            gapMin = 60;
+            gapMax = 100;
+            obsChance = 0.6;
+        } else if (i >= 7) {
+            district = 'DOWNTOWN';
             hueBase = 200;
             gapMin = 60;
             gapMax = 90;
@@ -154,39 +209,64 @@ function generateSurface() {
         //      \  /
         const gap = Math.random() * (gapMax - gapMin) + gapMin; // District-based spacing
 
-        // Collectible Pizza! (A rat's dream)
-        //      (\_/)
-        //      (o.o)  <-- "Is that pepperoni?"
-        //      (> <)
-        if (Math.random() < 0.25) {
-             const pizzaX = x + w + gap / 2 + (Math.random() * 40 - 20);
-             // Floating slightly above ground logically (h=40)
-             state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
-        }
-
-        // Coffee! (The fuel of the developer... and now the rat)
-        //      c[_]
-        if (Math.random() < 0.15) {
-             const coffeeX = x + w + gap / 2 + (Math.random() * 40 - 20);
-             state.obstacles.push({ x: coffeeX, w: 20, h: 25, type: 'COFFEE' });
-        }
-
+        // Collectibles are mutually exclusive with standard obstacles to avoid traps
         if (Math.random() < obsChance) {
-            const obsX = x + w + gap / 2 - 15; // Center in the gap
-            const rand = Math.random();
+            let rand = Math.random();
+            let type = '';
+            let objW = 30;
+            let objH = 30;
 
-            if (rand < 0.3) {
-                // A Box to chew
-                state.obstacles.push({ x: obsX, w: 30, h: 30, type: 'BOX' });
-            } else if (rand < 0.5) {
-                // A SPRING! (Rat-apult)
-                state.obstacles.push({ x: obsX, w: 30, h: 20, type: 'SPRING' });
-            } else if (rand < 0.8) {
-                // A Trap to jump
-                state.obstacles.push({ x: obsX, w: 40, h: 10, type: 'TRAP' });
+            // District-specific obstacle weighting
+            if (district === 'CONSTRUCTION') {
+                if (rand < 0.5) type = 'BOX';
+                else if (rand < 0.8) type = 'SPRING';
+                else type = 'TRAP';
+            } else if (district === 'INDUSTRIAL') {
+                if (rand < 0.4) type = 'TRASH_PILE'; // Trash piles fit small gaps better
+                else if (rand < 0.7) type = 'TRAP';
+                else type = 'BOX';
             } else {
-                // Prius!
-                state.obstacles.push({ x: obsX - 25, w: 80, h: 40, type: 'PRIUS' });
+                if (rand < 0.3) type = 'BOX';
+                else if (rand < 0.5) type = 'SPRING';
+                else if (rand < 0.8) type = 'TRAP';
+                else type = 'PRIUS';
+            }
+
+            // Set dimensions based on chosen type
+            if (type === 'BOX') { objW = 30; objH = 30; }
+            else if (type === 'SPRING') { objW = 30; objH = 20; }
+            else if (type === 'TRAP') { objW = 40; objH = 10; }
+            else if (type === 'PRIUS') { objW = 80; objH = 40; }
+            else if (type === 'TRASH_PILE') { objW = 40; objH = 30; }
+
+            // Readability constraint: fallback if obstacle is too large for the gap
+            if (objW > gap - 10) {
+                type = 'BOX';
+                objW = 30;
+                objH = 30;
+            }
+
+            // Centre correctly based on the final object width.
+            const obsX = x + w + (gap / 2) - (objW / 2);
+            state.obstacles.push({ x: obsX, w: objW, h: objH, type: type });
+        } else {
+            // Collectible Pizza! (A rat's dream)
+            //      (\_/)
+            //      (o.o)  <-- "Is that pepperoni?"
+            //      (> <)
+            if (Math.random() < 0.25) {
+                 const pizzaX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 // Floating slightly above ground logically (h=40)
+                 state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
+            } else if (Math.random() < 0.15) {
+                 // Coffee! (The fuel of the developer... and now the rat)
+                 //      c[_]
+                 const coffeeX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 state.obstacles.push({ x: coffeeX, w: 20, h: 25, type: 'COFFEE' });
+            } else if (Math.random() < 0.10) {
+                 // CHEESE! (The high-value prize)
+                 const cheeseX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 state.obstacles.push({ x: cheeseX, w: 25, h: 30, type: 'CHEESE' });
             }
         }
         x += w + gap;
@@ -224,6 +304,60 @@ function generateSubway() {
         }
         x += w;
     }
+
+    if (THIRD_LEVEL_ENABLED) {
+        // Saved for the future third level after the subway.
+        state.obstacles.push({ x: x + 120, w: 80, h: 90, type: 'THIRD_LEVEL_EXIT' });
+    }
+}
+
+function getThirdLevelDistrict(cycle) {
+    return THIRD_LEVEL_BLUEPRINT.districts.find((district) =>
+        cycle >= district.cycleStart && cycle <= district.cycleEnd
+    ) || THIRD_LEVEL_BLUEPRINT.districts[THIRD_LEVEL_BLUEPRINT.districts.length - 1];
+}
+
+function chooseThirdLevelObstacle(district, gap) {
+    const roll = Math.random();
+    let choice = district.obstacleWeights[district.obstacleWeights.length - 1];
+
+    for (const candidate of district.obstacleWeights) {
+        if (roll <= candidate.threshold) {
+            choice = candidate;
+            break;
+        }
+    }
+
+    if (choice.w > gap - THIRD_LEVEL_BLUEPRINT.minimumClearance) {
+        return { type: 'BOX', w: 30, h: 30 };
+    }
+
+    return { type: choice.type, w: choice.w, h: choice.h };
+}
+
+function generateThirdLevel() {
+    let x = 0;
+
+    state.totalCycles = THIRD_LEVEL_BLUEPRINT.totalCycles;
+
+    for (let i = 0; i < state.totalCycles; i++) {
+        const district = getThirdLevelDistrict(i);
+        const w = 140 + Math.random() * 180;
+        const h = 120 + Math.random() * (canvas.height - 220);
+        const hue = district.hueBase + (Math.random() * 30 - 15);
+        const gap = Math.random() * (district.gapMax - district.gapMin) + district.gapMin;
+
+        state.buildings.push({ x, w, h, color: `hsl(${hue}, 25%, 28%)` });
+
+        if (Math.random() < district.obsChance) {
+            const obstacle = chooseThirdLevelObstacle(district, gap);
+            const obsX = x + w + (gap / 2) - (obstacle.w / 2);
+            state.obstacles.push({ x: obsX, w: obstacle.w, h: obstacle.h, type: obstacle.type });
+        }
+
+        x += w + gap;
+        state.cycleCheckpoints.push(x);
+    }
 }
 
 generateLevel();
@@ -243,6 +377,7 @@ window.addEventListener('keydown', (e) => {
     if (e.code === 'ArrowRight') state.input.right = true; // Scurry right
     if (e.code === 'ArrowLeft') state.input.left = true;   // Scurry left
     if (e.code === 'Space') {
+        if (!state.input.jump) state.input.jumpPressed = true; // Fresh jump!
         state.input.jump = true; // LEAP!
     }
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = true; // GNAW!
@@ -321,8 +456,13 @@ function handleTouch(e) {
 
             if (!swipeData.hasJumped && isSwipeUp) {
                 // SWIPE UP DETECTED!
+                state.input.jumpPressed = true;
                 state.input.jump = true;
-                setTimeout(() => { state.input.jump = false; }, 100);
+                state.input.chew = true; // Also Chew on swipe up!
+                setTimeout(() => {
+                    state.input.jump = false;
+                    state.input.chew = false;
+                }, 100);
 
                 swipeData.hasJumped = true;
             }
@@ -388,14 +528,17 @@ function handleTouch(e) {
 function handleJumpTap(e) {
     if (e.target.closest('.modal') || e.target.closest('button')) return;
 
-    // Trigger jump
+    // Trigger jump and chew together on touch so mobile play keeps pace with the smaller control surface.
+    state.input.jumpPressed = true;
     state.input.jump = true;
+    state.input.chew = true;
 
     // Reset jump input after a short delay to prevent "flying" if logic requires toggle
     // But game loop checks `state.input.jump` every frame.
     // We need to ensure it's true for at least one update.
     setTimeout(() => {
         state.input.jump = false;
+        state.input.chew = false;
     }, 100);
 }
 
@@ -428,8 +571,16 @@ function update() {
     if (state.level === 'SURFACE') {
         const cycleIdx = state.cycleCheckpoints.findIndex(cp => state.rat.x < cp);
         state.currentCycle = cycleIdx === -1 ? state.totalCycles : cycleIdx + 1;
-    } else {
+    } else if (state.level === 'SUBWAY') {
         state.currentCycle = 0; // Or handle subway cycles if needed
+    } else if (state.level === THIRD_LEVEL_NAME) {
+        const cycleIdx = state.cycleCheckpoints.findIndex(cp => state.rat.x < cp);
+        state.currentCycle = cycleIdx === -1 ? state.totalCycles : cycleIdx + 1;
+    }
+
+    // Sync current cycle with audio engine for dynamic music
+    if (audio && audio.setCycle) {
+        audio.setCycle(state.currentCycle);
     }
 
     // Speed Boost Logic
@@ -456,14 +607,30 @@ function update() {
     }
 
     // Jump Logic
-    if (state.input.jump && state.rat.grounded) {
-        state.rat.vy = JUMP_FORCE;
-        state.rat.grounded = false;
-        audio.playTone(660, 0.1, 15); // *Squeak!* (Jump sound)
+    if (state.input.jumpPressed) {
+        if (state.rat.grounded) {
+            // First Jump
+            state.rat.vy = JUMP_FORCE;
+            state.rat.grounded = false;
+            audio.playTone(660, 0.1, 15); // *Squeak!* (Jump sound)
+        } else if (state.rat.canDoubleJump) {
+            // Double Jump!
+            state.rat.vy = JUMP_FORCE * 0.9; // Slightly weaker than first jump
+            state.rat.canDoubleJump = false;
+            if (audio && audio.playDoubleJump) audio.playDoubleJump();
+            // Air jump particles
+            spawnParticles(state.rat.x, state.rat.y - 10, '#FFF', 10);
+        }
     }
+    state.input.jumpPressed = false; // Consume press
 
     // Gravity: The invisible paw pushing us down
-    state.rat.vy -= GRAVITY;
+    // Variable jump height: less gravity if holding jump while going up
+    if (state.input.jump && state.rat.vy > 0) {
+        state.rat.vy -= GRAVITY * 0.6; // Sustain!
+    } else {
+        state.rat.vy -= GRAVITY;
+    }
     state.rat.x += state.rat.vx;
     state.rat.y += state.rat.vy;
 
@@ -492,6 +659,15 @@ function update() {
                  continue; // It's gone, move on
              }
 
+             if (obs.type === 'CHEESE') {
+                 // THE MOTHERLODE!
+                 state.obstacles.splice(i, 1);
+                 state.score += 50; // 50 points for cheese!
+                 if (audio && audio.playCollect) audio.playCollect();
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#FFD700', 30);
+                 continue;
+             }
+
              if (obs.type === 'COFFEE') {
                  // SLURP!
                  state.obstacles.splice(i, 1);
@@ -514,6 +690,7 @@ function update() {
                      if (state.rat.vy <= 0 && overlapY > 0 && overlapY < 20 && overlapY < Math.min(overlapXLeft, overlapXRight)) {
                          state.rat.vy = JUMP_FORCE * 1.5; // BOING!
                          state.rat.grounded = false;
+                         state.rat.canDoubleJump = true; // Reset double jump
                          state.rat.y = obsT + 5; // Pop up
                          if (audio && audio.playBoing) audio.playBoing();
                          spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#A9A9A9', 10);
@@ -557,6 +734,7 @@ function update() {
                          state.rat.y = obsT;
                          state.rat.vy = 0;
                          state.rat.grounded = true;
+                         state.rat.canDoubleJump = true; // Landed
                      } else {
                          // Wall Logic: Push to closest side
                          if (overlapXLeft < overlapXRight) {
@@ -589,6 +767,13 @@ function update() {
                      generateLevel(); // Transition!
                      return; // Skip rest of update frame
                  }
+             } else if (obs.type === 'THIRD_LEVEL_EXIT') {
+                 if (!state.levelCompleted && THIRD_LEVEL_ENABLED) {
+                     state.levelCompleted = true;
+                     state.level = THIRD_LEVEL_NAME;
+                     generateLevel(); // Saved for the future third level after the subway.
+                     return;
+                 }
              }
         }
     }
@@ -598,6 +783,7 @@ function update() {
         state.rat.y = 0;
         state.rat.vy = 0;
         state.rat.grounded = true;
+        state.rat.canDoubleJump = true; // Restore abilities
     }
 
     // Update Birds

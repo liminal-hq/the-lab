@@ -54,7 +54,7 @@
     </g>
 
     <!-- Content -->
-    <text x="50" y="75" font-family="Comic Sans MS, cursive, sans-serif" font-size="24" fill="#000080">Project Log:</text>
+    <text x="50" y="75" font-family="Comic Sans MS, cursive, sans-serif" font-size="24" fill="#000080">Project Log: Rat Cleanup Wave</text>
 
     <g>
       <text x="50" y="105" font-family="Comic Sans MS, cursive, sans-serif" font-size="18" fill="#333">1. Built new rat maze.</text>
@@ -89,9 +89,25 @@
       <animate attributeName="opacity" values="0;1" begin="3.5s" dur="0.5s" fill="freeze"/>
     </g>
     <g>
-      <text x="50" y="345" font-family="Comic Sans MS, cursive, sans-serif" font-size="18" fill="#333">9. </text>
+      <text x="50" y="345" font-family="Comic Sans MS, cursive, sans-serif" font-size="18" fill="#333">9. Mega PR whisker sweep started.</text>
+      <animate attributeName="opacity" values="0;1" begin="4.0s" dur="0.5s" fill="freeze"/>
+    </g>
+    <g>
+      <text x="50" y="375" font-family="Comic Sans MS, cursive, sans-serif" font-size="18" fill="#333">10. Fold pile sorted into tidy cardboard bins.</text>
+      <animate attributeName="opacity" values="0;1" begin="4.5s" dur="0.5s" fill="freeze"/>
+    </g>
+    <g>
+      <text x="50" y="405" font-family="Comic Sans MS, cursive, sans-serif" font-size="18" fill="#333">11. Third-level tunnel saved for later.</text>
+      <animate attributeName="opacity" values="0;1" begin="5.0s" dur="0.5s" fill="freeze"/>
+    </g>
+    <g>
+      <text x="50" y="435" font-family="Comic Sans MS, cursive, sans-serif" font-size="18" fill="#333">12. Old squeaks packed up for closing.</text>
+      <animate attributeName="opacity" values="0;1" begin="5.5s" dur="0.5s" fill="freeze"/>
+    </g>
+    <g>
+      <text x="50" y="465" font-family="Comic Sans MS, cursive, sans-serif" font-size="18" fill="#333">13. </text>
       <!-- Typing effect cursor -->
-      <rect x="75" y="330" width="2" height="18" fill="black">
+      <rect x="84" y="450" width="2" height="18" fill="black">
         <animate attributeName="opacity" values="1;0;1" dur="0.8s" repeatCount="indefinite"/>
       </rect>
     </g>
@@ -99,7 +115,27 @@
     <!-- Stamp -->
     <g transform="translate(292, 575) rotate(-15)">
       <rect x="0" y="0" width="100" height="50" rx="5" fill="none" stroke="#aa0000" stroke-width="5" opacity="0.35"/>
-      <text x="50" y="35" font-family="Impact, sans-serif" font-size="30" fill="#aa0000" text-anchor="middle" opacity="0.35">APPROVED</text>
+      <text x="50" y="35" font-family="Impact, sans-serif" font-size="28" fill="#aa0000" text-anchor="middle" opacity="0.35">SORTED</text>
+    </g>
+
+    <!-- Cleanup Crew -->
+    <g transform="translate(52, 520)">
+      <rect x="0" y="85" width="88" height="56" fill="#c49a6c" stroke="#5b3a1e" stroke-width="3"/>
+      <rect x="12" y="70" width="64" height="18" fill="#d8b186" stroke="#5b3a1e" stroke-width="3"/>
+      <text x="44" y="108" font-family="Comic Sans MS, cursive, sans-serif" font-size="14" fill="#5b3a1e" text-anchor="middle">SORTED</text>
+      <text x="44" y="128" font-family="Comic Sans MS, cursive, sans-serif" font-size="14" fill="#5b3a1e" text-anchor="middle">PRS</text>
+      <ellipse cx="165" cy="108" rx="32" ry="20" fill="#6f7b86" stroke="#222" stroke-width="3"/>
+      <circle cx="147" cy="92" r="11" fill="#6f7b86" stroke="#222" stroke-width="3"/>
+      <circle cx="139" cy="79" r="5" fill="#6f7b86" stroke="#222" stroke-width="3"/>
+      <circle cx="154" cy="77" r="5" fill="#6f7b86" stroke="#222" stroke-width="3"/>
+      <circle cx="143" cy="92" r="2.5" fill="#111"/>
+      <circle cx="151" cy="92" r="2.5" fill="#111"/>
+      <path d="M144 99 Q147 104 150 99" fill="none" stroke="#111" stroke-width="2"/>
+      <path d="M196 89 L226 57" stroke="#5b3a1e" stroke-width="5" stroke-linecap="round"/>
+      <path d="M223 56 L244 62 L228 84 Z" fill="#d9c27a" stroke="#5b3a1e" stroke-width="3"/>
+      <path d="M196 121 Q224 138 246 126" fill="none" stroke="#c98f5b" stroke-width="4" stroke-linecap="round"/>
+      <path d="M260 70 L336 70" stroke="#f4d03f" stroke-width="10" stroke-dasharray="12 8"/>
+      <text x="298" y="58" font-family="Impact, sans-serif" font-size="16" fill="#b8860b" text-anchor="middle">3RD LEVEL</text>
     </g>
 
     <!-- Rat Paw Prints -->

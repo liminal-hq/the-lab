@@ -1,0 +1,55 @@
+{
+  "runDate": "2026-03-11",
+  "mode": "pre-execute",
+  "sourcePlan": "docs/integration-runs/2026-03-11-themed-mega-prs-action-plan.md",
+  "integrationBranch": "integration/themed-pr-consolidation",
+  "localFoldPayload": [
+    "rats-the-video-game/src/game.js",
+    "rats-the-video-game/src/audio.js",
+    "assets/images/lab_journal.svg",
+    "docs/integration-runs/2026-03-11-themed-mega-prs-action-plan.md",
+    "docs/integration-runs/2026-03-11-themed-mega-prs-action-plan.json"
+  ],
+  "preconditions": [
+    "Install dependencies with /home/scott/.nvm/versions/node/v22.21.1/bin/pnpm install",
+    "Ensure the game test gate can run either via native Playwright browser install or the documented Docker fallback on this Arch host",
+    "If this Arch host still resists native Playwright browsers, use the Ubuntu Playwright Docker image as a local fallback only",
+    "Re-run website build successfully",
+    "Re-run game tests successfully",
+    "Carry the current local fold payload onto the integration branch"
+  ],
+  "sequence": [
+    "Apply labels and planned communication notes on GitHub",
+    "Commit the local fold payload on integration/themed-pr-consolidation",
+    "Integrate #62 and close #56 after comment",
+    "Integrate #94 and close the narrower cheese siblings after comment",
+    "Integrate #95 while folding #57 and #63, then close the covered Palette-Rat siblings after comment",
+    "Integrate #61 and close #82 after comment",
+    "Integrate #60 and close #81 after comment",
+    "Integrate #88 while folding #65, then close #65 after comment",
+    "Integrate #85 while folding #86 and #87, then close #64, #86, and #87 after comment",
+    "Run final validation and write the execution report"
+  ],
+  "closureMap": {
+    "57": "🎨🐀 Palette-Rat: Improve mobile instructions and icon accessibility (#57, #63, #95)",
+    "59": "🎨🐀 Palette-Rat: Improve mobile instructions and icon accessibility (#57, #63, #95)",
+    "63": "🎨🐀 Palette-Rat: Improve mobile instructions and icon accessibility (#57, #63, #95)",
+    "65": "🧪 Nibble: Expand gameplay verification coverage (#65, #88)",
+    "79": "🐀 Scurry: Add high-value cheese collectibles (#94)",
+    "81": "Local dormant third-level groundwork plus 🎛️ Chord: Add district audio motifs and compression (#60)",
+    "82": "Local dormant third-level groundwork plus 🚇 Tunneller: Add construction district pacing (#61)",
+    "86": "📜🖋️ Archivist-Ink: Refresh controls docs and visual journal (#85, #86, #87)",
+    "87": "📜🖋️ Archivist-Ink: Refresh controls docs and visual journal (#85, #86, #87)"
+  },
+  "validation": {
+    "websiteBuild": "/home/scott/.nvm/versions/node/v22.21.1/bin/pnpm --dir the-lab-website build",
+    "gameTests": "/home/scott/.nvm/versions/node/v22.21.1/bin/pnpm --dir rats-the-video-game test",
+    "observedStatus": [
+      "Pinned pnpm is available at /home/scott/.nvm/versions/node/v22.21.1/bin/pnpm",
+      "Website build passes",
+      "Game tests pass in the Ubuntu Playwright Docker image on this Arch host",
+      "Native Playwright browser install remains optional on this host because the Docker fallback already passed",
+      "Docker is a host-specific Arch workaround, not the default repo validation path"
+    ]
+  }
+}

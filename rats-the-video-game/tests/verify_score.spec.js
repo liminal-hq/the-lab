@@ -17,8 +17,16 @@ test('verify score mechanics', async ({ page }) => {
     window.gameState.rat.y = 0;
     window.gameState.rat.vx = 0;
     window.gameState.rat.vy = 0;
+    window.gameState.rat.grounded = true;
+    window.gameState.rat.canDoubleJump = true;
+    window.gameState.input.left = false;
+    window.gameState.input.right = false;
+    window.gameState.input.jump = false;
+    window.gameState.input.jumpPressed = false;
+    window.gameState.input.chew = false;
     // Clear existing obstacles and turds to avoid interference
     window.gameState.obstacles = [];
+    window.gameState.birds = [];
     window.gameState.turds = [];
   });
 
@@ -35,8 +43,8 @@ test('verify score mechanics', async ({ page }) => {
 
   expect(initialScore).toBe(0);
 
-  // Wait for game loop to process collision (approx 500ms)
-  await page.waitForTimeout(500);
+  // Wait for the collision loop to award pizza points.
+  await page.waitForFunction(() => window.gameState.score === 10);
 
   const scoreAfterPizza = await page.evaluate(() => window.gameState.score);
   expect(scoreAfterPizza).toBe(10);
@@ -56,8 +64,8 @@ test('verify score mechanics', async ({ page }) => {
     window.gameState.turds.push({ x: 110, y: 10, vy: 0 });
   });
 
-  // Wait for collision
-  await page.waitForTimeout(500);
+  // Wait for the turd penalty to land.
+  await page.waitForFunction(() => window.gameState.score === 5);
 
   const scoreAfterTurd = await page.evaluate(() => window.gameState.score);
   expect(scoreAfterTurd).toBe(5); // 10 - 5 = 5
@@ -70,7 +78,7 @@ test('verify score mechanics', async ({ page }) => {
     window.gameState.turds.push({ x: 110, y: 10, vy: 0 });
   });
 
-  await page.waitForTimeout(500);
+  await page.waitForFunction(() => window.gameState.score === 0);
 
   const scoreFloor = await page.evaluate(() => window.gameState.score);
   expect(scoreFloor).toBe(0); // Should not go below 0

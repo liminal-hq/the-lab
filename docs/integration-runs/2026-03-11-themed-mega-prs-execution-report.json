@@ -1,0 +1,94 @@
+{
+  "runDate": "2026-03-11",
+  "mode": "execute",
+  "branch": "integration/themed-pr-consolidation",
+  "status": "completed-and-pushed",
+  "integrationPr": {
+    "number": 96,
+    "url": "https://github.com/liminal-hq/the-lab/pull/96",
+    "labels": [
+      "consolidation",
+      "gameplay",
+      "ux",
+      "accessibility",
+      "testing",
+      "documentation"
+    ]
+  },
+  "completedCommits": [
+    {
+      "sha": "f06711f",
+      "subject": "feat(rats-the-video-game): stage post-subway groundwork and cleanup journal"
+    },
+    {
+      "sha": "65d2908",
+      "subject": "feat(rats-the-video-game): add double jump movement"
+    },
+    {
+      "sha": "cff4dee",
+      "subject": "feat(rats-the-video-game): add high-value cheese collectibles"
+    },
+    {
+      "sha": "0d82e56",
+      "subject": "feat(rats-the-video-game): improve mobile instructions and icon accessibility"
+    },
+    {
+      "sha": "f5b01b2",
+      "subject": "feat(rats-the-video-game): add construction district pacing"
+    },
+    {
+      "sha": "ea54609",
+      "subject": "feat(rats-the-video-game): add district audio motifs and compression"
+    },
+    {
+      "sha": "f0f4231",
+      "subject": "test(rats-the-video-game): expand gameplay verification coverage"
+    },
+    {
+      "sha": "7ae2afd",
+      "subject": "docs(rats-the-video-game): refresh controls docs and mechanics notes"
+    },
+    {
+      "sha": "53f817f",
+      "subject": "feat(rats-the-video-game): add dedicated double jump squeak"
+    }
+  ],
+  "rollbackHistory": {
+    "failedAttemptCommit": "61d92c3",
+    "revertCommit": "ca6898e",
+    "failure": {
+      "failingTest": "tests/verify_score.spec.js",
+      "message": "pizza score expected 10, received 5"
+    },
+    "recoveryCommit": "f0f4231"
+  },
+  "validation": {
+    "websiteBuild": "/home/scott/.nvm/versions/node/v22.21.1/bin/pnpm --dir the-lab-website build",
+    "gameTests": "docker run --rm --ipc=host -v \"$PWD\":/work -w /work mcr.microsoft.com/playwright:v1.58.2-jammy bash -lc \"corepack enable && pnpm --dir rats-the-video-game test\"",
+    "playwrightTestCount": 9,
+    "passed": true
+  },
+  "notes": [
+    "The journal fold from #87 is represented by the earlier cleanup-wave journal commit on this branch",
+    "#58 was later folded after Jules narrowed it to the dedicated double-jump squeak",
+    "#80 was later confirmed to already be covered by #96 after Jules removed the noisy scope",
+    "Status comments were posted across the consolidation, fold, and supersede PRs",
+    "Processed source PRs were closed after the integration PR was created"
+  ],
+  "remainingOpenPrs": [
+    {
+      "number": 14,
+      "state": "open",
+      "reason": "explicitly deferred and left out of this integration run"
+    },
+    {
+      "number": 96,
+      "state": "open",
+      "reason": "active consolidated integration PR"
+    }
+  ],
+  "nextActions": [
+    "Review and merge PR #96",
+    "Leave #14 untouched as the deferred manual-follow-up item"
+  ]
+}
