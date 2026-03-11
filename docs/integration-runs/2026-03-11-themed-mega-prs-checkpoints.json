@@ -1,9 +1,9 @@
 {
   "runDate": "2026-03-11",
   "repository": "liminal-hq/the-lab",
-  "mode": "audit",
+  "mode": "execute",
   "plannedIntegrationBranch": "integration/themed-pr-consolidation",
-  "status": "in-progress",
+  "status": "completed",
   "checkpoints": [
     {
       "ts": "2026-03-11T05:36:00Z",
@@ -27,7 +27,73 @@
       "ts": "2026-03-11T05:40:00Z",
       "step": "commit local fold payload",
       "status": "completed",
-      "details": "Committed local groundwork, journal update, and integration artefacts as 3e4ce06 with Jules as primary author"
+      "details": "Committed local groundwork, journal update, and integration artefacts as f06711f with Jules as primary author"
+    },
+    {
+      "ts": "2026-03-11T05:41:00Z",
+      "step": "integrate #62",
+      "status": "completed",
+      "details": "Committed 65d2908 for the double jump baseline and passed website build plus Docker Playwright validation"
+    },
+    {
+      "ts": "2026-03-11T05:42:00Z",
+      "step": "integrate #94",
+      "status": "completed",
+      "details": "Committed cff4dee for the cheese collectible baseline and passed website build plus Docker Playwright validation"
+    },
+    {
+      "ts": "2026-03-11T05:42:00Z",
+      "step": "integrate #57 + #63 + #95",
+      "status": "completed",
+      "details": "Committed 0d82e56 for the combined mobile and accessibility outcome and passed website build plus Docker Playwright validation"
+    },
+    {
+      "ts": "2026-03-11T05:43:00Z",
+      "step": "integrate #61",
+      "status": "completed",
+      "details": "Committed f5b01b2 for the construction district pacing outcome and passed website build plus Docker Playwright validation"
+    },
+    {
+      "ts": "2026-03-11T05:43:00Z",
+      "step": "integrate #60",
+      "status": "completed",
+      "details": "Committed ea54609 for the district audio outcome and passed website build plus Docker Playwright validation"
+    },
+    {
+      "ts": "2026-03-11T05:44:00Z",
+      "step": "integrate #65 + #88",
+      "status": "failed",
+      "details": "Committed 61d92c3, then Docker Playwright validation failed when verify_score.spec.js observed pizza scoring 5 instead of 10"
+    },
+    {
+      "ts": "2026-03-11T05:44:00Z",
+      "step": "rollback #65 + #88",
+      "status": "completed",
+      "details": "Reverted 61d92c3 with ca6898e and restored a green website build plus Docker Playwright validation"
+    },
+    {
+      "ts": "2026-03-11T05:52:00Z",
+      "step": "re-integrate #65 + #88",
+      "status": "completed",
+      "details": "Committed f0f4231 with deterministic verification setup and passed website build plus Docker Playwright validation across 9 tests"
+    },
+    {
+      "ts": "2026-03-11T05:53:00Z",
+      "step": "integrate #85 + #86 + #87",
+      "status": "completed",
+      "details": "Committed 7ae2afd for README and mechanics doc updates; the journal fold from #87 remains represented by the earlier cleanup-wave journal commit on this branch"
+    },
+    {
+      "ts": "2026-03-11T05:53:00Z",
+      "step": "final validation",
+      "status": "completed",
+      "details": "Passed /home/scott/.nvm/versions/node/v22.21.1/bin/pnpm --dir the-lab-website build and Docker Playwright validation on the final branch state"
+    },
+    {
+      "ts": "2026-03-11T05:54:00Z",
+      "step": "write final execution report",
+      "status": "completed",
+      "details": "Updated run artefacts from halted status to completed status after the repaired verification retry"
     }
   ]
 }
