@@ -18,6 +18,7 @@
 6. `feat(rats-the-video-game): add district audio motifs and compression` (`ea54609`)
 7. `test(rats-the-video-game): expand gameplay verification coverage` (`f0f4231`)
 8. `docs(rats-the-video-game): refresh controls docs and mechanics notes` (`7ae2afd`)
+9. `feat(rats-the-video-game): add dedicated double jump squeak` (`53f817f`)
 
 ## Validation
 
@@ -38,14 +39,14 @@ The Docker Playwright run now passes `9` tests.
 ## Notes
 
 - The visual journal fold from `#87` is represented by the earlier cleanup-wave journal commit on this branch rather than a separate final-step journal edit
-- `changes-requested` was applied to `#58` and `#80`
+- `#58` was later folded after Jules narrowed it to the dedicated double-jump squeak
+- `#80` was later closed once its narrowed HTML changes were confirmed to already be covered by `#96`
 - Status comments were posted across the consolidation, fold, and supersede PRs
 - `#96` is labelled `consolidation`, `gameplay`, `ux`, `accessibility`, `testing`, and `documentation`
 - Processed source PRs were closed after comment once `#96` was created
-- Remaining open exceptions are `#14` (deferred), `#58` (changes-requested), `#80` (changes-requested), and `#96`
+- Remaining open exceptions are `#14` (deferred) and `#96`
 
 ## Next Actions
 
 1. Review and merge [#96](https://github.com/liminal-hq/the-lab/pull/96)
-2. Revisit `#58` and `#80` only if their extra scope is worth salvaging later
-3. Leave `#14` alone as the explicitly deferred manual-follow-up item
+2. Leave `#14` alone as the explicitly deferred manual-follow-up item

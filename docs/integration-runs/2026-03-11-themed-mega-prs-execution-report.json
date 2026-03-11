@@ -47,6 +47,10 @@
     {
       "sha": "7ae2afd",
       "subject": "docs(rats-the-video-game): refresh controls docs and mechanics notes"
+    },
+    {
+      "sha": "53f817f",
+      "subject": "feat(rats-the-video-game): add dedicated double jump squeak"
     }
   ],
   "rollbackHistory": {
@@ -66,7 +70,8 @@
   },
   "notes": [
     "The journal fold from #87 is represented by the earlier cleanup-wave journal commit on this branch",
-    "changes-requested was applied to #58 and #80",
+    "#58 was later folded after Jules narrowed it to the dedicated double-jump squeak",
+    "#80 was later confirmed to already be covered by #96 after Jules removed the noisy scope",
     "Status comments were posted across the consolidation, fold, and supersede PRs",
     "Processed source PRs were closed after the integration PR was created"
   ],
@@ -77,16 +82,6 @@
       "reason": "explicitly deferred and left out of this integration run"
     },
     {
-      "number": 58,
-      "state": "open",
-      "reason": "changes-requested"
-    },
-    {
-      "number": 80,
-      "state": "open",
-      "reason": "changes-requested"
-    },
-    {
       "number": 96,
       "state": "open",
       "reason": "active consolidated integration PR"
@@ -94,7 +89,6 @@
   ],
   "nextActions": [
     "Review and merge PR #96",
-    "Revisit #58 and #80 later if their extra scope is worth salvaging",
     "Leave #14 untouched as the deferred manual-follow-up item"
   ]
 }
