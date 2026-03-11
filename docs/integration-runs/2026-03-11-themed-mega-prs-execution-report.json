@@ -2,7 +2,19 @@
   "runDate": "2026-03-11",
   "mode": "execute",
   "branch": "integration/themed-pr-consolidation",
-  "status": "completed-locally",
+  "status": "completed-and-pushed",
+  "integrationPr": {
+    "number": 96,
+    "url": "https://github.com/liminal-hq/the-lab/pull/96",
+    "labels": [
+      "consolidation",
+      "gameplay",
+      "ux",
+      "accessibility",
+      "testing",
+      "documentation"
+    ]
+  },
   "completedCommits": [
     {
       "sha": "f06711f",
@@ -56,11 +68,33 @@
     "The journal fold from #87 is represented by the earlier cleanup-wave journal commit on this branch",
     "changes-requested was applied to #58 and #80",
     "Status comments were posted across the consolidation, fold, and supersede PRs",
-    "No branch was pushed and no PRs were closed during this local execute run"
+    "Processed source PRs were closed after the integration PR was created"
+  ],
+  "remainingOpenPrs": [
+    {
+      "number": 14,
+      "state": "open",
+      "reason": "explicitly deferred and left out of this integration run"
+    },
+    {
+      "number": 58,
+      "state": "open",
+      "reason": "changes-requested"
+    },
+    {
+      "number": 80,
+      "state": "open",
+      "reason": "changes-requested"
+    },
+    {
+      "number": 96,
+      "state": "open",
+      "reason": "active consolidated integration PR"
+    }
   ],
   "nextActions": [
-    "Push integration/themed-pr-consolidation if a remote branch and integration PR are wanted",
-    "After push, post final fate comments and close the superseded or folded PRs",
-    "Optionally tidy the public branch history if the earlier halted-run artefact commit is undesirable"
+    "Review and merge PR #96",
+    "Revisit #58 and #80 later if their extra scope is worth salvaging",
+    "Leave #14 untouched as the deferred manual-follow-up item"
   ]
 }

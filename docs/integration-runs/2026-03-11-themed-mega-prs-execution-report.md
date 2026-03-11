@@ -5,7 +5,8 @@
 - Run date: `2026-03-11`
 - Mode: `execute`
 - Branch: `integration/themed-pr-consolidation`
-- Outcome: `completed locally`
+- Outcome: `completed and pushed`
+- Integration PR: [#96](https://github.com/liminal-hq/the-lab/pull/96)
 
 ## Integrated Outcomes
 
@@ -39,10 +40,12 @@ The Docker Playwright run now passes `9` tests.
 - The visual journal fold from `#87` is represented by the earlier cleanup-wave journal commit on this branch rather than a separate final-step journal edit
 - `changes-requested` was applied to `#58` and `#80`
 - Status comments were posted across the consolidation, fold, and supersede PRs
-- No branch was pushed, and no PRs were closed in this local execute run
+- `#96` is labelled `consolidation`, `gameplay`, `ux`, `accessibility`, `testing`, and `documentation`
+- Processed source PRs were closed after comment once `#96` was created
+- Remaining open exceptions are `#14` (deferred), `#58` (changes-requested), `#80` (changes-requested), and `#96`
 
 ## Next Actions
 
-1. Push `integration/themed-pr-consolidation` if you want the remote branch and integration PR created
-2. After push, post final fate comments and close the superseded or folded PRs
-3. Remove or supersede the earlier halted-run artefact commit from the final remote story only if you want a tidier public branch history
+1. Review and merge [#96](https://github.com/liminal-hq/the-lab/pull/96)
+2. Revisit `#58` and `#80` only if their extra scope is worth salvaging later
+3. Leave `#14` alone as the explicitly deferred manual-follow-up item

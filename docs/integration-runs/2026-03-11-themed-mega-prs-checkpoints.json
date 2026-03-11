@@ -94,6 +94,18 @@
       "step": "write final execution report",
       "status": "completed",
       "details": "Updated run artefacts from halted status to completed status after the repaired verification retry"
+    },
+    {
+      "ts": "2026-03-11T06:04:00Z",
+      "step": "push integration branch and open PR",
+      "status": "completed",
+      "details": "Pushed integration/themed-pr-consolidation, opened integration PR #96, and applied consolidation plus topical labels"
+    },
+    {
+      "ts": "2026-03-11T06:07:00Z",
+      "step": "close processed source PRs",
+      "status": "completed",
+      "details": "Posted final fate comments and closed all processed source PRs; only #58, #80, #14, and #96 remain open"
     }
   ]
 }
