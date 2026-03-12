@@ -13,6 +13,7 @@ Welcome, Agent. You are now entering the domain of the Rat King. Please adhere t
 *   **Spelling:** Canadian spelling (Colour, Centre) is mandatory for user-facing text and documentation. Code variables can be American (e.g., `color`, `center`) if standard libraries dictate it, but prefer Canadian if defining custom ones.
 *   **Conventional Commits**: We want conventional commits, with detailed, markdown formatted bodies.
     *   **Specific Updates**: Each commit message should reflect the specific changes made in that commit. Do not just recap the entire project history or scope. Focus on the *now*.
+*   **Shell Safety:** Prevent backtick expansion whenever a shell command includes backticks in commit messages, PR bodies, comments, or other text. Use single quotes, escaped backticks, or file-based message input so the literal text survives intact.
 
 ## 3. Gameplay Mechanics
 *   **Accessibility:** Ensure all controls work on both Desktop (Keyboard) and Mobile (Touch).

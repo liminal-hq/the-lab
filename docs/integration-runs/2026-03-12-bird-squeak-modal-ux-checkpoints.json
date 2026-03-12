@@ -1,0 +1,57 @@
+{
+  "runDate": "2026-03-12",
+  "mode": "audit",
+  "batch": "bird-squeak-modal-ux",
+  "plannedIntegrationBranch": "integration/bird-squeak-modal-ux",
+  "status": "initialised",
+  "checkpoints": [
+    {
+      "ts": "2026-03-12T05:53:22Z",
+      "step": "initialise audit artefacts",
+      "status": "completed",
+      "details": "Captured preflight, inventoried active PRs #97 and #98, and kept #14 in the deferred manual-follow-up queue."
+    },
+    {
+      "ts": "2026-03-12T06:06:28Z",
+      "step": "update source PR #97",
+      "status": "completed",
+      "details": "Added the Scurry journal review note update on branch scurry-bird-scare-9059667324379963487 and pushed commit b12d40a."
+    },
+    {
+      "ts": "2026-03-12T06:06:43Z",
+      "step": "update source PR #98",
+      "status": "completed",
+      "details": "Added the Palette-Rat, Ink, and Nibble journal review note updates on branch palette-rat-ux-improvements-952982666946918618 and pushed commit 9110a4d."
+    },
+    {
+      "ts": "2026-03-12T06:07:10Z",
+      "step": "apply labels and processing comments",
+      "status": "completed",
+      "details": "Applied consolidation to #97, changes-requested to #98, and posted execution-status comments on both PRs."
+    },
+    {
+      "ts": "2026-03-12T06:07:45Z",
+      "step": "assemble integration branch",
+      "status": "completed",
+      "details": "Created integration/bird-squeak-modal-ux and landed commits 78dcc0f, 3ec1691, 49c2935, and be4bbe3 in the approved order."
+    },
+    {
+      "ts": "2026-03-12T06:07:59Z",
+      "step": "run validation",
+      "status": "completed",
+      "details": "Passed the-lab-website build and Docker Playwright validation across 9 tests."
+    },
+    {
+      "ts": "2026-03-12T06:08:20Z",
+      "step": "push integration branch and open PR",
+      "status": "completed",
+      "details": "Pushed integration/bird-squeak-modal-ux, opened PR #99, and applied consolidation plus topical labels."
+    },
+    {
+      "ts": "2026-03-12T06:08:39Z",
+      "step": "close processed source PRs",
+      "status": "completed",
+      "details": "Posted final fate comments and closed source PRs #97 and #98 in favour of #99."
+    }
+  ]
+}

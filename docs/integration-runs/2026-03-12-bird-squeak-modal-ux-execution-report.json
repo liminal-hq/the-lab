@@ -1,0 +1,76 @@
+{
+  "runDate": "2026-03-12",
+  "mode": "execute",
+  "branch": "integration/bird-squeak-modal-ux",
+  "status": "completed-and-pushed",
+  "integrationPr": {
+    "number": 99,
+    "title": "Add bird-scare squeak and improve modal touch UX (#97, #98)",
+    "url": "https://github.com/liminal-hq/the-lab/pull/99",
+    "labels": [
+      "consolidation",
+      "gameplay",
+      "ux",
+      "accessibility",
+      "documentation"
+    ]
+  },
+  "completedCommits": [
+    {
+      "sha": "78dcc0f",
+      "subject": "feat: implement squeak mechanic to scare birds"
+    },
+    {
+      "sha": "3ec1691",
+      "subject": "docs(agent-logs): clarify Scurry journal intent"
+    },
+    {
+      "sha": "49c2935",
+      "subject": "feat(rats-the-video-game): improve modal touch UX"
+    },
+    {
+      "sha": "be4bbe3",
+      "subject": "docs(agent-logs): clarify related journal intent"
+    }
+  ],
+  "validation": {
+    "websiteBuild": "/home/scott/.nvm/versions/node/v22.21.1/bin/pnpm --dir the-lab-website build",
+    "gameTests": "docker run --rm --ipc=host -v \"$PWD\":/work -w /work mcr.microsoft.com/playwright:v1.58.2-jammy bash -lc \"corepack enable && pnpm --dir rats-the-video-game test\"",
+    "playwrightTestCount": 9,
+    "passed": true
+  },
+  "notes": [
+    "#97 received the Scurry journal review note update before integration and was then closed in favour of #99",
+    "#98 received the Palette-Rat, Ink, and Nibble journal review note updates before integration",
+    "The integration branch intentionally excluded #98 helper scripts and generated screenshots while keeping the scoped repo changes",
+    "#14 remains open as the deferred manual-follow-up item"
+  ],
+  "processedSourcePrs": [
+    {
+      "number": 97,
+      "state": "closed",
+      "closedAt": "2026-03-12T06:08:39Z"
+    },
+    {
+      "number": 98,
+      "state": "closed",
+      "closedAt": "2026-03-12T06:08:39Z"
+    }
+  ],
+  "remainingOpenPrs": [
+    {
+      "number": 14,
+      "state": "open",
+      "reason": "explicitly deferred and left out of this integration run"
+    },
+    {
+      "number": 99,
+      "state": "open",
+      "reason": "active consolidated integration PR"
+    }
+  ],
+  "nextActions": [
+    "Review and merge PR #99",
+    "Leave #14 untouched as the deferred manual-follow-up item"
+  ]
+}
