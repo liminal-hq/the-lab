@@ -1,3 +1,5 @@
+> Review note: This file is an intentional agent log in `.Jules/` that captures Palette-Rat UX and accessibility learnings. Updates here are expected when related interface behaviour changes land.
+
 # Palette-Rat Journal 🎨🐀
 
 ## 1. Input Blocking Pattern for `rats-the-video-game`
@@ -55,4 +57,42 @@ if (e.target.closest('.modal') || e.target.closest('button')) return;
  (\_/)
  (o.o)  "No rogue jumps in the Options centre."
  (> <)
+```
+
+## 4. Modal Dismissal Conventions
+
+**Pattern:**
+- Modals should support intuitive dismissal beyond just the "Close" button.
+- Users expect clicking the dark background overlay (`.modal`) to close the dialog.
+
+**Implementation:**
+Attach a click event listener to the `.modal` elements checking if `e.target === modal` (ensuring the click wasn't inside `.modal-content`).
+
+```javascript
+document.querySelectorAll('.modal').forEach(modal => {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal(modal); // Or specific logic like closeTutorial()
+        }
+    });
+});
+```
+
+**Why this helps:**
+- Reduces cognitive load and fine motor requirement to find and click a specific button.
+- Matches standard expected web patterns.
+
+## 5. Touch Targets for Inputs
+
+**Pattern:**
+- Standard browser checkboxes and radio buttons are too small for reliable touch interaction (usually ~13px).
+- Increase touch targets for these inputs to at least 24x24px, and ideally wrap them in a `<label>` to make the text clickable too.
+
+**CSS:**
+```css
+.control-row input[type="checkbox"] {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+}
 ```

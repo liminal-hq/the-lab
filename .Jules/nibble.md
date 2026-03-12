@@ -1,3 +1,5 @@
+> Review note: This file is an intentional agent log in `.Jules/` that captures Nibble verification learnings. Updates here are expected when related test behaviour changes land.
+
 # Nibble's Journal 🧪
 
 ## Learnings
