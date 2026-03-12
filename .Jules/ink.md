@@ -1,3 +1,5 @@
+> Review note: This file is an intentional agent log in `.Jules/` that captures Ink visual-journal learnings. Updates here are expected when related artwork or illustration behaviour changes land.
+
 # Ink's Visual Journal
 
 ## Visual Motifs

@@ -1,3 +1,5 @@
+> Review note: This file is an intentional agent log in `.Jules/` that captures Palette-Rat UX and accessibility learnings. Updates here are expected when related interface behaviour changes land.
+
 # Palette-Rat Journal 🎨🐀
 
 ## 1. Input Blocking Pattern for `rats-the-video-game`
