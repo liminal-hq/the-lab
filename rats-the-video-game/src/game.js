@@ -51,7 +51,7 @@ const state = {
     cycleCheckpoints: [], // X positions of level cycles
     totalCycles: 25,
     currentCycle: 0,
-    input: { left: false, right: false, jump: false, jumpPressed: false, chew: false }, // The human commands
+    input: { left: false, right: false, jump: false, jumpPressed: false, chew: false, squeakPressed: false }, // The human commands
     level: 'SURFACE', // SURFACE or SUBWAY
     levelCompleted: false,
     speedBoost: false,
@@ -381,7 +381,7 @@ window.addEventListener('keydown', (e) => {
         state.input.jump = true; // LEAP!
     }
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = true; // GNAW!
-    if (e.code === 'KeyS') audio.playHappySqueak(); // SQUEAK!
+    if (e.code === 'KeyS') state.input.squeakPressed = true; // SQUEAK!
     if (e.key === '?') {
         if (window.game && window.game.toggleHelp) window.game.toggleHelp();
     }
@@ -467,8 +467,18 @@ function handleTouch(e) {
                 swipeData.hasJumped = true;
             }
 
+            const isSwipeDown = (deltaY > 30) || (velocity > 0.5 && deltaY > 15);
+            if (!swipeData.hasJumped && isSwipeDown) {
+                // SWIPE DOWN DETECTED!
+                state.input.squeakPressed = true;
+                setTimeout(() => {
+                    state.input.squeakPressed = false;
+                }, 100);
+                swipeData.hasJumped = true;
+            }
+
             // Reset jump flag if they move back down or stop moving up
-            if (deltaY > -10) {
+            if (Math.abs(deltaY) < 10) {
                 swipeData.hasJumped = false;
                 swipeData.startY = y; // Re-anchor
                 swipeData.startTime = Date.now();
@@ -623,6 +633,16 @@ function update() {
         }
     }
     state.input.jumpPressed = false; // Consume press
+
+    if (state.input.squeakPressed) {
+        audio.playHappySqueak();
+        state.birds.forEach(bird => {
+            if (Math.abs(bird.x - state.rat.x) < 400) {
+                bird.vy = -10; // Negative vy moves upwards on screen
+            }
+        });
+    }
+    state.input.squeakPressed = false; // Consume press
 
     // Gravity: The invisible paw pushing us down
     // Variable jump height: less gravity if holding jump while going up
@@ -789,9 +809,15 @@ function update() {
     // Update Birds
     state.birds.forEach(bird => {
         bird.x -= bird.speed;
-        if (bird.x < state.rat.x - 500) {
+
+        if (bird.vy) {
+            bird.y += bird.vy; // Apply vertical velocity (negative goes up)
+        }
+
+        if (bird.x < state.rat.x - 500 || bird.y < -50) {
             bird.x = state.rat.x + 500 + Math.random() * 500;
             bird.y = Math.random() * (canvas.height / 2);
+            bird.vy = 0;
         }
 
         // Drop Turd Logic (Aerial Attacks)
