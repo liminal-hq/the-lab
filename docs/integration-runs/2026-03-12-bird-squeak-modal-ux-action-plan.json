@@ -1,0 +1,432 @@
+{
+  "runDate": "2026-03-12",
+  "repository": "liminal-hq/the-lab",
+  "mode": "audit",
+  "requestedBy": "scott",
+  "generatedBy": "Codex GPT-5",
+  "plannedIntegrationBranch": "integration/bird-squeak-modal-ux",
+  "branchNamingCheck": "pass",
+  "mainSnapshot": {
+    "currentBranch": "main",
+    "currentMainHead": {
+      "sha": "0151a50",
+      "subject": "🐀 Rat Cleanup: Consolidate gameplay, accessibility, verification, and docs (#57, #60, #61, #62, #63, #65, #85, #86, #87, #88, #94, #95) (#96)"
+    },
+    "workingTreeClean": true,
+    "auditStartedFromMain": true,
+    "branchProtection": "none configured",
+    "allowedMergeMethods": [
+      "merge",
+      "rebase"
+    ]
+  },
+  "queueSummary": {
+    "activeAutomatedQueue": [97, 98],
+    "deferredManualQueue": [14],
+    "conclusion": [
+      "The active queue is small enough for one integration batch, but only after planned pruning and split work.",
+      "#97 is close to mergeable as-is, including its intentional Scurry journal update.",
+      "#98 should not be merged as-is; rats-the-video-game/index.html plus the Palette-Rat journal update belong in the batch, but the root helper scripts and screenshots do not.",
+      "#14 remains deferred outside this automated run and should keep its manual-follow-up label."
+    ]
+  },
+  "prInventory": [
+    {
+      "number": 97,
+      "title": "🐀 Scurry: [mechanic] Bird Scare Squeak",
+      "headRefName": "scurry-bird-scare-9059667324379963487",
+      "baseRefName": "main",
+      "ciStatus": [
+        "deploy-alpha: SUCCESS",
+        "cleanup-alpha: SKIPPED"
+      ],
+      "reviewStatus": "other",
+      "labels": [],
+      "changedFiles": 3,
+      "mergeStateStatus": "CLEAN"
+    },
+    {
+      "number": 98,
+      "title": "🎨🐀 Palette-Rat: [UX improvements: checkboxes, modal overlay]",
+      "headRefName": "palette-rat-ux-improvements-952982666946918618",
+      "baseRefName": "main",
+      "ciStatus": [
+        "deploy-alpha: SUCCESS",
+        "cleanup-alpha: SKIPPED"
+      ],
+      "reviewStatus": "other",
+      "labels": [],
+      "changedFiles": 10,
+      "mergeStateStatus": "CLEAN"
+    },
+    {
+      "number": 14,
+      "title": "Add Rats Music Converter",
+      "headRefName": "rats-music-converter-9930008502543285091",
+      "baseRefName": "main",
+      "ciStatus": [
+        "deploy-alpha: SUCCESS",
+        "cleanup-alpha: SKIPPED"
+      ],
+      "reviewStatus": "other",
+      "labels": [
+        "documentation",
+        "enhancement",
+        "ci",
+        "manual-follow-up"
+      ],
+      "changedFiles": 15,
+      "mergeStateStatus": "DIRTY"
+    }
+  ],
+  "scoring": [
+    {
+      "pr": 97,
+      "score": 10,
+      "notes": [
+        "+30 player-facing mechanic improvement",
+        "-20 overlap risk on rats-the-video-game/index.html"
+      ]
+    },
+    {
+      "pr": 98,
+      "score": 10,
+      "notes": [
+        "+30 player-facing UX improvement",
+        "-20 overlap risk on rats-the-video-game/index.html"
+      ]
+    }
+  ],
+  "conflictMatrix": [
+    {
+      "file": "rats-the-video-game/index.html",
+      "prs": [97, 98],
+      "risk": "high"
+    },
+    {
+      "file": "rats-the-video-game/src/game.js",
+      "prs": [97],
+      "risk": "low"
+    },
+    {
+      "file": ".Jules/scurry.md",
+      "prs": [97],
+      "risk": "low"
+    },
+    {
+      "file": ".Jules/palette-rat.md and root helper/screenshot files",
+      "prs": [98],
+      "risk": "low"
+    }
+  ],
+  "conflictResolutionNotes": [
+    "Integrate the squeak mechanic first so the shared tutorial/help text settles before modal UX refinements land.",
+    "Treat .Jules/*.md journal files as intentional logs when they accompany related behaviour changes; do not treat them as stray review noise.",
+    "Keep #14 out of this batch entirely because it is already deferred and DIRTY against current main."
+  ],
+  "allowedFileGuardrails": [
+    {
+      "pr": 97,
+      "expected": [
+        "rats-the-video-game/src/game.js",
+        "rats-the-video-game/index.html",
+        ".Jules/scurry.md"
+      ],
+      "unexpected": [],
+      "decision": "keep"
+    },
+    {
+      "pr": 98,
+      "expected": [
+        "rats-the-video-game/index.html",
+        ".Jules/palette-rat.md"
+      ],
+      "unexpected": [
+        "fix_modal.py",
+        "test_edit.py",
+        "test_ui.py",
+        "test_ui2.py",
+        "test_ui3.py",
+        "ui_screenshot.png",
+        "ui_screenshot_2.png",
+        "ui_screenshot_options.png"
+      ],
+      "decision": "split-needed; retain product HTML plus the related agent log on a fresh branch"
+    },
+    {
+      "pr": 14,
+      "expected": [
+        "experiment code",
+        "website wiring",
+        "workflow/build updates",
+        "docs",
+        "journal updates"
+      ],
+      "unexpected": [],
+      "decision": "manual-follow-up; exclude from automated execute scope"
+    }
+  ],
+  "requiredFixesBeforeMerge": [
+    {
+      "pr": 97,
+      "fix": "Use an outcome-style PR title if a direct representative PR is reopened later."
+    },
+    {
+      "pr": 98,
+      "fix": "Port rats-the-video-game/index.html plus .Jules/palette-rat.md; leave the root helper scripts and generated screenshots out of the repo history for this batch."
+    },
+    {
+      "pr": 98,
+      "fix": "Replace the square-bracket title style before direct merge or closure messaging so the queue remains outcome-first and stylistically consistent."
+    },
+    {
+      "pr": 14,
+      "fix": "Keep deferred until a separate manual review decides whether to refresh it onto current main or replace it with a smaller follow-up."
+    }
+  ],
+  "labelPlan": {
+    "consolidation": [97],
+    "changes-requested": [98],
+    "manual-follow-up": [14]
+  },
+  "labelReviewChecks": {
+    "requiredLabelsPresent": true,
+    "incorrectOrStaleLabels": "#97 and #98 are currently unlabelled despite clear automated fates",
+    "labelUpdatesRequiredBeforeMerge": [
+      "#97 add consolidation",
+      "#98 add changes-requested",
+      "#14 retain manual-follow-up"
+    ],
+    "leftoverManualLabelRequired": true
+  },
+  "labelBootstrapChecks": {
+    "changesRequestedExists": true,
+    "changesRequestedDescription": "Review feedback requested before merge",
+    "manualFollowUpExists": true,
+    "manualFollowUpDescription": "Needs manual attention outside automated integration workflow"
+  },
+  "titleChecks": {
+    "result": "fail",
+    "notes": [
+      "#97 and #98 both use square-bracket process tags.",
+      "#14 lacks the current themed title style and remains intentionally outside the active stack.",
+      "The queue should move to outcome-first titles without process brackets before any direct merge path."
+    ]
+  },
+  "descriptionChecks": {
+    "result": "pass",
+    "notes": [
+      "#97 and #98 use outcome-focused language and describe the player-facing change clearly.",
+      "The Jules task footer is acceptable and does not expose internal integration-planning notes.",
+      "#98 mentions screenshot verification, but the screenshot artefacts still do not belong in the merge payload."
+    ]
+  },
+  "integrationPrTitlePolicy": {
+    "recommendedTitles": [
+      "Add bird-scare squeak and improve modal touch UX (#97, #98)"
+    ]
+  },
+  "mergeabilityChecks": [
+    {
+      "pr": 97,
+      "status": "CLEAN",
+      "notes": [
+        "GitHub merge state is CLEAN.",
+        "The branch contents are acceptable for integration."
+      ]
+    },
+    {
+      "pr": 98,
+      "status": "DIRTY",
+      "notes": [
+        "GitHub merge state is CLEAN.",
+        "Split out root helper scripts and generated screenshots before integration."
+      ]
+    },
+    {
+      "pr": 14,
+      "status": "BLOCKED",
+      "notes": [
+        "GitHub merge state is DIRTY.",
+        "This PR remains outside the automated stack by design."
+      ]
+    }
+  ],
+  "extremeConflictChecks": [
+    {
+      "pr": 97,
+      "rebaseOntoMain": "not run during audit; GitHub reports CLEAN",
+      "integrationMergeAfterRebase": "expected pass",
+      "reviewState": "other",
+      "fate": "merge"
+    },
+    {
+      "pr": 98,
+      "rebaseOntoMain": "not run during audit; GitHub reports CLEAN",
+      "integrationMergeAfterRebase": "expected pass after scoped port",
+      "reviewState": "other",
+      "fate": "changes-requested on current PR; port intended behaviour from a clean branch"
+    },
+    {
+      "pr": 14,
+      "rebaseOntoMain": "not run during audit",
+      "integrationMergeAfterRebase": "unknown",
+      "reviewState": "other",
+      "fate": "defer"
+    }
+  ],
+  "scopeCoherenceAndSplitPlan": [
+    {
+      "pr": 97,
+      "scope": "coherent",
+      "keep": [
+        "rats-the-video-game/src/game.js",
+        "rats-the-video-game/index.html",
+        ".Jules/scurry.md"
+      ],
+      "exclude": [],
+      "rationale": "The player-facing mechanic, help-text changes, and Scurry journal update belong together."
+    },
+    {
+      "pr": 98,
+      "scope": "split-needed",
+      "keep": [
+        "rats-the-video-game/index.html",
+        ".Jules/palette-rat.md"
+      ],
+      "exclude": [
+        "fix_modal.py",
+        "test_edit.py",
+        "test_ui.py",
+        "test_ui2.py",
+        "test_ui3.py",
+        "ui_screenshot.png",
+        "ui_screenshot_2.png",
+        "ui_screenshot_options.png"
+      ],
+      "rationale": "The UX improvement and Palette-Rat journal update are valid, but the rest is local scaffolding and generated output rather than reviewable product code."
+    },
+    {
+      "pr": 14,
+      "scope": "manual-follow-up",
+      "keep": [],
+      "exclude": [],
+      "rationale": "The experiment is broader than the current gameplay/UI queue and is already labelled for manual handling."
+    }
+  ],
+  "commitMessagePlan": [
+    {
+      "pr": 97,
+      "status": "pass",
+      "headline": "feat: implement squeak mechanic to scare birds",
+      "method": "none planned",
+      "forcePush": false
+    },
+    {
+      "pr": 98,
+      "status": "pass",
+      "headline": "feat(ui): improve touch targets and modal accessibility",
+      "method": "none planned",
+      "forcePush": false
+    },
+    {
+      "pr": 14,
+      "status": "fail if merged directly",
+      "headline": "Implement amplitude-weighted playback and smoothing",
+      "method": "not planned in this batch",
+      "forcePush": false
+    }
+  ],
+  "forcePushApprovalPlan": [
+    {
+      "operation": "none",
+      "approvalRequired": false
+    },
+    {
+      "operation": "Any future in-place rewrite of #98 or #14",
+      "approvalRequired": true
+    }
+  ],
+  "communicationPlan": [
+    {
+      "pr": 97,
+      "processingCommentPlanned": true,
+      "finalFateTarget": "merge",
+      "finalFateRationale": [
+        "coherent gameplay addition",
+        "related Scurry journal update is intentional"
+      ],
+      "closureMessageRequired": false,
+      "backtickSafeMessageHandlingRequired": false
+    },
+    {
+      "pr": 98,
+      "processingCommentPlanned": true,
+      "finalFateTarget": "defer current PR",
+      "finalFateRationale": [
+        "intended UX change is valid",
+        "root helper scripts and generated screenshots should not ship",
+        "a clean scoped follow-up is safer than merging the branch as-is"
+      ],
+      "closureMessageRequired": false,
+      "backtickSafeMessageHandlingRequired": false
+    },
+    {
+      "pr": 14,
+      "processingCommentPlanned": false,
+      "finalFateTarget": "defer",
+      "finalFateRationale": [
+        "already labelled manual-follow-up",
+        "outside the gameplay/UI batch"
+      ],
+      "closureMessageRequired": false,
+      "backtickSafeMessageHandlingRequired": false
+    }
+  ],
+  "mergeOrderProposal": [
+    "Integrate #97 first because it is the smaller, cleaner branch and establishes the shared squeak instructions in index.html.",
+    "Integrate #98 second as a scoped port after the noisy helper and screenshot files are excluded."
+  ],
+  "integrationPrMetadata": {
+    "plannedTitle": "Add bird-scare squeak and improve modal touch UX (#97, #98)",
+    "titlePolicyCheck": "pass",
+    "referenceLinkFormatCheck": "pass"
+  },
+  "plannedCommands": {
+    "preflight": [
+      "gh auth status",
+      "git switch main",
+      "git pull --ff-only",
+      "git status --short --branch"
+    ],
+    "branchSetup": [
+      "git switch -c integration/bird-squeak-modal-ux"
+    ],
+    "perPrIntegration": [
+      "gh pr view 97 --json files,commits,statusCheckRollup",
+      "gh pr view 98 --json files,commits,statusCheckRollup",
+      "gh pr checkout 97",
+      "git switch integration/bird-squeak-modal-ux",
+      "git cherry-pick -n cb59617b32870a0627329a52e823a52f89d748bc",
+      "gh pr checkout 98",
+      "git switch integration/bird-squeak-modal-ux",
+      "git checkout palette-rat-ux-improvements-952982666946918618 -- rats-the-video-game/index.html .Jules/palette-rat.md"
+    ],
+    "validation": [
+      "/home/scott/.nvm/versions/node/v22.21.1/bin/pnpm --dir the-lab-website build",
+      "/home/scott/.nvm/versions/node/v22.21.1/bin/pnpm --dir rats-the-video-game test"
+    ]
+  },
+  "executionGates": [
+    "Preflight checks pass.",
+    "CI checks pass on the latest retained PR heads.",
+    "Label updates are applied as planned.",
+    "Working tree is clean before mutating commands begin.",
+    "The split plan for #98 is explicitly approved."
+  ],
+  "executeReady": false,
+  "executeBlockedBy": [
+    "#98 still needs explicit approval for the scoped split path.",
+    "No execute approval has been given yet."
+  ]
+}
