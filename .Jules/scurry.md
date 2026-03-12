@@ -1,5 +1,3 @@
-> Review note: This file is an intentional agent log in `.Jules/` that captures Scurry implementation learnings. Updates here are expected when related gameplay behaviour changes land.
-
 # Scurry's Journal
 
 ## Pizza Slice Collectible
