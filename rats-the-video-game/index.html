@@ -182,6 +182,8 @@
         }
         .control-row input {
             cursor: pointer;
+            width: 24px;
+            height: 24px;
         }
         .control-legend {
             margin-top: 10px;
@@ -402,6 +404,22 @@
             // Debug
             debugToggle.addEventListener('change', (e) => {
                 window.DEBUG_MODE = e.target.checked;
+            });
+
+            // Overlay Click to Close
+            const allModals = document.querySelectorAll('.modal');
+            allModals.forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        if (modal === creditsModal) {
+                            closeCreditsBtn.click();
+                        } else if (modal === tutorialModal) {
+                            closeTutorial();
+                        } else {
+                            closeModal(modal);
+                        }
+                    }
+                });
             });
 
             // Escape Key Handler

@@ -56,3 +56,19 @@ if (e.target.closest('.modal') || e.target.closest('button')) return;
  (o.o)  "No rogue jumps in the Options centre."
  (> <)
 ```
+
+## 4. Minimum Touch Targets and Modal Dismissal
+
+**Pattern:**
+- Interactive inputs such as checkboxes require minimum touch targets of at least 24x24 pixels (e.g., `width: 24px; height: 24px;`) for mobile accessibility.
+- Modal dialogs should implement an 'overlay click to close' pattern by attaching a click listener to `.modal` elements that checks `e.target === modal` before executing the close logic.
+
+**Why this helps:**
+- Larger touch targets prevent accidental misclicks on small mobile screens.
+- Allowing users to tap outside a modal to close it provides an intuitive, standard mobile interaction pattern that reduces friction.
+
+```
+ (\_/)
+ (o.o)  "Big paws need big buttons."
+ (> <)
+```
