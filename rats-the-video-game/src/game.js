@@ -51,7 +51,7 @@ const state = {
     cycleCheckpoints: [], // X positions of level cycles
     totalCycles: 25,
     currentCycle: 0,
-    input: { left: false, right: false, jump: false, jumpPressed: false, chew: false }, // The human commands
+    input: { left: false, right: false, jump: false, jumpPressed: false, chew: false, squeakPressed: false }, // The human commands
     level: 'SURFACE', // SURFACE or SUBWAY
     levelCompleted: false,
     speedBoost: false,
@@ -280,7 +280,8 @@ function generateSurface() {
         state.birds.push({
             x: Math.random() * 2000,
             y: Math.random() * (canvas.height/2),
-            speed: 1 + Math.random() * 2
+            speed: 1 + Math.random() * 2,
+            vy: 0
         });
     }
 }
@@ -381,7 +382,10 @@ window.addEventListener('keydown', (e) => {
         state.input.jump = true; // LEAP!
     }
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = true; // GNAW!
-    if (e.code === 'KeyS') audio.playHappySqueak(); // SQUEAK!
+    if (e.code === 'KeyS') {
+        state.input.squeakPressed = true; // Scare birds!
+        audio.playHappySqueak(); // SQUEAK!
+    }
     if (e.key === '?') {
         if (window.game && window.game.toggleHelp) window.game.toggleHelp();
     }
@@ -453,6 +457,7 @@ function handleTouch(e) {
             // 1. Distance Threshold: Moved up significantly (> 30px)
             // 2. Velocity Threshold: Fast flick (> 0.5px/ms) with minimal distance (> 15px)
             const isSwipeUp = (deltaY < -30) || (velocity < -0.5 && deltaY < -15);
+            const isSwipeDown = (deltaY > 30) || (velocity > 0.5 && deltaY > 15);
 
             if (!swipeData.hasJumped && isSwipeUp) {
                 // SWIPE UP DETECTED!
@@ -465,11 +470,19 @@ function handleTouch(e) {
                 }, 100);
 
                 swipeData.hasJumped = true;
+            } else if (!swipeData.hasSqueaked && isSwipeDown) {
+                // SWIPE DOWN DETECTED!
+                state.input.squeakPressed = true;
+                if (typeof audio !== 'undefined' && audio.playHappySqueak) {
+                    audio.playHappySqueak();
+                }
+                swipeData.hasSqueaked = true;
             }
 
-            // Reset jump flag if they move back down or stop moving up
-            if (deltaY > -10) {
+            // Reset flags if they move back down or stop moving
+            if (deltaY > -10 && deltaY < 10) {
                 swipeData.hasJumped = false;
+                swipeData.hasSqueaked = false;
                 swipeData.startY = y; // Re-anchor
                 swipeData.startTime = Date.now();
             }
@@ -592,6 +605,20 @@ function update() {
     }
 
     const currentSpeed = state.speedBoost ? SPEED * 1.5 : SPEED;
+
+    // Squeak Logic (Scaring birds)
+    if (state.input.squeakPressed) {
+        state.input.squeakPressed = false;
+        // Visual feedback
+        spawnParticles(state.rat.x, state.rat.y + 10, '#FFF', 10);
+
+        // Scare nearby birds
+        state.birds.forEach(bird => {
+            if (Math.abs(bird.x - state.rat.x) < 400 && (!bird.vy || bird.vy === 0)) {
+                bird.vy = -(Math.random() * 3 + 2); // Fly away upwards
+            }
+        });
+    }
 
     // Movement Logic
     if (state.input.right) {
@@ -789,9 +816,12 @@ function update() {
     // Update Birds
     state.birds.forEach(bird => {
         bird.x -= bird.speed;
-        if (bird.x < state.rat.x - 500) {
+        if (bird.vy) bird.y += bird.vy; // Apply vertical velocity for scared birds
+
+        if (bird.x < state.rat.x - 500 || bird.y < -50) {
             bird.x = state.rat.x + 500 + Math.random() * 500;
             bird.y = Math.random() * (canvas.height / 2);
+            bird.vy = 0; // reset
         }
 
         // Drop Turd Logic (Aerial Attacks)

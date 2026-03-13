@@ -103,6 +103,19 @@
         }
         #close-btn:hover { background: #27ae60; }
 
+        .modal-btn {
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        .modal-btn.primary { background: #e74c3c; }
+        .modal-btn.primary:hover { background: #c0392b; }
+        .modal-btn.secondary { background: #444; border: 1px solid #777; }
+        .modal-btn.secondary:hover { background: #666; }
+
         #debug-container {
             margin-top: 15px;
             font-size: 0.9rem;
@@ -182,6 +195,8 @@
         }
         .control-row input {
             cursor: pointer;
+            width: 24px;
+            height: 24px;
         }
         .control-legend {
             margin-top: 10px;
@@ -234,8 +249,8 @@
 
             <button id="close-btn">PLAY!</button>
             <div id="debug-container">
-                <label>
-                    <input type="checkbox" id="debug-toggle"> Enable Debug Info
+                <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                    <input type="checkbox" id="debug-toggle" style="width: 20px; height: 20px; cursor: pointer;"> Enable Debug Info
                 </label>
             </div>
         </div>
@@ -256,9 +271,9 @@
             </div>
 
             <br>
-            <button id="credits-btn" style="background: #444; border: 1px solid #777; color: white; padding: 10px;">Credits</button>
+            <button id="credits-btn" class="modal-btn secondary">Credits</button>
             <br><br>
-            <button id="close-options-btn" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px;">Close</button>
+            <button id="close-options-btn" class="modal-btn primary">Close</button>
         </div>
     </div>
 
@@ -274,7 +289,7 @@
             <br>
             <p>No humans were harmed in the making of this game.<br>Just their cheese.</p>
             <br>
-            <button id="close-credits-btn" style="background: #e74c3c; color: white; border: none; padding: 10px 20px; cursor: pointer; border-radius: 5px;">Back</button>
+            <button id="close-credits-btn" class="modal-btn primary">Back</button>
         </div>
     </div>
 
@@ -402,6 +417,21 @@
             // Debug
             debugToggle.addEventListener('change', (e) => {
                 window.DEBUG_MODE = e.target.checked;
+            });
+
+            // Overlay Click to Close Modals
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', (e) => {
+                    if (e.target === modal) {
+                        if (modal.id === 'tutorial-modal') {
+                            closeTutorial();
+                        } else if (modal.id === 'credits-modal') {
+                            closeCreditsBtn.click();
+                        } else {
+                            closeOptionsBtn.click(); // Close the options modal via button logic to be safe
+                        }
+                    }
+                });
             });
 
             // Escape Key Handler
