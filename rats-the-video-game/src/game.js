@@ -382,10 +382,7 @@ window.addEventListener('keydown', (e) => {
         state.input.jump = true; // LEAP!
     }
     if (e.code === 'Enter' || e.code === 'KeyC') state.input.chew = true; // GNAW!
-    if (e.code === 'KeyS') {
-        state.input.squeakPressed = true; // Scare birds!
-        audio.playHappySqueak(); // SQUEAK!
-    }
+    if (e.code === 'KeyS') state.input.squeakPressed = true; // SQUEAK!
     if (e.key === '?') {
         if (window.game && window.game.toggleHelp) window.game.toggleHelp();
     }
@@ -479,8 +476,8 @@ function handleTouch(e) {
                 swipeData.hasSqueaked = true;
             }
 
-            // Reset flags if they move back down or stop moving
-            if (deltaY > -10 && deltaY < 10) {
+            // Reset flags if they move back toward the anchor point.
+            if (Math.abs(deltaY) < 10) {
                 swipeData.hasJumped = false;
                 swipeData.hasSqueaked = false;
                 swipeData.startY = y; // Re-anchor
@@ -651,6 +648,16 @@ function update() {
     }
     state.input.jumpPressed = false; // Consume press
 
+    if (state.input.squeakPressed) {
+        audio.playHappySqueak();
+        state.birds.forEach(bird => {
+            if (Math.abs(bird.x - state.rat.x) < 400) {
+                bird.vy = -10; // Negative vy moves upwards on screen
+            }
+        });
+    }
+    state.input.squeakPressed = false; // Consume press
+
     // Gravity: The invisible paw pushing us down
     // Variable jump height: less gravity if holding jump while going up
     if (state.input.jump && state.rat.vy > 0) {
@@ -816,12 +823,14 @@ function update() {
     // Update Birds
     state.birds.forEach(bird => {
         bird.x -= bird.speed;
-        if (bird.vy) bird.y += bird.vy; // Apply vertical velocity for scared birds
+        if (bird.vy) {
+            bird.y += bird.vy; // Apply vertical velocity (negative goes up)
+        }
 
         if (bird.x < state.rat.x - 500 || bird.y < -50) {
             bird.x = state.rat.x + 500 + Math.random() * 500;
             bird.y = Math.random() * (canvas.height / 2);
-            bird.vy = 0; // reset
+            bird.vy = 0;
         }
 
         // Drop Turd Logic (Aerial Attacks)
