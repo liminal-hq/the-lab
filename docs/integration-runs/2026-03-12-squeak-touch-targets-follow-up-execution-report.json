@@ -1,0 +1,60 @@
+{
+  "runDate": "2026-03-12",
+  "mode": "execute",
+  "branch": "integration/squeak-touch-targets-follow-up",
+  "status": "completed-and-pushed",
+  "integrationPr": {
+    "number": 103,
+    "title": "Improve squeak controls and modal touch dismissal (#101, #102)",
+    "url": "https://github.com/liminal-hq/the-lab/pull/103",
+    "labels": [
+      "consolidation",
+      "gameplay",
+      "ux",
+      "accessibility",
+      "documentation"
+    ]
+  },
+  "completedCommits": [
+    {
+      "sha": "44a0c7f",
+      "subject": "feat(rats-the-video-game): refine squeak follow-up controls"
+    },
+    {
+      "sha": "4a9f430",
+      "subject": "feat(rats-the-video-game): improve modal touch targets and dismissal"
+    }
+  ],
+  "validation": {
+    "websiteBuild": "/home/scott/.nvm/versions/node/v22.21.1/bin/pnpm --dir the-lab-website build",
+    "gameTests": "docker run --rm --ipc=host -v \"$PWD\":/work -w /work mcr.microsoft.com/playwright:v1.58.2-jammy bash -lc \"corepack enable && pnpm --dir rats-the-video-game test\"",
+    "playwrightTestCount": 9,
+    "passed": true,
+    "notes": [
+      "A direct local pnpm test attempt failed because rats-the-video-game/test-results is owned by root.",
+      "Containerised Playwright validation succeeded and matches the earlier integration run path."
+    ]
+  },
+  "notes": [
+    "No source PR branches were rebased or force-pushed.",
+    "PR #103 was opened from integration/squeak-touch-targets-follow-up and labelled consolidation, gameplay, ux, accessibility, and documentation.",
+    "#101 and #102 were closed in favour of #103 after final fate comments were posted.",
+    "#14 remains open as the deferred manual-follow-up item."
+  ],
+  "remainingOpenPrs": [
+    {
+      "number": 14,
+      "state": "open",
+      "reason": "explicitly deferred and left out of this integration run"
+    },
+    {
+      "number": 103,
+      "state": "open",
+      "reason": "active consolidated integration PR for the residual #101 and #102 follow-up work"
+    }
+  ],
+  "nextActions": [
+    "Review and merge PR #103.",
+    "Leave #14 untouched as the deferred manual-follow-up item."
+  ]
+}

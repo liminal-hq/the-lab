@@ -1,0 +1,15 @@
+{
+  "runDate": "2026-03-12",
+  "mode": "audit",
+  "batch": "squeak-touch-targets-refresh",
+  "plannedIntegrationBranch": "integration/squeak-touch-targets-refresh",
+  "status": "initialised",
+  "checkpoints": [
+    {
+      "ts": "2026-03-13T02:10:54Z",
+      "step": "initialise audit artefacts",
+      "status": "completed",
+      "details": "Captured preflight, inventoried active PRs #101 and #102, marked #99 as superseded by the refreshed queue, and kept #14 in manual follow-up."
+    }
+  ]
+}

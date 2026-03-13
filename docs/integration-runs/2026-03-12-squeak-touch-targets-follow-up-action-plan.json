@@ -1,0 +1,455 @@
+{
+  "runDate": "2026-03-12",
+  "repository": "liminal-hq/the-lab",
+  "mode": "audit",
+  "requestedBy": "scott",
+  "generatedBy": "Codex GPT-5",
+  "plannedIntegrationBranch": "integration/squeak-touch-targets-follow-up",
+  "branchNamingCheck": "pass",
+  "mainSnapshot": {
+    "currentBranch": "main",
+    "currentMainHead": {
+      "sha": "3679da5",
+      "subject": "Add bird-scare squeak and improve modal touch UX (#97, #98) (#99)"
+    },
+    "workingTreeClean": false,
+    "workingTreeNotes": "Audit artefacts only",
+    "auditStartedFromMain": true,
+    "branchProtection": "none configured",
+    "allowedMergeMethods": [
+      "merge",
+      "rebase"
+    ]
+  },
+  "queueSummary": {
+    "activeAutomatedQueue": [
+      101,
+      102
+    ],
+    "deferredManualQueue": [
+      14
+    ],
+    "recentlyMergedReferencePr": 99,
+    "conclusion": [
+      "#99 is no longer in the open queue, but it did not fully subsume #101 and #102.",
+      "#101 still contains follow-up gameplay and copy changes not present on main, including mobile swipe-down squeak behaviour and related help/journal updates.",
+      "#102 still contains follow-up accessibility and dismissal behaviour not present on main, including 24x24 checkbox targets, overlay-click dismissal, and the matching Palette-Rat journal note.",
+      "Both #101 and #102 are now DIRTY against main, so execute mode must plan rebases and explicit force-push approval before integration.",
+      "#14 remains outside this run and should keep manual-follow-up."
+    ]
+  },
+  "prInventory": [
+    {
+      "number": 101,
+      "title": "🧱 Scurry: [squeak mechanic]",
+      "headRefName": "scurry-squeak-mechanic-1844732970679861154",
+      "baseRefName": "main",
+      "ciStatus": [
+        "deploy-alpha: SUCCESS",
+        "cleanup-alpha: SKIPPED"
+      ],
+      "reviewStatus": "other",
+      "labels": [],
+      "changedFilesVsCurrentMain": 3,
+      "mergeStateStatus": "DIRTY"
+    },
+    {
+      "number": 102,
+      "title": "🎨🐀 Palette-Rat: [UX improvement] Increase touch targets and add modal overlay dismissal",
+      "headRefName": "palette-rat-touch-targets-modals-1212973008546341614",
+      "baseRefName": "main",
+      "ciStatus": [
+        "deploy-alpha: SUCCESS",
+        "cleanup-alpha: SKIPPED"
+      ],
+      "reviewStatus": "other",
+      "labels": [],
+      "changedFilesVsCurrentMain": 2,
+      "mergeStateStatus": "DIRTY"
+    },
+    {
+      "number": 14,
+      "title": "Add Rats Music Converter",
+      "headRefName": "rats-music-converter-9930008502543285091",
+      "baseRefName": "main",
+      "ciStatus": [
+        "deploy-alpha: SUCCESS",
+        "cleanup-alpha: SKIPPED"
+      ],
+      "reviewStatus": "other",
+      "labels": [
+        "documentation",
+        "enhancement",
+        "ci",
+        "manual-follow-up"
+      ],
+      "changedFiles": 15,
+      "mergeStateStatus": "UNKNOWN"
+    }
+  ],
+  "scoring": [
+    {
+      "pr": 102,
+      "score": 10,
+      "notes": [
+        "+30 UX enhancement",
+        "-20 overlap/conflict risk with higher-priority #101"
+      ]
+    },
+    {
+      "pr": 101,
+      "score": 0,
+      "notes": [
+        "No explicit positive weight in the current model"
+      ]
+    },
+    {
+      "pr": 14,
+      "score": -70,
+      "notes": [
+        "+10 documentation component",
+        "-80 blocked mergeability state in the current queue"
+      ]
+    }
+  ],
+  "conflictMatrix": [
+    {
+      "file": "rats-the-video-game/index.html",
+      "prs": [
+        101,
+        102
+      ],
+      "risk": "high"
+    },
+    {
+      "file": ".Jules/scurry.md",
+      "prs": [
+        101
+      ],
+      "risk": "low"
+    },
+    {
+      "file": "rats-the-video-game/src/game.js",
+      "prs": [
+        101
+      ],
+      "risk": "low"
+    },
+    {
+      "file": ".Jules/palette-rat.md",
+      "prs": [
+        102
+      ],
+      "risk": "low"
+    }
+  ],
+  "conflictResolutionNotes": [
+    "Rebase #101 onto origin/main first and land it before #102, because the shared help text sits in rats-the-video-game/index.html.",
+    "Rebase #102 after #101 lands or port it to the integration branch with a fresh Conventional Commit message if direct merge remains noisy.",
+    "Keep #14 out of this batch entirely because it is already labelled manual-follow-up."
+  ],
+  "allowedFileGuardrails": [
+    {
+      "pr": 101,
+      "expected": [
+        "rats-the-video-game/src/game.js",
+        "rats-the-video-game/index.html",
+        ".Jules/scurry.md"
+      ],
+      "unexpected": [],
+      "decision": "keep"
+    },
+    {
+      "pr": 102,
+      "expected": [
+        "rats-the-video-game/index.html",
+        ".Jules/palette-rat.md"
+      ],
+      "unexpected": [],
+      "decision": "keep"
+    },
+    {
+      "pr": 14,
+      "expected": [
+        "experiment code",
+        "website wiring",
+        "workflow/build updates",
+        "docs",
+        "journal updates"
+      ],
+      "unexpected": [],
+      "decision": "manual-follow-up; exclude from automated execute scope"
+    }
+  ],
+  "requiredFixesBeforeMerge": [
+    {
+      "pr": 101,
+      "fix": "Rebase onto origin/main because GitHub now reports the branch as DIRTY."
+    },
+    {
+      "pr": 102,
+      "fix": "Rebase onto origin/main because GitHub now reports the branch as DIRTY."
+    },
+    {
+      "pr": 102,
+      "fix": "Replace the non-Conventional source commit with an integration-branch Conventional Commit or rewrite the source branch in place."
+    },
+    {
+      "pr": 14,
+      "fix": "Keep deferred until a separate manual review decides whether to refresh it onto current main or replace it with a smaller follow-up."
+    }
+  ],
+  "labelPlan": {
+    "gameplay": [
+      101
+    ],
+    "ux": [
+      102
+    ],
+    "accessibility": [
+      102
+    ],
+    "manual-follow-up": [
+      14
+    ]
+  },
+  "labelReviewChecks": {
+    "requiredLabelsPresent": true,
+    "incorrectOrStaleLabels": "#101 and #102 are unlabelled despite clear topical ownership",
+    "labelUpdatesRequiredBeforeMerge": [
+      "#101 add gameplay",
+      "#102 add ux and accessibility",
+      "#14 retain manual-follow-up"
+    ],
+    "leftoverManualLabelRequired": true
+  },
+  "labelBootstrapChecks": {
+    "changesRequestedExists": true,
+    "changesRequestedDescription": "Review feedback requested before merge",
+    "manualFollowUpExists": true,
+    "manualFollowUpDescription": "Needs manual attention outside automated integration workflow"
+  },
+  "titleChecks": {
+    "result": "fail",
+    "notes": [
+      "#101 and #102 still use themed prefixes and bracketed descriptors instead of the preferred outcome-first style.",
+      "Execute mode should use an outcome-first integration PR title even if the source PR titles remain unchanged."
+    ]
+  },
+  "descriptionChecks": {
+    "result": "pass",
+    "notes": [
+      "#101 and #102 both explain the intended player-facing outcome clearly.",
+      "The automation footer is acceptable because it does not expose internal queue labels or integration triage notes.",
+      "#14 remains broad and should stay outside this batch."
+    ]
+  },
+  "integrationPrTitlePolicy": {
+    "recommendedTitles": [
+      "Improve squeak controls and modal touch dismissal (#101, #102)"
+    ]
+  },
+  "mergeabilityChecks": [
+    {
+      "pr": 101,
+      "status": "DIRTY",
+      "notes": [
+        "GitHub merge state is DIRTY after #99 merged into main.",
+        "The branch still contains meaningful follow-up changes and should not be closed as a duplicate."
+      ]
+    },
+    {
+      "pr": 102,
+      "status": "DIRTY",
+      "notes": [
+        "GitHub merge state is DIRTY after #99 merged into main.",
+        "The branch still contains meaningful follow-up changes and should not be closed as a duplicate."
+      ]
+    },
+    {
+      "pr": 14,
+      "status": "BLOCKED",
+      "notes": [
+        "GitHub merge state is UNKNOWN in the current listing.",
+        "This PR remains outside the automated stack by design."
+      ]
+    }
+  ],
+  "extremeConflictChecks": [
+    {
+      "pr": 101,
+      "rebaseOntoMain": "required",
+      "integrationMergeAfterRebase": "expected pass",
+      "reviewState": "other",
+      "fate": "merge"
+    },
+    {
+      "pr": 102,
+      "rebaseOntoMain": "required",
+      "integrationMergeAfterRebase": "expected pass after #101",
+      "reviewState": "other",
+      "fate": "merge"
+    },
+    {
+      "pr": 14,
+      "rebaseOntoMain": "not planned in this batch",
+      "integrationMergeAfterRebase": "unknown",
+      "reviewState": "other",
+      "fate": "defer"
+    }
+  ],
+  "scopeCoherence": [
+    {
+      "pr": 101,
+      "status": "coherent",
+      "keep": [
+        "rats-the-video-game/src/game.js",
+        "rats-the-video-game/index.html",
+        ".Jules/scurry.md"
+      ],
+      "rationale": "The follow-up squeak input behaviour, help copy, and Scurry journal note belong together."
+    },
+    {
+      "pr": 102,
+      "status": "coherent",
+      "keep": [
+        "rats-the-video-game/index.html",
+        ".Jules/palette-rat.md"
+      ],
+      "rationale": "The follow-up touch-target sizing, overlay dismissal, and Palette-Rat journal note belong together."
+    },
+    {
+      "pr": 14,
+      "status": "manual-follow-up",
+      "keep": [],
+      "rationale": "The experiment is broader than the current gameplay/UI queue and is already labelled for manual handling."
+    }
+  ],
+  "commitMessagePlan": [
+    {
+      "pr": 101,
+      "status": "pass",
+      "headline": "feat: add squeak mechanic to scare birds",
+      "rewriteMethod": "none planned",
+      "forcePush": true,
+      "forcePushReason": "Rebase onto origin/main is required."
+    },
+    {
+      "pr": 102,
+      "status": "fail if merged directly",
+      "headline": "🎨🐀 Palette-Rat: [UX improvement] increase touch targets and add modal dismissal",
+      "rewriteMethod": "Prefer integration-branch commit rewrite or rebase -i --reword if the source branch is updated in place.",
+      "forcePush": true,
+      "forcePushReason": "Rebase onto origin/main is required, and a source-branch reword would also need force-push."
+    },
+    {
+      "pr": 14,
+      "status": "fail if merged directly",
+      "headline": "Implement amplitude-weighted playback and smoothing",
+      "rewriteMethod": "Not planned in this batch.",
+      "forcePush": false
+    }
+  ],
+  "forcePushApprovalPlan": [
+    {
+      "pr": 101,
+      "reason": "Rebase onto origin/main",
+      "branch": "scurry-squeak-mechanic-1844732970679861154",
+      "command": "git push --force-with-lease origin scurry-squeak-mechanic-1844732970679861154",
+      "approvalRequired": true
+    },
+    {
+      "pr": 102,
+      "reason": "Rebase onto origin/main",
+      "branch": "palette-rat-touch-targets-modals-1212973008546341614",
+      "command": "git push --force-with-lease origin palette-rat-touch-targets-modals-1212973008546341614",
+      "approvalRequired": true
+    },
+    {
+      "pr": 102,
+      "reason": "Commit rewrite in place, if chosen instead of integration-branch rewording",
+      "branch": "palette-rat-touch-targets-modals-1212973008546341614",
+      "command": "git push --force-with-lease origin palette-rat-touch-targets-modals-1212973008546341614",
+      "approvalRequired": true
+    }
+  ],
+  "communicationPlan": [
+    {
+      "pr": 101,
+      "processingComment": true,
+      "finalFate": "merge",
+      "rationale": [
+        "residual follow-up gameplay improvements remain after #99",
+        "coherent scope"
+      ],
+      "closureMessageRequired": false,
+      "backtickSafeHandlingRequired": false
+    },
+    {
+      "pr": 102,
+      "processingComment": true,
+      "finalFate": "merge",
+      "rationale": [
+        "residual accessibility and modal behaviour improvements remain after #99",
+        "coherent scope",
+        "commit-message conformance can be restored during integration"
+      ],
+      "closureMessageRequired": false,
+      "backtickSafeHandlingRequired": true
+    },
+    {
+      "pr": 14,
+      "processingComment": false,
+      "finalFate": "defer",
+      "rationale": [
+        "already labelled manual-follow-up",
+        "outside the gameplay/UI batch"
+      ],
+      "closureMessageRequired": false,
+      "backtickSafeHandlingRequired": false
+    }
+  ],
+  "mergeOrder": [
+    {
+      "pr": 101,
+      "reason": "Rebase and integrate first because it introduces the remaining squeak-input follow-up and shared help-text edits."
+    },
+    {
+      "pr": 102,
+      "reason": "Rebase and integrate second because it touches the same HTML surface and can then resolve against the settled copy."
+    },
+    {
+      "pr": 14,
+      "reason": "Leave deferred."
+    }
+  ],
+  "integrationPrMetadata": {
+    "plannedTitle": "Improve squeak controls and modal touch dismissal (#101, #102)",
+    "titlePolicyCheck": "pass",
+    "referenceLinkFormatCheck": "pass"
+  },
+  "plannedCommands": [
+    "gh auth status",
+    "git switch main",
+    "git pull --ff-only",
+    "git status --short --branch",
+    "git switch -c integration/squeak-touch-targets-follow-up",
+    "git switch scurry-squeak-mechanic-1844732970679861154",
+    "git rebase origin/main",
+    "git switch palette-rat-touch-targets-modals-1212973008546341614",
+    "git rebase origin/main",
+    "git switch integration/squeak-touch-targets-follow-up",
+    "git merge --no-ff origin/scurry-squeak-mechanic-1844732970679861154",
+    "git cherry-pick origin/palette-rat-touch-targets-modals-1212973008546341614 --no-commit",
+    "git commit -m 'feat(rats-the-video-game): improve modal touch targets and overlay dismissal'",
+    "pnpm --dir rats-the-video-game test",
+    "pnpm --dir the-lab-website build"
+  ],
+  "executionGates": [
+    "Preflight checks pass.",
+    "CI checks pass on latest PR heads.",
+    "Required review policy passes.",
+    "Working tree is clean aside from approved run artefacts.",
+    "Plan approved by reviewer."
+  ]
+}
