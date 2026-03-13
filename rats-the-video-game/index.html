@@ -420,16 +420,17 @@
                 window.DEBUG_MODE = e.target.checked;
             });
 
-            // Overlay Click to Close Modals
-            document.querySelectorAll('.modal').forEach(modal => {
+            // Overlay Click to Close
+            const allModals = document.querySelectorAll('.modal');
+            allModals.forEach(modal => {
                 modal.addEventListener('click', (e) => {
                     if (e.target === modal) {
-                        if (modal.id === 'tutorial-modal') {
-                            closeTutorial();
-                        } else if (modal.id === 'credits-modal') {
+                        if (modal === creditsModal) {
                             closeCreditsBtn.click();
+                        } else if (modal === tutorialModal) {
+                            closeTutorial();
                         } else {
-                            closeOptionsBtn.click(); // Close the options modal via button logic to be safe
+                            closeModal(modal);
                         }
                     }
                 });
