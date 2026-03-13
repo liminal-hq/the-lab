@@ -2,8 +2,19 @@
   "runDate": "2026-03-12",
   "mode": "execute",
   "branch": "integration/squeak-touch-targets-follow-up",
-  "status": "completed-local-only",
-  "integrationPr": null,
+  "status": "completed-and-pushed",
+  "integrationPr": {
+    "number": 103,
+    "title": "Improve squeak controls and modal touch dismissal (#101, #102)",
+    "url": "https://github.com/liminal-hq/the-lab/pull/103",
+    "labels": [
+      "consolidation",
+      "gameplay",
+      "ux",
+      "accessibility",
+      "documentation"
+    ]
+  },
   "completedCommits": [
     {
       "sha": "44a0c7f",
@@ -26,30 +37,24 @@
   },
   "notes": [
     "No source PR branches were rebased or force-pushed.",
-    "No PR labels, comments, pushes, or integration PR creation were performed because this execute run was kept local-only.",
-    "#101 and #102 remain open remotely and still need the publish step if the integrated branch should be represented on GitHub.",
+    "PR #103 was opened from integration/squeak-touch-targets-follow-up and labelled consolidation, gameplay, ux, accessibility, and documentation.",
+    "#101 and #102 were closed in favour of #103 after final fate comments were posted.",
     "#14 remains open as the deferred manual-follow-up item."
   ],
   "remainingOpenPrs": [
     {
-      "number": 101,
-      "state": "open",
-      "reason": "local integration complete, but no remote publish or source-PR reconciliation performed"
-    },
-    {
-      "number": 102,
-      "state": "open",
-      "reason": "local integration complete, but no remote publish or source-PR reconciliation performed"
-    },
-    {
       "number": 14,
       "state": "open",
       "reason": "explicitly deferred and left out of this integration run"
+    },
+    {
+      "number": 103,
+      "state": "open",
+      "reason": "active consolidated integration PR for the residual #101 and #102 follow-up work"
     }
   ],
   "nextActions": [
-    "Push integration/squeak-touch-targets-follow-up if remote publication is desired.",
-    "Open an integration PR titled Improve squeak controls and modal touch dismissal (#101, #102).",
-    "After publish, close or otherwise reconcile source PRs #101 and #102."
+    "Review and merge PR #103.",
+    "Leave #14 untouched as the deferred manual-follow-up item."
   ]
 }
