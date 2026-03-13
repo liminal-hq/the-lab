@@ -251,7 +251,7 @@
             <button id="close-btn">PLAY!</button>
             <div id="debug-container">
                 <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
-                    <input type="checkbox" id="debug-toggle" style="width: 20px; height: 20px; cursor: pointer;"> Enable Debug Info
+                    <input type="checkbox" id="debug-toggle" style="width: 24px; height: 24px; cursor: pointer;"> Enable Debug Info
                 </label>
             </div>
         </div>
@@ -333,10 +333,10 @@
             const musicToggle = document.getElementById('music-toggle');
             const sfxToggle = document.getElementById('sfx-toggle');
 
-            let lastFocus = null;
+            const focusStack = [];
 
             function openModal(modal) {
-                lastFocus = document.activeElement;
+                focusStack.push(document.activeElement);
                 modal.style.display = 'flex';
                 modal.setAttribute('aria-hidden', 'false');
 
@@ -347,10 +347,10 @@
             function closeModal(modal) {
                 modal.style.display = 'none';
                 modal.setAttribute('aria-hidden', 'true');
+                const lastFocus = focusStack.pop();
                 if (lastFocus && document.body.contains(lastFocus)) {
                     lastFocus.focus();
                 }
-                lastFocus = null;
             }
 
             // --- Tutorial Logic ---
@@ -394,7 +394,7 @@
 
             // --- Credits Logic ---
             creditsBtn.addEventListener('click', () => {
-                lastFocus = document.activeElement;
+                focusStack.push(document.activeElement);
                 optionsModal.style.display = 'none';
                 optionsModal.setAttribute('aria-hidden', 'true');
 
@@ -412,6 +412,7 @@
                 optionsModal.style.display = 'flex';
                 optionsModal.setAttribute('aria-hidden', 'false');
 
+                const lastFocus = focusStack.pop();
                 if (lastFocus) lastFocus.focus();
             });
 

@@ -98,3 +98,32 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+
+## 5. Modal Focus Stacking Pattern
+
+**Problem:** When a user navigates to a nested modal (e.g., from Tutorial/Options to Credits) and closes it, focus shouldn't simply jump back to the `<body>`. Instead, it should predictably return to the element that triggered the nested modal (or the previous modal state).
+
+**Solution:**
+Instead of a single `lastFocus` variable, use a `focusStack` array to keep track of element history.
+
+```javascript
+const focusStack = [];
+
+function openModal(modal) {
+    focusStack.push(document.activeElement);
+    modal.style.display = 'flex';
+    // ...
+}
+
+function closeModal(modal) {
+    modal.style.display = 'none';
+    const lastFocus = focusStack.pop();
+    if (lastFocus && document.body.contains(lastFocus)) {
+        lastFocus.focus();
+    }
+}
+```
+
+**Why this helps:**
+- Safely handles any depth of modal stacking.
+- Predictable and accessible keyboard navigation (focus isn't silently lost).
