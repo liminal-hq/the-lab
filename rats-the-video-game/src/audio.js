@@ -160,6 +160,33 @@ export class AudioEngine {
         });
     }
 
+    playMetalChew() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // The sound of crunching metal
+        //      (\_/)
+        //      (o_o)
+        //      (> <) "Spicy."
+
+        // High, dissonant frequencies dropping rapidly to simulate metal buckling
+        [600, 300].forEach((startFreq) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(startFreq, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(startFreq * 0.3, this.ctx.currentTime + 0.15);
+
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+
+            gain.gain.setValueAtTime(0.3, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+
+            osc.start(this.ctx.currentTime);
+            osc.stop(this.ctx.currentTime + 0.15);
+        });
+    }
+
     playSnap() {
         if (!this.ctx || !this.sfxEnabled) return;
         // The sound of danger!
