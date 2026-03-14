@@ -1,0 +1,1 @@
+- When synthesizing metallic sounds with Web Audio API, using multiple dissonant square wave oscillators with rapid, staggered exponential frequency drops creates a convincing 'crunch' without harsh peaks, avoiding the need for external noise buffers.
