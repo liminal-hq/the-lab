@@ -10,3 +10,8 @@
  (o.o)  "Same city, different districts."
  (> <)
 ```
+
+### Deterministic Seed Generation
+- **What:** Swapped `Math.random()` during generation phases with a deterministic Mulberry32 RNG.
+- **Why:** By allowing a `?seed=X` parameter in the URL, players and developers can reproduce and replay identical procedural city layouts to easily triage spacing and hazard placement bugs, while keeping standard gameplay unpredictable and random. The actual game logic (particles, AI) continues to use non-deterministic `Math.random()`.
+- **Heuristic:** Keep procedural world generation strictly deterministic, but separate dynamic entity behavior.
