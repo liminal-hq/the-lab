@@ -1,0 +1,1 @@
+* When updating input documentation in `rats-the-video-game`, ensure changes like Double Jump (Space) or Swipe Down (Mobile) are propagated consistently across both the `mechanics.md` docs and the `index.html` Help Modal UI to maintain parity with actual game logic.
