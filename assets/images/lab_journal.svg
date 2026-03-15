@@ -105,9 +105,13 @@
       <animate attributeName="opacity" values="0;1" begin="5.5s" dur="0.5s" fill="freeze"/>
     </g>
     <g>
-      <text x="50" y="465" font-family="Comic Sans MS, cursive, sans-serif" font-size="18" fill="#333">13. </text>
+      <text x="50" y="465" font-family="Comic Sans MS, cursive, sans-serif" font-size="18" fill="#333">13. Squeak controls &amp; modal touch polished.</text>
+      <animate attributeName="opacity" values="0;1" begin="6.0s" dur="0.5s" fill="freeze"/>
+    </g>
+    <g>
+      <text x="50" y="495" font-family="Comic Sans MS, cursive, sans-serif" font-size="18" fill="#333">14. </text>
       <!-- Typing effect cursor -->
-      <rect x="84" y="450" width="2" height="18" fill="black">
+      <rect x="84" y="480" width="2" height="18" fill="black">
         <animate attributeName="opacity" values="1;0;1" dur="0.8s" repeatCount="indefinite"/>
       </rect>
     </g>
