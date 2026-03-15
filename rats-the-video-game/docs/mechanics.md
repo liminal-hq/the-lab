@@ -120,17 +120,37 @@ Reaching new heights.
       /_/
 -->
 
-## 7. Controls Update
+## 7. Birds & Aerial Hazards
+The sky is not safe. Pigeons rule the rooftops.
+
+*   **Hazard**: Birds / Droppings (Turds).
+*   **Appearance**: Birds flying overhead, dropping grey projectiles.
+*   **Behaviour**:
+    *   Turds fall from the sky and hurt the rat on impact.
+*   **Interaction**:
+    *   **Action**: Squeak (`S` or Swipe Down) to scare birds away.
+    *   **Result**:
+        *   Nearby birds fly rapidly upwards off-screen.
+        *   Getting hit by a turd subtracts 5 points and plays a hurt sound.
+
+<!--
+       ,-.
+      (o o)  <-- "Squeak!"
+       \_/
+-->
+
+## 8. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
-*   **Jump**: Space
+*   **Jump / Double Jump**: Space
 *   **Chew**: Enter / C
-*   **Squeak**: S (Happy Squeak)
+*   **Squeak**: S (Scares Birds)
 *   **Help**: ? (Toggle Tutorial)
 
 ### Touch Controls (Mobile)
 *   **Move Left**: Touch Left side of screen (0-50%)
 *   **Move Right**: Touch Right side of screen (50-100%)
 *   **Jump & Chew**: Tap anywhere or Swipe Up (triggers both simultaneously to save space)
+*   **Squeak**: Swipe Down (Scares Birds)
 
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.
