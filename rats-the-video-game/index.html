@@ -333,10 +333,10 @@
             const musicToggle = document.getElementById('music-toggle');
             const sfxToggle = document.getElementById('sfx-toggle');
 
-            let lastFocus = null;
+            const focusStack = [];
 
             function openModal(modal) {
-                lastFocus = document.activeElement;
+                focusStack.push(document.activeElement);
                 modal.style.display = 'flex';
                 modal.setAttribute('aria-hidden', 'false');
 
@@ -347,10 +347,10 @@
             function closeModal(modal) {
                 modal.style.display = 'none';
                 modal.setAttribute('aria-hidden', 'true');
-                if (lastFocus && document.body.contains(lastFocus)) {
-                    lastFocus.focus();
+                const poppedFocus = focusStack.pop();
+                if (poppedFocus && document.body.contains(poppedFocus)) {
+                    poppedFocus.focus();
                 }
-                lastFocus = null;
             }
 
             // --- Tutorial Logic ---
@@ -394,7 +394,7 @@
 
             // --- Credits Logic ---
             creditsBtn.addEventListener('click', () => {
-                lastFocus = document.activeElement;
+                focusStack.push(document.activeElement);
                 optionsModal.style.display = 'none';
                 optionsModal.setAttribute('aria-hidden', 'true');
 
@@ -412,7 +412,10 @@
                 optionsModal.style.display = 'flex';
                 optionsModal.setAttribute('aria-hidden', 'false');
 
-                if (lastFocus) lastFocus.focus();
+                const poppedFocus = focusStack.pop();
+                if (poppedFocus && document.body.contains(poppedFocus)) {
+                    poppedFocus.focus();
+                }
             });
 
             // Debug

@@ -98,3 +98,35 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+
+## 5. Focus Stack for Nested Modals
+
+**Problem:**
+When dealing with nested modals (e.g., opening a 'Credits' modal from inside an 'Options' modal), using a single `lastFocus` variable fails. The second modal overwrites the stored focus reference of the first modal. When closing the second modal to return to the first, the focus is lost.
+
+**Fix:**
+Implement a `focusStack` array to push the `document.activeElement` each time a modal is opened, and pop the stack to restore focus each time a modal is closed.
+
+```javascript
+const focusStack = [];
+
+function openModal(modal) {
+    focusStack.push(document.activeElement);
+    modal.style.display = 'flex';
+    // ... focus first element
+}
+
+function closeModal(modal) {
+    modal.style.display = 'none';
+    const poppedFocus = focusStack.pop();
+    if (poppedFocus && document.body.contains(poppedFocus)) {
+        poppedFocus.focus();
+    }
+}
+```
+
+```
+ (\_/)
+ (o.o)  "A rat always remembers exactly where they were."
+ (> <)
+```
