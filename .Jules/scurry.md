@@ -9,3 +9,6 @@
 - **Learning**: Increasing speed by 1.5x significantly alters the jump arc, making gaps easier to clear but precision landings harder. This forces the player to adapt their muscle memory quickly. The 5-second duration feels just long enough to be exciting but short enough not to be overwhelming.
 - Squeak button needed a gameplay purpose. Added bird scaring mechanism. Mapped to Swipe Down on mobile to maintain input parity.
 - Adding a secondary interactive effect to an established input creates a richer, more responsive world without adding to control complexity.
+
+## Coffee / Hazard Interaction
+- **Learning**: Penalizing the player by causing them to lose their active 'COFFEE' speed boost upon hitting a hazard (like a TRAP or THIRD_RAIL) enforces a tighter risk/reward loop. It requires the player to be more careful with their increased speed instead of just powering through obstacles.

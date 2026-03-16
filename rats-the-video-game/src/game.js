@@ -794,6 +794,10 @@ function update() {
                  state.rat.vy = 10;
                  state.rat.vx = state.rat.facingRight ? -10 : 10;
                  state.rat.grounded = false;
+
+                 // Lose Coffee Boost
+                 state.speedBoost = false;
+                 state.speedBoostTimer = 0;
              } else if (obs.type === 'SUBWAY_ENTRANCE') {
                  if (!state.levelCompleted) {
                      state.levelCompleted = true;
