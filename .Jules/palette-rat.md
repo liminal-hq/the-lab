@@ -98,3 +98,6 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+
+### Nested Modal Focus Management
+In `rats-the-video-game`, modal focus management uses a `focusStack` array pattern (pushing `document.activeElement` on open, popping on close) rather than a single variable to correctly handle focus restoration for nested modals without losing the original element's context.
