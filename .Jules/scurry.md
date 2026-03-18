@@ -9,3 +9,6 @@
 - **Learning**: Increasing speed by 1.5x significantly alters the jump arc, making gaps easier to clear but precision landings harder. This forces the player to adapt their muscle memory quickly. The 5-second duration feels just long enough to be exciting but short enough not to be overwhelming.
 - Squeak button needed a gameplay purpose. Added bird scaring mechanism. Mapped to Swipe Down on mobile to maintain input parity.
 - Adding a secondary interactive effect to an established input creates a richer, more responsive world without adding to control complexity.
+
+## Squeak Shattering
+- **Learning**: Expanding the existing Squeak mechanic (Swipe Down/S key) to also shatter falling projectiles creates a richer, more responsive world without adding any new buttons or complex control logic. Players organically discover it while dealing with birds.
