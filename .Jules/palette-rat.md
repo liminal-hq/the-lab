@@ -98,3 +98,4 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+- Interactive inputs such as checkboxes require minimum touch targets of at least 24x24 pixels (e.g., `width: 24px; height: 24px;`) for mobile accessibility.
