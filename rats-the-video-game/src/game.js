@@ -603,20 +603,6 @@ function update() {
 
     const currentSpeed = state.speedBoost ? SPEED * 1.5 : SPEED;
 
-    // Squeak Logic (Scaring birds)
-    if (state.input.squeakPressed) {
-        state.input.squeakPressed = false;
-        // Visual feedback
-        spawnParticles(state.rat.x, state.rat.y + 10, '#FFF', 10);
-
-        // Scare nearby birds
-        state.birds.forEach(bird => {
-            if (Math.abs(bird.x - state.rat.x) < 400 && (!bird.vy || bird.vy === 0)) {
-                bird.vy = -(Math.random() * 3 + 2); // Fly away upwards
-            }
-        });
-    }
-
     // Movement Logic
     if (state.input.right) {
         state.rat.vx = currentSpeed;
@@ -649,14 +635,31 @@ function update() {
     state.input.jumpPressed = false; // Consume press
 
     if (state.input.squeakPressed) {
+        // Visual feedback
+        spawnParticles(state.rat.x, state.rat.y + 10, '#FFF', 10);
+
         audio.playHappySqueak();
+
+        // Scare nearby birds
         state.birds.forEach(bird => {
             if (Math.abs(bird.x - state.rat.x) < 400) {
                 bird.vy = -10; // Negative vy moves upwards on screen
             }
         });
+
+        // Shatter nearby turds (Area of Effect radius: 150)
+        for (let i = state.turds.length - 1; i >= 0; i--) {
+            const turd = state.turds[i];
+            const dist = Math.hypot(turd.x - state.rat.x, turd.y - state.rat.y);
+            if (dist <= 150) {
+                // Shatter!
+                spawnParticles(turd.x, turd.y, '#8B4513', 15); // Brown particles
+                state.turds.splice(i, 1);
+            }
+        }
+
+        state.input.squeakPressed = false; // Consume press at the very end
     }
-    state.input.squeakPressed = false; // Consume press
 
     // Gravity: The invisible paw pushing us down
     // Variable jump height: less gravity if holding jump while going up
