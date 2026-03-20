@@ -98,3 +98,4 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+Ensure all `<label>` elements have a `for` attribute explicitly matching the `id` of the `<input>` they are associated with, even if the input is nested within the label. This provides a robust accessible name and click target for checkboxes/toggles.
