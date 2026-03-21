@@ -10,3 +10,5 @@
  (o.o)  "Same city, different districts."
  (> <)
 ```
+
+- **Deterministic Level Generation:** Implementing a deterministic PRNG (like mulberry32) with a seed parameter for level layout generation (buildings, obstacles, hues) while keeping non-deterministic RNG (`Math.random`) for dynamic elements (AI, particles) ensures reproducibility for bug fixing and balanced pacing, without sacrificing the moment-to-moment organic feel of gameplay.
