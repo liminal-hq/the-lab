@@ -470,9 +470,6 @@ function handleTouch(e) {
             } else if (!swipeData.hasSqueaked && isSwipeDown) {
                 // SWIPE DOWN DETECTED!
                 state.input.squeakPressed = true;
-                if (typeof audio !== 'undefined' && audio.playHappySqueak) {
-                    audio.playHappySqueak();
-                }
                 swipeData.hasSqueaked = true;
             }
 
@@ -603,11 +600,14 @@ function update() {
 
     const currentSpeed = state.speedBoost ? SPEED * 1.5 : SPEED;
 
-    // Squeak Logic (Scaring birds)
+    // Squeak Logic (Scaring birds and shattering projectiles)
     if (state.input.squeakPressed) {
-        state.input.squeakPressed = false;
         // Visual feedback
         spawnParticles(state.rat.x, state.rat.y + 10, '#FFF', 10);
+
+        if (typeof audio !== 'undefined' && audio.playHappySqueak) {
+            audio.playHappySqueak();
+        }
 
         // Scare nearby birds
         state.birds.forEach(bird => {
@@ -615,6 +615,22 @@ function update() {
                 bird.vy = -(Math.random() * 3 + 2); // Fly away upwards
             }
         });
+
+        // Shatter falling projectiles (turds) within 150-unit radius
+        for (let i = state.turds.length - 1; i >= 0; i--) {
+            const turd = state.turds[i];
+            const dx = turd.x - state.rat.x;
+            const dy = turd.y - state.rat.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 150) {
+                // Shatter feedback
+                spawnParticles(turd.x, turd.y, '#FFF', 5);
+                state.turds.splice(i, 1);
+            }
+        }
+
+        state.input.squeakPressed = false; // Consume press
     }
 
     // Movement Logic
@@ -647,16 +663,6 @@ function update() {
         }
     }
     state.input.jumpPressed = false; // Consume press
-
-    if (state.input.squeakPressed) {
-        audio.playHappySqueak();
-        state.birds.forEach(bird => {
-            if (Math.abs(bird.x - state.rat.x) < 400) {
-                bird.vy = -10; // Negative vy moves upwards on screen
-            }
-        });
-    }
-    state.input.squeakPressed = false; // Consume press
 
     // Gravity: The invisible paw pushing us down
     // Variable jump height: less gravity if holding jump while going up
