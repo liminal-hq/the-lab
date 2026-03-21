@@ -98,3 +98,6 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+
+- **App-specific a11y pattern:** In `rats-the-video-game`, all `<label>` elements must use a `for` attribute explicitly matching the `id` of the `<input>` they are associated with, even if the input is nested. This provides a robust accessible name and click target.
+- **Mobile touch target:** Interactive inputs such as checkboxes require minimum touch targets of at least 24x24 pixels (e.g., `width: 24px; height: 24px;`) for mobile accessibility.
