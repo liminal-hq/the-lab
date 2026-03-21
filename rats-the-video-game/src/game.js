@@ -749,6 +749,8 @@ function update() {
 
                      if (obs.type === 'TRASH_PILE') {
                          audio.playTrashChew();
+                     } else if (obs.type === 'PRIUS') {
+                         if (audio.playMetalChew) audio.playMetalChew();
                      } else {
                          audio.playChew();
                      }
