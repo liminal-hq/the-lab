@@ -655,6 +655,20 @@ function update() {
                 bird.vy = -10; // Negative vy moves upwards on screen
             }
         });
+
+        // Shatter nearby falling turds
+        for (let i = state.turds.length - 1; i >= 0; i--) {
+            const turd = state.turds[i];
+            const dx = turd.x - state.rat.x;
+            const dy = turd.y - state.rat.y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+
+            if (distance < 150) {
+                spawnParticles(turd.x, turd.y, '#6B8E23', 15); // Shatter effect
+                audio.playSnap();
+                state.turds.splice(i, 1);
+            }
+        }
     }
     state.input.squeakPressed = false; // Consume press
 
