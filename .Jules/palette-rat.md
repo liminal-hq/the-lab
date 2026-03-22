@@ -98,3 +98,6 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+- In `rats-the-video-game`, modal focus management uses a `focusStack` array pattern (pushing `document.activeElement` on open, popping on close) rather than a single variable to correctly handle focus restoration for nested modals.
+- In `rats-the-video-game`, interactive inputs such as checkboxes require minimum touch targets of at least 24x24 pixels (e.g., `width: 24px; height: 24px;`) for mobile accessibility.
+- In `rats-the-video-game`, ensure all `<label>` elements have a `for` attribute explicitly matching the `id` of the `<input>` they are associated with, even if the input is nested, to provide a robust accessible name and click target.
