@@ -98,3 +98,5 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+* When creating nested modals, use a `focusStack` array (pushing on open, popping on close) instead of a single variable to correctly maintain focus state across multiple open modals.
+* Interactive inputs, especially on mobile devices, should have a minimum touch target size of at least 24x24 pixels to ensure accessibility.
