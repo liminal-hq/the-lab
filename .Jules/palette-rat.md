@@ -98,3 +98,4 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+* When managing focus for nested modals in the application, use a `focusStack` array pattern to track opened modals. Push `document.activeElement` when a modal opens, and pop to restore focus when it closes, ensuring accessibility is correctly maintained regardless of nesting depth.
