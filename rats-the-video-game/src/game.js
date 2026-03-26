@@ -603,9 +603,8 @@ function update() {
 
     const currentSpeed = state.speedBoost ? SPEED * 1.5 : SPEED;
 
-    // Squeak Logic (Scaring birds)
+    // Squeak Logic (Scaring birds and shattering turds)
     if (state.input.squeakPressed) {
-        state.input.squeakPressed = false;
         // Visual feedback
         spawnParticles(state.rat.x, state.rat.y + 10, '#FFF', 10);
 
@@ -615,6 +614,17 @@ function update() {
                 bird.vy = -(Math.random() * 3 + 2); // Fly away upwards
             }
         });
+
+        // Shatter falling projectiles (turds) within 150-unit radius
+        for (let i = state.turds.length - 1; i >= 0; i--) {
+            const turd = state.turds[i];
+            if (Math.hypot(turd.x - state.rat.x, turd.y - state.rat.y) < 150) {
+                state.turds.splice(i, 1);
+                spawnParticles(turd.x, turd.y, '#FFF', 10);
+            }
+        }
+
+        state.input.squeakPressed = false; // Consume press after all effects
     }
 
     // Movement Logic
