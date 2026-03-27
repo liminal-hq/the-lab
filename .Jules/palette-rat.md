@@ -98,3 +98,4 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+* Nested inputs within labels still need explicit `for` attributes pointing to the input `id` to ensure robust accessible name calculation and click target functionality.\n* Minimum touch target sizes for interactive elements like checkboxes should be at least 24x24px for mobile accessibility.
