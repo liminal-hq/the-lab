@@ -124,13 +124,22 @@ Reaching new heights.
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
-*   **Squeak**: S (Happy Squeak)
+*   **Squeak**: S (Scares Birds, Shatters Projectiles)
 *   **Help**: ? (Toggle Tutorial)
 
 ### Touch Controls (Mobile)
 *   **Move Left**: Touch Left side of screen (0-50%)
 *   **Move Right**: Touch Right side of screen (50-100%)
 *   **Jump & Chew**: Tap anywhere or Swipe Up (triggers both simultaneously to save space)
+*   **Squeak**: Swipe Down (Scares Birds, Shatters Projectiles)
+
+## 8. Squeak (Area of Effect)
+The rat's mighty voice can alter the environment.
+
+*   **Interaction**:
+    *   **Action**: Press `S` or Swipe Down.
+    *   **Result (Birds)**: Scares pigeons within a 400-unit radius, causing them to fly upwards.
+    *   **Result (Projectiles)**: Shatters falling hazards (turds) within a 150-unit radius into harmless particles, granting +2 Points.
 
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.

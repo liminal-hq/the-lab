@@ -603,7 +603,7 @@ function update() {
 
     const currentSpeed = state.speedBoost ? SPEED * 1.5 : SPEED;
 
-    // Squeak Logic (Scaring birds)
+    // Squeak Logic (Scaring birds and shattering projectiles)
     if (state.input.squeakPressed) {
         state.input.squeakPressed = false;
         // Visual feedback
@@ -611,10 +611,25 @@ function update() {
 
         // Scare nearby birds
         state.birds.forEach(bird => {
-            if (Math.abs(bird.x - state.rat.x) < 400 && (!bird.vy || bird.vy === 0)) {
+            const dx = bird.x - state.rat.x;
+            const dy = bird.y - state.rat.y;
+            if (Math.hypot(dx, dy) < 400 && (!bird.vy || bird.vy === 0)) {
                 bird.vy = -(Math.random() * 3 + 2); // Fly away upwards
             }
         });
+
+        // Shatter falling turds
+        for (let i = state.turds.length - 1; i >= 0; i--) {
+            const turd = state.turds[i];
+            const dx = turd.x - state.rat.x;
+            const dy = turd.y - state.rat.y;
+            if (Math.hypot(dx, dy) < 150) {
+                // Shatter into brown particles
+                spawnParticles(turd.x, turd.y, '#8B4513', 15);
+                state.turds.splice(i, 1);
+                state.score += 2; // Small reward for precise squeaking
+            }
+        }
     }
 
     // Movement Logic
