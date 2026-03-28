@@ -10,3 +10,6 @@
  (o.o)  "Same city, different districts."
  (> <)
 ```
+
+## Deterministic Procedural Generation
+Splitting level generation RNG (`levelRandom()`) from dynamic entity RNG (`Math.random()`) like particles and birds is a critical tuning heuristic. By utilizing a Mulberry32 PRNG seeded via a URL parameter, the deterministic level geometry enables reliable reproduction of generation bugs and pacing constraints, without sacrificing the non-deterministic, chaotic emergence of active gameplay elements.
