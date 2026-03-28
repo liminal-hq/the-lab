@@ -160,6 +160,33 @@ export class AudioEngine {
         });
     }
 
+    playMetalChew() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // The sound of chewing a Prius (metallic crunch)
+        //      (\_/)
+        //      (O_O)
+        //      (> <)
+
+        // Multiple dissonant square wave oscillators with rapid exponential frequency drops
+        [300, 430, 610].forEach((startFreq) => {
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(startFreq, this.ctx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(startFreq * 0.1, this.ctx.currentTime + 0.2);
+
+            osc.connect(gain);
+            gain.connect(this.masterGain);
+
+            gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+
+            osc.start(this.ctx.currentTime);
+            osc.stop(this.ctx.currentTime + 0.2);
+        });
+    }
+
     playSnap() {
         if (!this.ctx || !this.sfxEnabled) return;
         // The sound of danger!

@@ -1,0 +1,1 @@
+- Synthesizing metallic 'crunch' sounds in the Web Audio API can be effectively achieved by using multiple dissonant square wave oscillators with rapid exponential frequency drops, avoiding the need for external audio buffers while preventing harsh peaks.
