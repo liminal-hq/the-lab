@@ -124,7 +124,7 @@ Reaching new heights.
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
-*   **Squeak**: S (Happy Squeak)
+*   **Squeak**: S (Happy Squeak - Scares birds & shatters projectiles)
 *   **Help**: ? (Toggle Tutorial)
 
 ### Touch Controls (Mobile)
