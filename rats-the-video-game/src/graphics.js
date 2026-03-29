@@ -256,6 +256,36 @@ export class GraphicsEngine {
                      this.ctx.quadraticCurveTo(screenX + 10, screenY - 10 + steamY, screenX + 5, screenY - 15);
                      this.ctx.stroke();
 
+                 } else if (obs.type === 'BOTTLE_CAP') {
+                     // Shiny things!
+                     //      _
+                     //     / \
+                     //     \_/
+                     const cx = screenX + obs.w / 2;
+                     const cy = screenY + obs.h / 2;
+
+                     // Shadow/Edge
+                     this.ctx.fillStyle = '#A9A9A9';
+                     this.ctx.beginPath();
+                     this.ctx.arc(cx, cy + 2, obs.w / 2, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     // Top
+                     this.ctx.fillStyle = '#E0E0E0';
+                     this.ctx.beginPath();
+                     this.ctx.arc(cx, cy, obs.w / 2, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     // Ridges
+                     this.ctx.strokeStyle = '#A9A9A9';
+                     this.ctx.lineWidth = 1;
+                     this.ctx.beginPath();
+                     for(let r = 0; r < Math.PI * 2; r += Math.PI / 4) {
+                         this.ctx.moveTo(cx + Math.cos(r) * (obs.w / 2 - 2), cy + Math.sin(r) * (obs.w / 2 - 2));
+                         this.ctx.lineTo(cx + Math.cos(r) * (obs.w / 2), cy + Math.sin(r) * (obs.w / 2));
+                     }
+                     this.ctx.stroke();
+
                  } else if (obs.type === 'SPRING') {
                      // A bouncy spring (Rat-apult)
                      //      \/\

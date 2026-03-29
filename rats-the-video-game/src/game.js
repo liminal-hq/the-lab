@@ -254,7 +254,11 @@ function generateSurface() {
             //      (\_/)
             //      (o.o)  <-- "Is that pepperoni?"
             //      (> <)
-            if (Math.random() < 0.25) {
+            if (Math.random() < 0.40) {
+                 // Shiny things!
+                 const capX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 state.obstacles.push({ x: capX, w: 15, h: 10, type: 'BOTTLE_CAP' });
+            } else if (Math.random() < 0.25) {
                  const pizzaX = x + w + gap / 2 + (Math.random() * 40 - 20);
                  // Floating slightly above ground logically (h=40)
                  state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
@@ -710,6 +714,15 @@ function update() {
                  state.speedBoostTimer = 300; // 5 seconds
                  if (audio && audio.playSlurp) audio.playSlurp();
                  spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#6F4E37', 20);
+                 continue;
+             }
+
+             if (obs.type === 'BOTTLE_CAP') {
+                 // Shiny!
+                 state.obstacles.splice(i, 1);
+                 state.score += 1;
+                 if (audio && audio.playCollect) audio.playCollect();
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#C0C0C0', 10);
                  continue;
              }
 

@@ -64,7 +64,26 @@ A rat's ultimate dream.
        \\__..--""    <-- Nom Nom
 -->
 
-## 4. Coffee Break (Power-Up)
+## 4. Shiny Bottle Cap (Collectible)
+A tiny, shiny treasure.
+
+*   **Item**: Bottle Cap.
+*   **Appearance**: A small silver circle with ridges.
+*   **Behaviour**:
+    *   Collectible (pass through).
+*   **Interaction**:
+    *   **Action**: Walk into or jump into it.
+    *   **Result**:
+        *   +1 Point.
+    *   **Audio**: "Collect" chime.
+
+<!--
+       _
+      / \
+      \_/    <-- Shiny
+-->
+
+## 5. Coffee Break (Power-Up)
 Even rats need a pick-me-up.
 
 *   **Item**: Coffee Cup.
@@ -83,7 +102,7 @@ Even rats need a pick-me-up.
      [____]  <-- Zoom Zoom
 -->
 
-## 5. Cheese (The Motherlode)
+## 6. Cheese (The Motherlode)
 The highest value prize in the city.
 
 *   **Item**: Cheese Wedge.
@@ -102,7 +121,7 @@ The highest value prize in the city.
      /__|  <-- Delicious
 -->
 
-## 6. Springboard (Rat-apult)
+## 7. Springboard (Rat-apult)
 Reaching new heights.
 
 *   **Obstacle**: Spring.
@@ -120,7 +139,7 @@ Reaching new heights.
       /_/
 -->
 
-## 7. Controls Update
+## 8. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C

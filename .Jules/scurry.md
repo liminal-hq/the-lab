@@ -9,3 +9,6 @@
 - **Learning**: Increasing speed by 1.5x significantly alters the jump arc, making gaps easier to clear but precision landings harder. This forces the player to adapt their muscle memory quickly. The 5-second duration feels just long enough to be exciting but short enough not to be overwhelming.
 - Squeak button needed a gameplay purpose. Added bird scaring mechanism. Mapped to Swipe Down on mobile to maintain input parity.
 - Adding a secondary interactive effect to an established input creates a richer, more responsive world without adding to control complexity.
+
+## Shiny Bottle Cap Collectible
+- **Learning**: Adding micro-collectibles like a Bottle Cap that offer only 1 point acts as 'breadcrumb' trails. They don't unbalance the high score significantly, but their high spawn rate and visual/audio feedback (shiny rendering, collect sound) subtly influence player pathing and encourage more frequent, controlled jumping rather than just leaping blindly over gaps.
