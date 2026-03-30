@@ -249,7 +249,25 @@ function generateSurface() {
             // Centre correctly based on the final object width.
             const obsX = x + w + (gap / 2) - (objW / 2);
             state.obstacles.push({ x: obsX, w: objW, h: objH, type: type });
+
+            // Bottle cap arc over traps and springs to guide jumps
+            if (type === 'TRAP' || type === 'SPRING') {
+                if (Math.random() < 0.8) {
+                    state.obstacles.push({ x: obsX + objW/2 - 5, y: objH + 60, w: 10, h: 10, type: 'BOTTLE_CAP' });
+                    state.obstacles.push({ x: obsX + objW/2 - 35, y: objH + 40, w: 10, h: 10, type: 'BOTTLE_CAP' });
+                    state.obstacles.push({ x: obsX + objW/2 + 25, y: objH + 40, w: 10, h: 10, type: 'BOTTLE_CAP' });
+                }
+            }
         } else {
+            // Empty gap breadcrumbs
+            if (Math.random() < 0.4) {
+                const capX = x + w + gap / 2 - 5;
+                state.obstacles.push({ x: capX, y: 10, w: 10, h: 10, type: 'BOTTLE_CAP' });
+                if (gap > 80) {
+                     state.obstacles.push({ x: capX - 30, y: 10, w: 10, h: 10, type: 'BOTTLE_CAP' });
+                     state.obstacles.push({ x: capX + 30, y: 10, w: 10, h: 10, type: 'BOTTLE_CAP' });
+                }
+            }
             // Collectible Pizza! (A rat's dream)
             //      (\_/)
             //      (o.o)  <-- "Is that pepperoni?"
@@ -678,13 +696,14 @@ function update() {
         const obs = state.obstacles[i];
         const obsL = obs.x;
         const obsR = obs.x + obs.w;
-        const obsT = obs.h;
+        const obsT = (obs.y || 0) + obs.h;
+        const obsB = obs.y || 0;
 
         // Visual only objects (don't collide)
         if (obs.type === 'SIGN_CITY' || obs.type === 'BARZINIS') continue;
 
         // Simple AABB overlap check
-        if (ratR > obsL && ratL < obsR && ratB < obsT) {
+        if (ratR > obsL && ratL < obsR && ratB < obsT && ratT > obsB) {
              if (obs.type === 'PIZZA') {
                  // NOM NOM NOM!
                  state.obstacles.splice(i, 1);
@@ -710,6 +729,14 @@ function update() {
                  state.speedBoostTimer = 300; // 5 seconds
                  if (audio && audio.playSlurp) audio.playSlurp();
                  spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#6F4E37', 20);
+                 continue;
+             }
+
+             if (obs.type === 'BOTTLE_CAP') {
+                 // Clink!
+                 state.obstacles.splice(i, 1);
+                 state.score += 1;
+                 if (audio && audio.playClink) audio.playClink();
                  continue;
              }
 

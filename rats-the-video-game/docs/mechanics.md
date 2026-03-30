@@ -120,7 +120,26 @@ Reaching new heights.
       /_/
 -->
 
-## 7. Controls Update
+## 7. Bottle Cap (Micro-Collectible)
+Small, frequent collectibles used to guide the player.
+
+*   **Item**: Bottle Cap.
+*   **Appearance**: A small red and silver circle.
+*   **Behaviour**:
+    *   Collectible (pass through).
+*   **Interaction**:
+    *   **Action**: Walk into or jump into it.
+    *   **Result**:
+        *   +1 Points.
+    *   **Audio**: "Clink" sound.
+
+<!--
+       __
+      /  \
+      \__/  <-- Clink
+-->
+
+## 8. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
