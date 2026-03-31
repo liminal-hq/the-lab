@@ -227,6 +227,24 @@ export class GraphicsEngine {
                      this.ctx.arc(screenX + 5, cY + 22, 2, 0, Math.PI * 2);
                      this.ctx.fill();
 
+                 } else if (obs.type === 'BOTTLE_CAP') {
+                     // A shiny micro-collectible
+                     //      (_)
+                     const bob = Math.sin(Date.now() / 200) * 3;
+                     const bY = screenY + bob; // Bobbing effect
+
+                     // Ridged outline
+                     this.ctx.fillStyle = '#A9A9A9'; // DarkGrey
+                     this.ctx.beginPath();
+                     this.ctx.ellipse(screenX + obs.w / 2, bY + obs.h / 2, obs.w / 2, obs.h / 2 + 1, 0, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     // Silver top
+                     this.ctx.fillStyle = '#C0C0C0'; // Silver
+                     this.ctx.beginPath();
+                     this.ctx.ellipse(screenX + obs.w / 2, bY + obs.h / 2 - 1, obs.w / 2 - 1, obs.h / 2, 0, 0, Math.PI * 2);
+                     this.ctx.fill();
+
                  } else if (obs.type === 'COFFEE') {
                      // The Elixir of Life
                      //      )  )

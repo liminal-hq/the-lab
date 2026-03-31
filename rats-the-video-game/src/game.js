@@ -267,6 +267,11 @@ function generateSurface() {
                  // CHEESE! (The high-value prize)
                  const cheeseX = x + w + gap / 2 + (Math.random() * 40 - 20);
                  state.obstacles.push({ x: cheeseX, w: 25, h: 30, type: 'CHEESE' });
+            } else if (Math.random() < 0.40) {
+                 // Bottle Cap! (Breadcrumb trail)
+                 //      (_)
+                 const capX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 state.obstacles.push({ x: capX, w: 15, h: 5, type: 'BOTTLE_CAP' });
             }
         }
         x += w + gap;
@@ -710,6 +715,15 @@ function update() {
                  state.speedBoostTimer = 300; // 5 seconds
                  if (audio && audio.playSlurp) audio.playSlurp();
                  spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#6F4E37', 20);
+                 continue;
+             }
+
+             if (obs.type === 'BOTTLE_CAP') {
+                 // DING!
+                 state.obstacles.splice(i, 1);
+                 state.score += 1;
+                 if (audio && audio.playCollect) audio.playCollect();
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#C0C0C0', 10);
                  continue;
              }
 

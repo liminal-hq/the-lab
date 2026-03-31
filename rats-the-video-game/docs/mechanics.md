@@ -102,7 +102,25 @@ The highest value prize in the city.
      /__|  <-- Delicious
 -->
 
-## 6. Springboard (Rat-apult)
+## 6. Bottle Cap (Micro-Collectible)
+A tiny breadcrumb for the scurrying soul.
+
+*   **Item**: Bottle Cap.
+*   **Appearance**: A small, shiny silver disc floating slightly above the ground.
+*   **Behaviour**:
+    *   Collectible (pass through).
+*   **Interaction**:
+    *   **Action**: Walk into it.
+    *   **Result**:
+        *   +1 Point.
+    *   **Audio**: "Collect" chime.
+
+<!--
+       ___
+      (___)  <-- Ding!
+-->
+
+## 7. Springboard (Rat-apult)
 Reaching new heights.
 
 *   **Obstacle**: Spring.
@@ -120,7 +138,7 @@ Reaching new heights.
       /_/
 -->
 
-## 7. Controls Update
+## 8. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
