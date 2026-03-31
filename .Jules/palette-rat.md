@@ -98,3 +98,31 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+
+## 5. Nested Modal Focus Management
+
+**Problem:** Using a single `lastFocus` variable causes a loss of the original focus target when modals are nested (e.g., Options -> Credits -> Close Credits -> Close Options). Focus cannot be correctly restored to the original `options-btn` trigger.
+
+**Solution:**
+Use a `focusStack` array pattern rather than a single variable. Push the current `document.activeElement` onto the stack when opening a modal, and pop from the stack to restore focus when closing.
+
+```javascript
+let focusStack = [];
+
+function openModal(modal) {
+    focusStack.push(document.activeElement);
+    modal.style.display = 'flex';
+    // ...
+}
+
+function closeModal(modal) {
+    modal.style.display = 'none';
+    const lastFocus = focusStack.pop();
+    if (lastFocus && document.body.contains(lastFocus)) {
+        lastFocus.focus();
+    }
+}
+```
+
+**Key Insight:**
+- When navigating *back* from a nested modal (e.g., returning to Options from Credits), manually return focus to the nested trigger button (e.g., `#credits-btn`) within the parent modal instead of re-pushing/popping if you are simply re-displaying the parent modal without invoking the standard `openModal` / `closeModal` stack logic for the parent.
