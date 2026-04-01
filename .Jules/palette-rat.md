@@ -98,3 +98,5 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+- For nested modals, use a focusStack array instead of a single lastFocus variable to properly restore focus up the chain.
+- Checkboxes require a minimum of 24x24px dimensions and explicit for= attributes on their wrapping labels for accessible touch targets on mobile.
