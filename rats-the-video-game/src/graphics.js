@@ -151,7 +151,7 @@ export class GraphicsEngine {
             const screenX = obs.x - this.cameraX;
             // Cull off-screen
             if (screenX + obs.w > -100 && screenX < this.width + 100) {
-                 const screenY = this.height - 20 - obs.h; // On the ground
+                 const screenY = this.height - 20 - obs.h - (obs.y || 0); // On the ground (or floating)
 
                  if (obs.type === 'BOX') {
                      // A delicious cardboard box
@@ -198,6 +198,42 @@ export class GraphicsEngine {
 
                      this.ctx.beginPath();
                      this.ctx.arc(screenX + obs.w * 0.65, pY + 20, 3, 0, Math.PI * 2); // Bottom Right
+                     this.ctx.fill();
+
+                 } else if (obs.type === 'BOTTLE_CAP') {
+                     // A tiny, shiny breadcrumb
+                     const bob = Math.sin(Date.now() / 200) * 3;
+                     const cY = screenY + bob;
+
+                     const centerX = screenX + obs.w / 2;
+                     const centerY = cY + obs.h / 2;
+                     const radius = obs.w / 2;
+
+                     // Outer ridges (Silver)
+                     this.ctx.fillStyle = '#C0C0C0';
+                     this.ctx.beginPath();
+                     // Draw a spiky circle for ridges
+                     for (let i = 0; i < 12; i++) {
+                         const angle = (i / 12) * Math.PI * 2;
+                         const r = (i % 2 === 0) ? radius : radius - 1;
+                         const px = centerX + Math.cos(angle) * r;
+                         const py = centerY + Math.sin(angle) * r;
+                         if (i === 0) this.ctx.moveTo(px, py);
+                         else this.ctx.lineTo(px, py);
+                     }
+                     this.ctx.closePath();
+                     this.ctx.fill();
+
+                     // Inner depression (Darker silver)
+                     this.ctx.fillStyle = '#A9A9A9';
+                     this.ctx.beginPath();
+                     this.ctx.arc(centerX, centerY, radius - 2, 0, Math.PI * 2);
+                     this.ctx.fill();
+
+                     // A little shine
+                     this.ctx.fillStyle = '#FFFFFF';
+                     this.ctx.beginPath();
+                     this.ctx.arc(centerX - 1, centerY - 1, 1.5, 0, Math.PI * 2);
                      this.ctx.fill();
 
                  } else if (obs.type === 'CHEESE') {

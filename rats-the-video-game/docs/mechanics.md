@@ -64,6 +64,26 @@ A rat's ultimate dream.
        \\__..--""    <-- Nom Nom
 -->
 
+## 3.5. Bottle Cap (Micro-Collectible)
+A tiny shiny trail to guide the way.
+
+*   **Item**: Bottle Cap.
+*   **Appearance**: A small, bobbing silver circle with ridges.
+*   **Behaviour**:
+    *   Collectible (pass through).
+    *   Spawned in arcs over gaps to encourage jumping.
+*   **Interaction**:
+    *   **Action**: Walk into or jump into it.
+    *   **Result**:
+        *   +1 Points.
+    *   **Audio**: "Tink" sound.
+
+<!--
+       _
+      / \
+      \_/  <-- Shiny
+-->
+
 ## 4. Coffee Break (Power-Up)
 Even rats need a pick-me-up.
 
