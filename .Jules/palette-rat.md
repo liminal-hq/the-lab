@@ -98,3 +98,4 @@ document.querySelectorAll('.modal').forEach(modal => {
  (o.o)  "Big paws need big buttons."
  (> <)
 ```
+- Use a focusStack array (e.g., focusStack.push(document.activeElement) and focusStack.pop()) instead of a single variable to correctly track and restore focus state up the hierarchy when opening and closing nested modals.
