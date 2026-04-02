@@ -267,6 +267,17 @@ function generateSurface() {
                  // CHEESE! (The high-value prize)
                  const cheeseX = x + w + gap / 2 + (Math.random() * 40 - 20);
                  state.obstacles.push({ x: cheeseX, w: 25, h: 30, type: 'CHEESE' });
+            } else {
+                 // Bottle Caps! Breadcrumb trail for jumping.
+                 const numCaps = 3 + Math.floor(Math.random() * 3);
+                 const spacing = gap / (numCaps + 1);
+                 for (let j = 1; j <= numCaps; j++) {
+                     const capX = x + w + spacing * j;
+                     // Arc shape: y is highest in the middle of the gap
+                     const normalizedPos = j / (numCaps + 1);
+                     const arcY = Math.sin(normalizedPos * Math.PI) * 60 + 20;
+                     state.obstacles.push({ x: capX, w: 10, h: 10, y: arcY, type: 'BOTTLE_CAP' });
+                 }
             }
         }
         x += w + gap;
@@ -678,13 +689,23 @@ function update() {
         const obs = state.obstacles[i];
         const obsL = obs.x;
         const obsR = obs.x + obs.w;
-        const obsT = obs.h;
+        const obsB = (obs.y || 0);
+        const obsT = obsB + obs.h;
 
         // Visual only objects (don't collide)
         if (obs.type === 'SIGN_CITY' || obs.type === 'BARZINIS') continue;
 
         // Simple AABB overlap check
-        if (ratR > obsL && ratL < obsR && ratB < obsT) {
+        if (ratR > obsL && ratL < obsR && ratB < obsT && ratT > obsB) {
+             if (obs.type === 'BOTTLE_CAP') {
+                 // CRINKLE!
+                 state.obstacles.splice(i, 1);
+                 state.score += 1;
+                 if (audio && audio.playCollect) audio.playCollect();
+                 spawnParticles(obs.x + obs.w / 2, obsT - obs.h / 2, '#C0C0C0', 5);
+                 continue;
+             }
+
              if (obs.type === 'PIZZA') {
                  // NOM NOM NOM!
                  state.obstacles.splice(i, 1);

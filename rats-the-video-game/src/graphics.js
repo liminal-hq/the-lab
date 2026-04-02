@@ -151,7 +151,7 @@ export class GraphicsEngine {
             const screenX = obs.x - this.cameraX;
             // Cull off-screen
             if (screenX + obs.w > -100 && screenX < this.width + 100) {
-                 const screenY = this.height - 20 - obs.h; // On the ground
+                 const screenY = this.height - 20 - obs.h - (obs.y || 0); // On the ground
 
                  if (obs.type === 'BOX') {
                      // A delicious cardboard box
@@ -161,6 +161,18 @@ export class GraphicsEngine {
                      // Tape details
                      this.ctx.fillStyle = '#D2B48C'; // Tan tape
                      this.ctx.fillRect(screenX, screenY + obs.h/2 - 2, obs.w, 4);
+
+                 } else if (obs.type === 'BOTTLE_CAP') {
+                     // Micro-collectible
+                     this.ctx.fillStyle = '#C0C0C0'; // Silver
+                     this.ctx.beginPath();
+                     this.ctx.ellipse(screenX + obs.w / 2, screenY + obs.h / 2, obs.w / 2, obs.h / 4, 0, 0, 2 * Math.PI);
+                     this.ctx.fill();
+
+                     this.ctx.fillStyle = '#FF0000'; // Red logo
+                     this.ctx.beginPath();
+                     this.ctx.ellipse(screenX + obs.w / 2, screenY + obs.h / 2 - 1, obs.w / 4, obs.h / 8, 0, 0, 2 * Math.PI);
+                     this.ctx.fill();
 
                  } else if (obs.type === 'PIZZA') {
                      // The Holy Grail (Pizza Slice)

@@ -135,3 +135,17 @@ Reaching new heights.
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.
 *   We use Canadian spelling for all code comments and documentation (e.g., Colour, Centre).
+
+## 8. Bottle Cap (Micro-Collectible)
+A tiny, shiny treasure.
+
+*   **Item**: Bottle Cap.
+*   **Appearance**: Small silver oval with a red centre.
+*   **Behaviour**:
+    *   Collectible (pass through).
+    *   Spawns in arcs to guide jumping paths.
+*   **Interaction**:
+    *   **Action**: Walk or jump into it.
+    *   **Result**:
+        *   +1 Point.
+    *   **Audio**: "Collect" chime.
