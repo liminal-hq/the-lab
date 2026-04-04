@@ -10,3 +10,4 @@
  (o.o)  "Same city, different districts."
  (> <)
 ```
+- Learned that Math.random() usage for particle systems should not be seeded so visual variety is maintained even during seeded regression tests or speedruns, whereas procedural layout needs deterministic RNG to correctly isolate level logic issues.
