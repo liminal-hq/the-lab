@@ -160,6 +160,45 @@ export class AudioEngine {
         });
     }
 
+    playOuch() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // Ouch! Splat!
+        //      (\_/)
+        //      (x.x)
+        //      (> <)
+        const oscSqueak = this.ctx.createOscillator();
+        const gainSqueak = this.ctx.createGain();
+
+        oscSqueak.type = 'triangle';
+        oscSqueak.frequency.setValueAtTime(1200, this.ctx.currentTime);
+        oscSqueak.frequency.exponentialRampToValueAtTime(600, this.ctx.currentTime + 0.15);
+
+        oscSqueak.connect(gainSqueak);
+        gainSqueak.connect(this.masterGain);
+
+        gainSqueak.gain.setValueAtTime(0.4, this.ctx.currentTime);
+        gainSqueak.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+
+        oscSqueak.start(this.ctx.currentTime);
+        oscSqueak.stop(this.ctx.currentTime + 0.15);
+
+        const oscSplat = this.ctx.createOscillator();
+        const gainSplat = this.ctx.createGain();
+
+        oscSplat.type = 'square';
+        oscSplat.frequency.setValueAtTime(150, this.ctx.currentTime);
+        oscSplat.frequency.exponentialRampToValueAtTime(50, this.ctx.currentTime + 0.1);
+
+        oscSplat.connect(gainSplat);
+        gainSplat.connect(this.masterGain);
+
+        gainSplat.gain.setValueAtTime(0.3, this.ctx.currentTime);
+        gainSplat.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+
+        oscSplat.start(this.ctx.currentTime);
+        oscSplat.stop(this.ctx.currentTime + 0.1);
+    }
+
     playSnap() {
         if (!this.ctx || !this.sfxEnabled) return;
         // The sound of danger!

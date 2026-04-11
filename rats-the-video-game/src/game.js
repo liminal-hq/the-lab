@@ -859,7 +859,8 @@ function update() {
 
              // HIT!
              state.score = Math.max(0, state.score - 5); // Penalty
-             audio.playSnap(); // Ouch sound (reuse snap for now)
+             if (audio && audio.playOuch) audio.playOuch(); // Ouch sound
+             else if (audio && audio.playSnap) audio.playSnap();
              state.turds.splice(i, 1);
         }
     }

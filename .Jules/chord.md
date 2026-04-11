@@ -1,0 +1,1 @@
+- Mixing a high-frequency descending triangle wave with a low-frequency square wave creates a satisfying splat/ouch impact sound for bird turds.
