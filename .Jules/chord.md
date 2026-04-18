@@ -1,0 +1,1 @@
+In rats-the-video-game, district visual progression (e.g., BURBS, DOWNTOWN) is determined by the i variable in game.js, while corresponding musical motifs are driven by this.cycle in audio.js. These thresholds must remain synchronized.
