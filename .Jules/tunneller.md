@@ -10,3 +10,4 @@
  (o.o)  "Same city, different districts."
  (> <)
 ```
+- Mulberry32 PRNG provides deterministic procedural generation for reproducibility, while leaving dynamic gameplay features to standard Math.random.
