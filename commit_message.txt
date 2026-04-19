@@ -1,0 +1,5 @@
+Add Playwright test to verify the squeak area-of-effect logic.
+
+*   **💡 What:** Added `rats-the-video-game/tests/verify_squeak.spec.js` to deterministically verify the "Squeak" mechanic by injecting specific target entities into the global array and tracking their velocity changes.
+*   **🎯 Why:** Prevents regressions to the AoE scaring mechanic by ensuring near birds fly away while distant birds remain unaffected, without changing any core gameplay files.
+*   **✅ How to run:** `cd rats-the-video-game && npx playwright test tests/verify_squeak.spec.js`
