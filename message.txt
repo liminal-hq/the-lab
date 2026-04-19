@@ -1,0 +1,2 @@
+* 💡 What changed: Updated the `lab_journal.svg` to reflect the latest UI changes. Added line 13 to the journal for the swipe squeaks & touch-friendly modals, and shifted the blinking typing cursor to line 14.
+* 🎯 What it represents: It visually documents the recent improvements in accessibility and UX for both desktop and mobile users, maintaining the living visual journal style of the project.
