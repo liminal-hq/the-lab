@@ -1,0 +1,1 @@
+- When auditing or updating controls documentation in `rats-the-video-game/docs/mechanics.md`, always verify mobile secondary controls (like 'Swipe Down') against the game's HTML help modal (`index.html`) to ensure completeness, as they are frequently omitted.
