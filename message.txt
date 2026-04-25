@@ -1,0 +1,13 @@
+🚇 Tunneller: Add deterministic seed option
+
+💡 What changed
+Added a deterministic pseudo-random number generator (Mulberry32) combined with a string hashing function (cyrb128) to `src/game.js`. Replaced all world-generation occurrences of `Math.random()` with a new `seededRandom()` function. The RNG is seeded using the `?seed=` URL parameter if provided, otherwise it falls back to a random seed generated during the level reset. Dynamic gameplay logic (like particles and respawning birds) continues to use `Math.random()`.
+
+🎯 Why it’s better
+This provides a crucial debugging and sharing tool. Players and developers can now reliably reproduce specific level layouts, gaps, and obstacle combinations by sharing a URL, solving the "unfair spacing" pain point by allowing for consistent analysis of difficult sections. Because the seed resets randomly if no parameter is provided, the default experience remains infinitely varied.
+
+🧪 How to verify
+1. Run a local server and load the game with a seed parameter: `http://localhost:8000/rats-the-video-game/index.html?seed=labrat`
+2. Play through the level, noting the geometry (e.g. building widths and obstacle types).
+3. Refresh the page; the generation will be completely identical.
+4. Remove the seed parameter and refresh repeatedly; the generation will vary on every load.

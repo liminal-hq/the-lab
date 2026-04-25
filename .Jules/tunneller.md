@@ -10,3 +10,4 @@
  (o.o)  "Same city, different districts."
  (> <)
 ```
+* In rats-the-video-game, procedural world generation uses a deterministic Mulberry32 RNG seeded via the ?seed= URL parameter for reproducibility, while dynamic logic uses Math.random(). If no seed is provided, a new random seed is calculated inside the level reset function so layouts remain random across restarts.
