@@ -160,6 +160,27 @@ export class AudioEngine {
         });
     }
 
+    playOuch() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // The sound of getting hit by something unpleasant
+        //      >_<
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(50, this.ctx.currentTime + 0.15);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.15);
+    }
+
     playSnap() {
         if (!this.ctx || !this.sfxEnabled) return;
         // The sound of danger!

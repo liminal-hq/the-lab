@@ -1,0 +1,1 @@
+- 2026-04-25: Added distinct `playOuch()` (downward pitched sawtooth) to `rats-the-video-game/src/audio.js` for when rat takes damage from obstacles like falling turds, differentiating it from `playSnap()`.

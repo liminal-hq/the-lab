@@ -1,0 +1,3 @@
+* 💡 What: Added a distinct `playOuch()` (downward pitched sawtooth) audio effect for when the rat collides with a hazard like falling bird turds. Updated the turd collision logic to trigger `playOuch()` rather than reusing the unrelated `playSnap()`.
+* 🎯 Why: Reusing `playSnap()` for damage sounded confusing since it's primarily used for traps snapping. A distinct, slightly jarring "ouch" sound provides clearer feedback that a penalty (-5 points) was incurred from an environmental hazard.
+* 🔊 How to hear it (in-game steps): Start the game, find a bird sitting on a ledge, walk under it, and let the falling turd hit the rat. You will hear the new "ouch" sound.
