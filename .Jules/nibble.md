@@ -9,3 +9,4 @@
 *   **Context:** Canvas-based games often lack DOM elements for state.
 *   **Solution:** Expose `window.gameState` (or similar) and use Playwright's `page.evaluate()` to manipulate state (e.g., spawn entities) and assertions.
 *   **Sync:** Use `page.waitForFunction` to ensure game loop has processed the injected state before asserting.
+- When testing area-of-effect mechanics like squeak scaring birds, inject distinct identifiers and exact coordinates to reliably track targets in Playwright tests.
