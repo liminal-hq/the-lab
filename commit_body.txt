@@ -1,0 +1,3 @@
+* 💡 What: Introduced a new 'Bottle Cap' micro-collectible that spawns frequently in gaps between buildings and floats slightly above the ground. Collected by touching it for +1 score.
+* 🎯 Why: Acts as a 'breadcrumb' trail to subtly influence player pathing, encourage controlled jumping, and provide constant, low-stakes positive feedback.
+* 🕹️ How to try: Run the game and jump through the gaps between buildings. You will frequently see small, floating silver caps with a red dot.

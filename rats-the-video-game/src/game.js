@@ -267,6 +267,11 @@ function generateSurface() {
                  // CHEESE! (The high-value prize)
                  const cheeseX = x + w + gap / 2 + (Math.random() * 40 - 20);
                  state.obstacles.push({ x: cheeseX, w: 25, h: 30, type: 'CHEESE' });
+            } else if (Math.random() < 0.60) {
+                 // BOTTLE CAP! (Breadcrumbs)
+                 const capX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 const capY = 30 + Math.random() * 40; // Floating
+                 state.obstacles.push({ x: capX, y: capY, w: 10, h: 10, type: 'BOTTLE_CAP' });
             }
         }
         x += w + gap;
@@ -678,13 +683,14 @@ function update() {
         const obs = state.obstacles[i];
         const obsL = obs.x;
         const obsR = obs.x + obs.w;
-        const obsT = obs.h;
+        const obsB = obs.y || 0;
+        const obsT = obsB + obs.h;
 
         // Visual only objects (don't collide)
         if (obs.type === 'SIGN_CITY' || obs.type === 'BARZINIS') continue;
 
         // Simple AABB overlap check
-        if (ratR > obsL && ratL < obsR && ratB < obsT) {
+        if (ratR > obsL && ratL < obsR && ratT > obsB && ratB < obsT) {
              if (obs.type === 'PIZZA') {
                  // NOM NOM NOM!
                  state.obstacles.splice(i, 1);
@@ -710,6 +716,15 @@ function update() {
                  state.speedBoostTimer = 300; // 5 seconds
                  if (audio && audio.playSlurp) audio.playSlurp();
                  spawnParticles(obs.x + obs.w / 2, obs.h / 2, '#6F4E37', 20);
+                 continue;
+             }
+
+             if (obs.type === 'BOTTLE_CAP') {
+                 // TINK!
+                 state.obstacles.splice(i, 1);
+                 state.score += 1;
+                 if (audio && audio.playCollect) audio.playCollect();
+                 spawnParticles(obs.x + obs.w / 2, obsB + obs.h / 2, '#C0C0C0', 10);
                  continue;
              }
 
