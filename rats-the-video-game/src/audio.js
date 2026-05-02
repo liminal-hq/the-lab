@@ -316,6 +316,30 @@ export class AudioEngine {
         osc.stop(this.ctx.currentTime + 0.1);
     }
 
+
+    playOuch() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // The sound of getting hit (Ouch!)
+        //      (\_/)
+        //      (>_<)
+        //      c(")_(")
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.15);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.6, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.15);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.15);
+    }
+
     setLevel(level) {
         this.level = level;
     }
