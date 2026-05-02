@@ -103,6 +103,17 @@ const THIRD_LEVEL_BLUEPRINT = Object.freeze({
 // Expose state for debugging and testing
 window.gameState = state;
 
+// Deterministic RNG
+function mulberry32(a) {
+    return function() {
+      var t = a += 0x6D2B79F5;
+      t = Math.imul(t ^ t >>> 15, t | 1);
+      t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+}
+let seededRandom = Math.random;
+
 // Procedural Generation: Building the Maze
 // "The city is a maze, and we are the masters." - Rat Proverb
 function generateLevel() {
@@ -119,6 +130,12 @@ function generateLevel() {
     state.levelCompleted = false;
     state.speedBoost = false;
     state.speedBoostTimer = 0;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    let seedParam = urlParams.get('seed');
+    let seed = seedParam ? Array.from(seedParam).reduce((s, c) => Math.imul(31, s) + c.charCodeAt(0) | 0, 0) : Math.floor(Math.random() * 0xFFFFFFFF);
+    seededRandom = mulberry32(seed);
+
 
     if (audio && audio.setLevel) {
         audio.setLevel(state.level);
@@ -187,10 +204,10 @@ function generateSurface() {
             obsChance = 0.5;
         }
 
-        const w = 100 + Math.random() * 200;
-        const h = 100 + Math.random() * (canvas.height - 200);
+        const w = 100 + seededRandom() * 200;
+        const h = 100 + seededRandom() * (canvas.height - 200);
         // Coloured like the gloom of night, with district flavour.
-        const hue = hueBase + (Math.random() * 40 - 20);
+        const hue = hueBase + (seededRandom() * 40 - 20);
         state.buildings.push({ x, w, h, color: `hsl(${hue}, 20%, 30%)` });
 
         // Decorations
@@ -207,11 +224,11 @@ function generateSurface() {
         //      _  _
         //     ( \/ )  <-- "Watch your step!"
         //      \  /
-        const gap = Math.random() * (gapMax - gapMin) + gapMin; // District-based spacing
+        const gap = seededRandom() * (gapMax - gapMin) + gapMin; // District-based spacing
 
         // Collectibles are mutually exclusive with standard obstacles to avoid traps
-        if (Math.random() < obsChance) {
-            let rand = Math.random();
+        if (seededRandom() < obsChance) {
+            let rand = seededRandom();
             let type = '';
             let objW = 30;
             let objH = 30;
@@ -254,18 +271,18 @@ function generateSurface() {
             //      (\_/)
             //      (o.o)  <-- "Is that pepperoni?"
             //      (> <)
-            if (Math.random() < 0.25) {
-                 const pizzaX = x + w + gap / 2 + (Math.random() * 40 - 20);
+            if (seededRandom() < 0.25) {
+                 const pizzaX = x + w + gap / 2 + (seededRandom() * 40 - 20);
                  // Floating slightly above ground logically (h=40)
                  state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
-            } else if (Math.random() < 0.15) {
+            } else if (seededRandom() < 0.15) {
                  // Coffee! (The fuel of the developer... and now the rat)
                  //      c[_]
-                 const coffeeX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 const coffeeX = x + w + gap / 2 + (seededRandom() * 40 - 20);
                  state.obstacles.push({ x: coffeeX, w: 20, h: 25, type: 'COFFEE' });
-            } else if (Math.random() < 0.10) {
+            } else if (seededRandom() < 0.10) {
                  // CHEESE! (The high-value prize)
-                 const cheeseX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 const cheeseX = x + w + gap / 2 + (seededRandom() * 40 - 20);
                  state.obstacles.push({ x: cheeseX, w: 25, h: 30, type: 'CHEESE' });
             }
         }
@@ -278,9 +295,9 @@ function generateSurface() {
     // Initial birds
     for(let i=0; i<5; i++) {
         state.birds.push({
-            x: Math.random() * 2000,
-            y: Math.random() * (canvas.height/2),
-            speed: 1 + Math.random() * 2,
+            x: seededRandom() * 2000,
+            y: seededRandom() * (canvas.height/2),
+            speed: 1 + seededRandom() * 2,
             vy: 0
         });
     }
@@ -290,14 +307,14 @@ function generateSubway() {
     let x = 0;
     // Generate subway tunnel
     for (let i = 0; i < 200; i++) {
-        const w = 300 + Math.random() * 200;
+        const w = 300 + seededRandom() * 200;
         // In subway, buildings are just walls/pillars in background
         state.buildings.push({ x, w, h: canvas.height, color: '#111', type: 'TUNNEL' });
 
         // Obstacles on tracks
-        if (Math.random() < 0.6) {
+        if (seededRandom() < 0.6) {
              const obsX = x + w/2;
-             if (Math.random() < 0.5) {
+             if (seededRandom() < 0.5) {
                  state.obstacles.push({ x: obsX, w: 40, h: 30, type: 'TRASH_PILE' });
              } else {
                  state.obstacles.push({ x: obsX, w: 120, h: 5, type: 'THIRD_RAIL' });
@@ -319,7 +336,7 @@ function getThirdLevelDistrict(cycle) {
 }
 
 function chooseThirdLevelObstacle(district, gap) {
-    const roll = Math.random();
+    const roll = seededRandom();
     let choice = district.obstacleWeights[district.obstacleWeights.length - 1];
 
     for (const candidate of district.obstacleWeights) {
@@ -343,14 +360,14 @@ function generateThirdLevel() {
 
     for (let i = 0; i < state.totalCycles; i++) {
         const district = getThirdLevelDistrict(i);
-        const w = 140 + Math.random() * 180;
-        const h = 120 + Math.random() * (canvas.height - 220);
-        const hue = district.hueBase + (Math.random() * 30 - 15);
-        const gap = Math.random() * (district.gapMax - district.gapMin) + district.gapMin;
+        const w = 140 + seededRandom() * 180;
+        const h = 120 + seededRandom() * (canvas.height - 220);
+        const hue = district.hueBase + (seededRandom() * 30 - 15);
+        const gap = seededRandom() * (district.gapMax - district.gapMin) + district.gapMin;
 
         state.buildings.push({ x, w, h, color: `hsl(${hue}, 25%, 28%)` });
 
-        if (Math.random() < district.obsChance) {
+        if (seededRandom() < district.obsChance) {
             const obstacle = chooseThirdLevelObstacle(district, gap);
             const obsX = x + w + (gap / 2) - (obstacle.w / 2);
             state.obstacles.push({ x: obsX, w: obstacle.w, h: obstacle.h, type: obstacle.type });

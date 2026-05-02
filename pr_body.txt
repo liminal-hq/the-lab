@@ -1,0 +1,11 @@
+* 💡 What changed:
+  - Implemented a `mulberry32` PRNG algorithm directly in `game.js`.
+  - Replaced native `Math.random()` calls with `seededRandom()` exclusively within level procedural generation functions (`generateSurface`, `generateSubway`, `chooseThirdLevelObstacle`, `generateThirdLevel`).
+  - Added URL parameter parsing to read `?seed=<string>` and initialize the level seed deterministically, while retaining randomized fallback when no seed is passed.
+* 🎯 Why it's better:
+  - Preserves exactly the same chaotic progression and spacing behaviors during standard randomized gameplay.
+  - Allows players and agents to reliably reproduce generation bugs, unfair trap placements, or specific geometry without frame variations masking the issue.
+* 🧪 How to verify:
+  - Serve the game with `python3 -m http.server 8000`.
+  - Open `http://localhost:8000/rats-the-video-game/index.html?seed=tunneller` in two different tabs or browser restarts.
+  - Compare the level progression; both runs will feature exactly the same district colour transitions, gap spacings, and obstacle sequence.
