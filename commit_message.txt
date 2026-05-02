@@ -1,0 +1,6 @@
+feat(ui): Palette-Rat accessibility improvements
+
+* 💡 What: Replaced the single \`lastFocus\` variable with a \`focusStack\` array for modal management, and increased the \`debug-toggle\` checkbox touch target to 24x24px.
+* 🎯 Why: To fix a bug where opening nested modals (Options -> Credits) broke keyboard focus restoration, and to improve mobile usability.
+* ♿ Accessibility impact: Ensures correct focus hierarchy restoration for screen readers and keyboard users, and meets minimum 24px touch target guidelines for mobile users.
+* 📸 Before/After: Focus now successfully returns to the Options button after closing Credits.
