@@ -120,17 +120,39 @@ Reaching new heights.
       /_/
 -->
 
-## 7. Controls Update
+## 7. Birds & Aerial Hazards
+The sky is not safe. Pigeons rule the rooftops.
+
+*   **Hazard**: Birds & Falling Turds.
+*   **Appearance**: Black V-shaped flying vermin dropping white projectiles.
+*   **Behaviour**:
+    *   Turds fall from the sky and hurt the player.
+*   **Interaction**:
+    *   **Action (Defensive)**: Dodge falling turds.
+    *   **Action (Offensive)**: Press `S` or Swipe Down to Squeak.
+    *   **Result (Squeak)**: Scares birds within 400 units, sending them flying upwards.
+    *   **Result (Collision)**: Getting hit by a turd decreases score by 5 and plays an "Ouch" (Snap) sound.
+
+<!--
+      v   v
+       >o<   <-- Sky Vermin
+        .
+        .
+       ( )   <-- Danger
+-->
+
+## 8. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
-*   **Squeak**: S (Happy Squeak)
+*   **Squeak**: S (Scares Birds)
 *   **Help**: ? (Toggle Tutorial)
 
 ### Touch Controls (Mobile)
 *   **Move Left**: Touch Left side of screen (0-50%)
 *   **Move Right**: Touch Right side of screen (50-100%)
 *   **Jump & Chew**: Tap anywhere or Swipe Up (triggers both simultaneously to save space)
+*   **Squeak**: Swipe Down (Scares Birds)
 
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.
