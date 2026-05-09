@@ -1,0 +1,1 @@
+Learned that procedural generation logic needs to be deterministic via a URL parameter (e.g., ?seed=123) for reproduction and testing, but visual details and dynamic objects should retain Math.random() so they remain unpredictable.
