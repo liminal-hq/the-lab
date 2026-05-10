@@ -1,0 +1,1 @@
+When adding a Playwright test for procedurally generated or rare entities (like scaring birds with the squeak mechanic), inject them directly into `window.gameState` near the player's coordinates using `page.evaluate()` for reliable testing.
