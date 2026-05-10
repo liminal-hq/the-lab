@@ -120,17 +120,34 @@ Reaching new heights.
       /_/
 -->
 
-## 7. Controls Update
+## 7. Squeak (Bird Scarer)
+A rat's voice is its best defence against the skies.
+
+*   **Mechanic**: Squeak.
+*   **Target**: Birds.
+*   **Interaction**:
+    *   **Action**: Press `S` or Swipe Down.
+    *   **Result**: Scares away birds within a 400-unit distance, sending them flying upwards.
+    *   **Audio**: "Happy Squeak" sound.
+
+<!--
+       <')),
+        ( \  <-- Shoo!
+        / |
+-->
+
+## 8. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
-*   **Squeak**: S (Happy Squeak)
+*   **Squeak**: S (Happy Squeak / Scare Birds)
 *   **Help**: ? (Toggle Tutorial)
 
 ### Touch Controls (Mobile)
 *   **Move Left**: Touch Left side of screen (0-50%)
 *   **Move Right**: Touch Right side of screen (50-100%)
 *   **Jump & Chew**: Tap anywhere or Swipe Up (triggers both simultaneously to save space)
+*   **Squeak**: Swipe Down (scares birds)
 
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.

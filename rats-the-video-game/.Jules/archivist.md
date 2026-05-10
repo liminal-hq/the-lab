@@ -1,0 +1,1 @@
+Ensure any new gameplay mechanic tied to controls (e.g., Squeak scaring birds) is explicitly documented in the mechanics documentation, including its corresponding mobile input methods (e.g., Swipe Down).
