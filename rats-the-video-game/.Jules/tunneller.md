@@ -1,0 +1,1 @@
+- Using `cyrb128` to hash string seeds and `mulberry32` for PRNG successfully provides reproducible level generation without touching runtime physics, allowing bugs to be reproduced.
