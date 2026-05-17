@@ -1,0 +1,1 @@
+- 2025-05-17: When documenting gameplay mechanics tied to controls, ensure any corresponding mobile input methods (e.g., Swipe Down) are explicitly documented alongside standard keyboard controls to maintain documentation parity and keep docs truthful to reality.

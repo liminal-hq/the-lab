@@ -122,15 +122,16 @@ Reaching new heights.
 
 ## 7. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
-*   **Jump**: Space
+*   **Jump / Double Jump**: Space
 *   **Chew**: Enter / C
-*   **Squeak**: S (Happy Squeak)
+*   **Squeak**: S (Happy Squeak, Scares Birds)
 *   **Help**: ? (Toggle Tutorial)
 
 ### Touch Controls (Mobile)
 *   **Move Left**: Touch Left side of screen (0-50%)
 *   **Move Right**: Touch Right side of screen (50-100%)
 *   **Jump & Chew**: Tap anywhere or Swipe Up (triggers both simultaneously to save space)
+*   **Squeak**: Swipe Down (Scares Birds)
 
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.
