@@ -1,0 +1,2 @@
+- Learned that replacing `Math.random` with a PRNG like `Math.seedRandom` requires doing it *only* for the level generation, so that runtime physics and particle effects remain genuinely random. Using a URL query string `?seed=` allows players to replay exact level generations.
+- By using `cyrb128` to hash string seeds and `mulberry32` as the PRNG algorithm, we can safely share seeds as strings. Appending `state.level` to the seed ensures transitions (like going from SURFACE to SUBWAY) won't generate the identical layouts if the same hash gets re-used.
