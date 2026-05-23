@@ -1,0 +1,1 @@
+- A sawtooth wave with an exponential frequency drop from 300Hz to 100Hz works well for a dull "splat" or "ouch" sound, contrasting with the sharper triangle wave used for traps.
