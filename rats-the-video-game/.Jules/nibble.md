@@ -1,0 +1,1 @@
+- **Testing Input Consumption:** When triggering single-frame inputs (like `squeakPressed`) via `page.evaluate()` in Playwright, use `await page.waitForFunction(() => window.gameState.input.squeakPressed === false)` to reliably ensure the game loop has fully processed the input and applied resulting side-effects (like scaring birds) before evaluating assertions.
