@@ -1,0 +1,1 @@
+* Added cyrb128 and mulberry32 PRNG to support deterministic level generation via ?seed= URL parameter. Used a genRandom pointer to replace Math.random strictly within generation functions, keeping runtime physics random to retain moment-to-moment unpredictability.
