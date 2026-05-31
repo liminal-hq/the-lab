@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nibble's Squeak Test Harness</title>
+    <!--
+         (\_/)
+         (o.o)
+         (> <)
+         Testing is safer than experimenting on yourself.
+    -->
+    <style>
+        body { background: #111; color: #fff; font-family: monospace; padding: 20px; }
+        .pass { color: #4CAF50; }
+        .fail { color: #F44336; }
+        iframe { border: 1px solid #444; margin-top: 20px; background: #000; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Nibble's Squeak Verification Harness</h1>
+    <div id="status">Loading Game...</div>
+    <div id="results"></div>
+
+    <iframe id="gameFrame" src="../index.html" width="400" height="300"></iframe>
+
+    <script>
+        window.localStorage.setItem('rats_tutorial_seen', 'true');
+        const frame = document.getElementById('gameFrame');
+        const results = document.getElementById('results');
+        const status = document.getElementById('status');
+
+        function log(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.textContent = `> ${msg}`;
+            if (type === 'pass') div.className = 'pass';
+            if (type === 'fail') div.className = 'fail';
+            results.appendChild(div);
+            console.log(msg);
+        }
+
+        frame.onload = async () => {
+            status.textContent = "Running Squeak Test...";
+            const win = frame.contentWindow;
+
+            let initRetries = 0;
+            while (!win.gameState && initRetries < 20) {
+                await new Promise(r => setTimeout(r, 100));
+                initRetries++;
+            }
+
+            if (!win.gameState) {
+                log("FATAL: window.gameState is not exposed. Tests cannot run.", 'fail');
+                return;
+            }
+
+            try {
+                // Setup
+                win.gameState.score = 0;
+                win.gameState.rat.x = 100;
+                win.gameState.rat.y = 0;
+                win.gameState.rat.vx = 0;
+                win.gameState.rat.vy = 0;
+                win.gameState.rat.grounded = true;
+                win.gameState.input.squeakPressed = false;
+                win.gameState.birds = [{ x: 150, y: 100, speed: 0, vy: 0 }];
+
+                if (win.gameState.birds[0].vy !== 0) {
+                     log(`FAIL: Initial bird vy is not 0. Got: ${win.gameState.birds[0].vy}`, 'fail');
+                     return;
+                }
+
+                // Action
+                win.gameState.input.squeakPressed = true;
+
+                // Wait for the game loop to process the squeak
+                let retries = 0;
+                while (win.gameState.input.squeakPressed && retries < 20) {
+                    await new Promise(r => setTimeout(r, 50));
+                    retries++;
+                }
+
+                if (win.gameState.input.squeakPressed !== false) {
+                     log("FAIL: squeakPressed flag was not cleared.", 'fail');
+                     return;
+                }
+
+                // Verify
+                if (win.gameState.birds[0].vy < 0) {
+                     log("PASS: Squeak mechanic successfully scared the bird upwards.", 'pass');
+                } else {
+                     log(`FAIL: Bird was not scared. Expected negative vy, got: ${win.gameState.birds[0].vy}`, 'fail');
+                }
+
+            } catch (e) {
+                log(`ERROR in Squeak Test: ${e.message}`, 'fail');
+            }
+
+            status.textContent = "Tests Complete.";
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,2 @@
+# Critical Learnings for Verification
+When validating canvas-based game logic via Playwright, use `page.waitForFunction` after injecting state or inputs to ensure the game loop has fully processed them before executing assertions. For single-frame inputs (like `squeakPressed = true`), wait for the flag to be cleared (e.g., `window.gameState.input.squeakPressed === false`) to reliably verify side-effects were applied.
