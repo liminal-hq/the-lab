@@ -1,0 +1,8 @@
+🖋️ Ink: Update visual journal for modal/touch controls
+
+💡 What changed
+- Added '13. Swipe squeaks & touch modals.'
+- Advanced typing cursor to line 14.
+
+🎯 What it represents
+- Represents the recent PR 103 which improved squeak controls and modal touch dismissal.
