@@ -1,0 +1,1 @@
+- Used sawtooth wave with an exponential frequency drop (300Hz to 100Hz) for a dull 'splat' sound effect.
