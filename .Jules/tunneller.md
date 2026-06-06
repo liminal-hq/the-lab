@@ -10,3 +10,4 @@
  (o.o)  "Same city, different districts."
  (> <)
 ```
+- Added a deterministic URL '?seed=' param. Important to check it locally but keeping default Math.random() so casual users still see a random seed on their normal plays.
