@@ -1,0 +1,1 @@
+- In Web Audio API procedural generation, a sawtooth wave with an exponential frequency drop (e.g., 300Hz to 100Hz) works well for a dull "splat" or "ouch" sound.
