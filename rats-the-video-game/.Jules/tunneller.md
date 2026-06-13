@@ -1,0 +1,1 @@
+- Deterministic level generation uses cyrb128 to hash string seeds passed via the ?seed= URL parameter, seeding the mulberry32 PRNG for procedural generation, while runtime physics continue to use Math.random().
