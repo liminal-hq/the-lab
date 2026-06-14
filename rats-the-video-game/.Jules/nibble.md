@@ -1,0 +1,1 @@
+* **requestAnimationFrame Flags:** When testing logic that relies on single-frame flags (e.g., `squeakPressed`) inside `requestAnimationFrame` loops, do not use simple `setTimeout` and check the state immediately. Wait until the flag is consumed (e.g., `squeakPressed === false`) before asserting side effects, to ensure the game loop processed the input.

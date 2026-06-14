@@ -103,6 +103,38 @@
                 log(`ERROR in Test 2: ${e.message}`, 'fail');
             }
 
+            // TEST 3: Squeak Mechanics (Scaring Birds)
+            try {
+                const rat = win.gameState.rat;
+                // Add a bird near
+                const nearBird = { x: rat.x + 100, y: 100, vy: 0 };
+                // Add a bird far
+                const farBird = { x: rat.x + 500, y: 100, vy: 0 };
+
+                win.gameState.birds = [nearBird, farBird];
+                win.gameState.input.squeakPressed = true;
+
+                // Wait for the input to be consumed (squeakPressed becomes false)
+                let squeakProcessed = false;
+                for (let i=0; i<20; i++) {
+                     await new Promise(r => setTimeout(r, 50));
+                     if (!win.gameState.input.squeakPressed) {
+                         squeakProcessed = true;
+                         break;
+                     }
+                }
+
+                if (!squeakProcessed) {
+                     log(`FAIL: Squeak input was never consumed`, 'fail');
+                } else if (win.gameState.birds[0].vy < 0 && win.gameState.birds[1].vy === 0) {
+                     log("PASS: Squeak successfully scared nearby bird and ignored far bird.", 'pass');
+                } else {
+                     log(`FAIL: Squeak scaring incorrect. near.vy=${win.gameState.birds[0].vy}, far.vy=${win.gameState.birds[1].vy}`, 'fail');
+                }
+            } catch (e) {
+                log(`ERROR in Test 3: ${e.message}`, 'fail');
+            }
+
             status.textContent = "Tests Complete.";
         };
     </script>
