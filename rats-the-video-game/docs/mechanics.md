@@ -120,7 +120,27 @@ Reaching new heights.
       /_/
 -->
 
-## 7. Controls Update
+## 7. Aerial Attacks (Birds & Turds)
+Danger from above! Birds fly over the city and drop turds.
+
+*   **Hazard**: Birds & Turds.
+*   **Appearance**: Birds fly in the sky, turds fall down.
+*   **Behaviour**:
+    *   Birds drop turds periodically.
+    *   Turds cause damage on impact.
+*   **Interaction**:
+    *   **Action**: Squeak (`S` or Swipe Down) to scare birds away.
+    *   **Result (Collision)**:
+        *   -5 Points.
+        *   "Hurt" audio plays (Splat! or Snap!).
+
+<!--
+       \^/
+      (o o)
+      --m-m--  <-- Watch out!
+-->
+
+## 8. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
@@ -131,6 +151,7 @@ Reaching new heights.
 *   **Move Left**: Touch Left side of screen (0-50%)
 *   **Move Right**: Touch Right side of screen (50-100%)
 *   **Jump & Chew**: Tap anywhere or Swipe Up (triggers both simultaneously to save space)
+*   **Squeak**: Swipe Down
 
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.

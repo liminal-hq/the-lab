@@ -1,0 +1,1 @@
+- When documenting gameplay mechanics tied to controls, explicitly document their corresponding mobile input methods (e.g., 'Swipe Down') alongside standard keyboard controls to maintain documentation parity.

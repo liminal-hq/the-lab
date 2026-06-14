@@ -43,7 +43,7 @@ Inspired by Suzanne Vega's "Rats" from *Flying with Angels* (2025).
 3.  Use **Arrow Keys** to move left and right.
 4.  Press **Enter** or **C** to chew through obstacles.
 5.  Press **S** for a happy squeak.
-6.  *Mobile:* Tap left/right to move, swipe up or tap anywhere to jump. Mobile inputs automatically trigger chewing.
+6.  *Mobile:* Tap left/right to move, swipe up or tap anywhere to jump, swipe down to squeak. Mobile inputs automatically trigger chewing.
 7.  Survive.
 
 ## Development
