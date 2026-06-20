@@ -1,0 +1,1 @@
+- Deterministic seed via ?seed= URL param ensures stable testing across different playthroughs. Implemented using cyrb128 and mulberry32 PRNG to retain procedural logic without sacrificing reproducability.
