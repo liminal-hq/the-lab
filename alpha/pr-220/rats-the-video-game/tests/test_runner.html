@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Nibble's Test Harness</title>
+    <!--
+         (\_/)
+         (o.o)
+         (> <)
+         Testing is safer than experimenting on yourself.
+    -->
+    <style>
+        body { background: #111; color: #fff; font-family: monospace; padding: 20px; }
+        .pass { color: #4CAF50; }
+        .fail { color: #F44336; }
+        iframe { border: 1px solid #444; margin-top: 20px; background: #000; }
+    </style>
+</head>
+<body>
+    <h1>🧪 Nibble's Verification Harness</h1>
+    <div id="status">Loading Game...</div>
+    <div id="results"></div>
+
+    <!-- Load the game in an iframe to isolate it but allow access -->
+    <iframe id="gameFrame" src="../index.html" width="400" height="300"></iframe>
+
+    <script>
+        const frame = document.getElementById('gameFrame');
+        const results = document.getElementById('results');
+        const status = document.getElementById('status');
+
+        function log(msg, type = 'info') {
+            const div = document.createElement('div');
+            div.textContent = `> ${msg}`;
+            if (type === 'pass') div.className = 'pass';
+            if (type === 'fail') div.className = 'fail';
+            results.appendChild(div);
+            console.log(msg);
+        }
+
+        frame.onload = async () => {
+            status.textContent = "Running Tests...";
+            const win = frame.contentWindow;
+
+            // Wait for game loop to start and state to init
+            await new Promise(r => setTimeout(r, 1000));
+
+            if (!win.gameState) {
+                log("FATAL: window.gameState is not exposed. Tests cannot run.", 'fail');
+                return;
+            }
+
+            // TEST 1: PIZZA Score
+            try {
+                // Reset State
+                win.gameState.score = 100;
+                const startScore = 100;
+
+                // Spawn Pizza directly on rat
+                const rat = win.gameState.rat;
+                win.gameState.obstacles.push({
+                    type: 'PIZZA',
+                    x: rat.x, // Center on rat
+                    w: 30, h: 40
+                });
+
+                // Wait for update frame
+                await new Promise(r => setTimeout(r, 200));
+
+                if (win.gameState.score === startScore + 10) {
+                    log("PASS: Collecting PIZZA adds 10 points.", 'pass');
+                } else {
+                    log(`FAIL: PIZZA score incorrect. Got ${win.gameState.score}, expected ${startScore + 10}`, 'fail');
+                }
+
+            } catch (e) {
+                log(`ERROR in Test 1: ${e.message}`, 'fail');
+            }
+
+            // TEST 2: Damage Score Floor
+            try {
+                win.gameState.score = 2; // Low score
+                const rat = win.gameState.rat;
+
+                // Spawn Turd on rat
+                win.gameState.turds.push({
+                    x: rat.x + 10,
+                    y: rat.y + 10,
+                    vy: 0
+                });
+
+                await new Promise(r => setTimeout(r, 200));
+
+                if (win.gameState.score === 0) {
+                     log("PASS: Damage does not reduce score below 0.", 'pass');
+                } else if (win.gameState.score < 0) {
+                     log(`FAIL: Score went negative: ${win.gameState.score}`, 'fail');
+                } else {
+                     log(`FAIL: Score did not reduce to 0? Got: ${win.gameState.score}`, 'fail');
+                }
+
+            } catch (e) {
+                log(`ERROR in Test 2: ${e.message}`, 'fail');
+            }
+
+            status.textContent = "Tests Complete.";
+        };
+    </script>
+</body>
+</html>
