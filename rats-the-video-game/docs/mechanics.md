@@ -43,7 +43,25 @@ The city is dangerous. Humans have laid traps.
      |______|  <-- Do Not Touch
 -->
 
-## 3. Pizza Slice (Collectible)
+## 3. Sky Vermin & Projectiles (Birds & Turds)
+The sky is not safe. Pigeons rule the rooftops.
+
+*   **Hazard**: Birds dropping Turds.
+*   **Appearance**: Birds fly across the top of the screen. Turds fall downward.
+*   **Behaviour**:
+    *   Turds are dangerous on contact.
+*   **Interaction**:
+    *   **Action (Defensive)**: Press `S` (or Swipe Down) to Squeak.
+    *   **Result (Counter-measure)**: Squeaking scares nearby birds, launching them upwards and interrupting their drops.
+    *   **Result (Collision)**: Getting hit by a Turd deducts 5 points.
+    *   **Audio**: "Ouch" / "Splat" sound on hit.
+
+<!--
+       / \
+      (o.o)  <-- Look out above
+-->
+
+## 4. Pizza Slice (Collectible)
 A rat's ultimate dream.
 
 *   **Item**: Pizza.
@@ -64,7 +82,7 @@ A rat's ultimate dream.
        \\__..--""    <-- Nom Nom
 -->
 
-## 4. Coffee Break (Power-Up)
+## 5. Coffee Break (Power-Up)
 Even rats need a pick-me-up.
 
 *   **Item**: Coffee Cup.
@@ -83,7 +101,7 @@ Even rats need a pick-me-up.
      [____]  <-- Zoom Zoom
 -->
 
-## 5. Cheese (The Motherlode)
+## 6. Cheese (The Motherlode)
 The highest value prize in the city.
 
 *   **Item**: Cheese Wedge.
@@ -102,7 +120,7 @@ The highest value prize in the city.
      /__|  <-- Delicious
 -->
 
-## 6. Springboard (Rat-apult)
+## 7. Springboard (Rat-apult)
 Reaching new heights.
 
 *   **Obstacle**: Spring.
@@ -120,7 +138,7 @@ Reaching new heights.
       /_/
 -->
 
-## 7. Controls Update
+## 8. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
@@ -131,6 +149,7 @@ Reaching new heights.
 *   **Move Left**: Touch Left side of screen (0-50%)
 *   **Move Right**: Touch Right side of screen (50-100%)
 *   **Jump & Chew**: Tap anywhere or Swipe Up (triggers both simultaneously to save space)
+*   **Squeak**: Swipe Down (scares nearby birds)
 
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.

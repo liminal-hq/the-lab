@@ -1,0 +1,1 @@
+- Always document mobile input methods (e.g., 'Swipe Down') alongside standard keyboard controls for mechanics to maintain documentation parity.
