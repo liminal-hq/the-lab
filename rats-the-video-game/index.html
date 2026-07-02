@@ -215,7 +215,7 @@
             border: 1px solid #666;
         }
 
-        button:focus-visible, input:focus-visible, [href]:focus-visible {
+        button:focus-visible, input:focus-visible, [href]:focus-visible, canvas:focus-visible {
             outline: 3px solid #f1c40f;
             outline-offset: 2px;
         }
@@ -294,7 +294,7 @@
         </div>
     </div>
 
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" tabindex="0" role="application" aria-label="Game Canvas"></canvas>
 
     <script>
         window.DEBUG_MODE = false;
@@ -347,9 +347,7 @@
             function closeModal(modal) {
                 modal.style.display = 'none';
                 modal.setAttribute('aria-hidden', 'true');
-                if (lastFocus && document.body.contains(lastFocus)) {
-                    lastFocus.focus();
-                }
+                document.getElementById('gameCanvas').focus();
                 lastFocus = null;
             }
 
