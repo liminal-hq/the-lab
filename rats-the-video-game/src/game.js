@@ -598,6 +598,9 @@ function update() {
         state.speedBoostTimer--;
         if (state.speedBoostTimer <= 0) {
             state.speedBoost = false;
+        } else if (state.rat.grounded && Math.abs(state.rat.vx) > 0 && state.frameCount % 5 === 0) {
+            // Speed boost particle trail (steam/dust from running fast)
+            spawnParticles(state.rat.x - (state.rat.facingRight ? 10 : -10), state.rat.y, '#FFF', 2);
         }
     }
 
