@@ -160,6 +160,29 @@ export class AudioEngine {
         });
     }
 
+    playSplat() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // The dull sound of a bird turd hitting a rat
+        //      (\_/)
+        //      ( >_<) *splat*
+        //      c(")_(")
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.2);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.2);
+    }
+
     playSnap() {
         if (!this.ctx || !this.sfxEnabled) return;
         // The sound of danger!
