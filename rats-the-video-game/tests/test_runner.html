@@ -103,6 +103,39 @@
                 log(`ERROR in Test 2: ${e.message}`, 'fail');
             }
 
+            // TEST 3: Squeak Scares Birds
+            try {
+                // Reset State
+                win.gameState.input.squeakPressed = true;
+                const rat = win.gameState.rat;
+                rat.x = 100;
+                rat.y = 100;
+
+                // Spawn a bird nearby
+                win.gameState.birds = [{
+                    x: rat.x + 50,
+                    y: rat.y - 50,
+                    vy: 0
+                }];
+
+                await new Promise(r => setTimeout(r, 200));
+
+                if (win.gameState.input.squeakPressed === false) {
+                     log("PASS: squeakPressed flag is consumed/cleared.", 'pass');
+                } else {
+                     log(`FAIL: squeakPressed flag was not cleared.`, 'fail');
+                }
+
+                if (win.gameState.birds[0].vy < 0) {
+                     log("PASS: Nearby bird was scared (vy < 0).", 'pass');
+                } else {
+                     log(`FAIL: Nearby bird was not scared. Got vy: ${win.gameState.birds[0].vy}`, 'fail');
+                }
+
+            } catch (e) {
+                log(`ERROR in Test 3: ${e.message}`, 'fail');
+            }
+
             status.textContent = "Tests Complete.";
         };
     </script>
