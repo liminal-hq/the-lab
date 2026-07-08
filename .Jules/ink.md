@@ -21,3 +21,6 @@
  (o.o)  "Coffee first, then pizza."
  (> <)
 ```
+
+## Squeak Effect
+- **Learning**: When visualising audio/action effects like a "squeak", sharp zigzag lines combined with bold, slightly rotated comic text (e.g. "SQUEAK!") effectively communicate sudden sound and action. Scared entities (like birds) should include action lines indicating rapid movement away from the source.
