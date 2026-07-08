@@ -24,3 +24,4 @@
 
 ## Squeak Effect
 - **Learning**: When visualising audio/action effects like a "squeak", sharp zigzag lines combined with bold, slightly rotated comic text (e.g. "SQUEAK!") effectively communicate sudden sound and action. Scared entities (like birds) should include action lines indicating rapid movement away from the source.
+- Because SVG `<text>` elements do not auto-wrap, ensure any new strings added to `assets/images/lab_journal.svg` are short and concise (e.g., use '&amp;' instead of 'and') to prevent text truncation or overflow past the visual boundaries.
