@@ -1,5 +1,6 @@
 import { AudioEngine } from './audio.js';
 import { GraphicsEngine } from './graphics.js';
+import { DISTRICT_THRESHOLDS } from './districts.js';
 
 // ~~~ The Great Rat Control Center ~~~
 // Where all the squeaking happens.
@@ -204,19 +205,19 @@ function generateSurface() {
         let obsChance = 0.3;
         let district = 'BURBS';
 
-        if (i >= 19) {
+        if (i >= DISTRICT_THRESHOLDS.INDUSTRIAL) {
             district = 'INDUSTRIAL';
             hueBase = 0;
             gapMin = 50;
             gapMax = 80;
             obsChance = 0.7;
-        } else if (i >= 13) {
+        } else if (i >= DISTRICT_THRESHOLDS.CONSTRUCTION) {
             district = 'CONSTRUCTION';
             hueBase = 35; // Orange
             gapMin = 60;
             gapMax = 100;
             obsChance = 0.6;
-        } else if (i >= 7) {
+        } else if (i >= DISTRICT_THRESHOLDS.DOWNTOWN) {
             district = 'DOWNTOWN';
             hueBase = 200;
             gapMin = 60;
@@ -289,7 +290,7 @@ function generateSurface() {
 
             // Bottle cap arc over traps and springs to guide jumps
             if (type === 'TRAP' || type === 'SPRING') {
-                if (Math.random() < 0.8) {
+                if (levelPRNG() < 0.8) {
                     state.obstacles.push({ x: obsX + objW/2 - 5, y: objH + 60, w: 10, h: 10, type: 'BOTTLE_CAP' });
                     state.obstacles.push({ x: obsX + objW/2 - 35, y: objH + 40, w: 10, h: 10, type: 'BOTTLE_CAP' });
                     state.obstacles.push({ x: obsX + objW/2 + 25, y: objH + 40, w: 10, h: 10, type: 'BOTTLE_CAP' });
@@ -297,7 +298,7 @@ function generateSurface() {
             }
         } else {
             // Empty gap breadcrumbs
-            if (Math.random() < 0.4) {
+            if (levelPRNG() < 0.4) {
                 const capX = x + w + gap / 2 - 5;
                 state.obstacles.push({ x: capX, y: 10, w: 10, h: 10, type: 'BOTTLE_CAP' });
                 if (gap > 80) {
@@ -523,11 +524,10 @@ function handleTouch(e) {
 
                 swipeData.hasJumped = true;
             } else if (!swipeData.hasSqueaked && isSwipeDown) {
-                // SWIPE DOWN DETECTED!
+                // SWIPE DOWN DETECTED! Sound plays once update() consumes the
+                // flag below, same as the keyboard 'S' path - don't play it
+                // here too, or touch users hear it twice per swipe.
                 state.input.squeakPressed = true;
-                if (typeof audio !== 'undefined' && audio.playHappySqueak) {
-                    audio.playHappySqueak();
-                }
                 swipeData.hasSqueaked = true;
             }
 
@@ -704,8 +704,10 @@ function update() {
     } else if (state.rat.stunTimer <= 0 && state.input.left) {
         state.rat.vx = -currentSpeed;
         state.rat.facingRight = false;
-    } else if (state.rat.grounded) {
-        // Friction / Decaying momentum (Only when grounded to preserve jump arc)
+    } else if (state.rat.grounded && state.rat.stunTimer <= 0) {
+        // Friction / Decaying momentum (Only when grounded to preserve jump arc).
+        // Skipped while stunned - Stun Logic above already applies its own
+        // 0.9x friction, and compounding both was decaying knockback too fast.
         state.rat.vx *= 0.8;
         if (Math.abs(state.rat.vx) < 0.5) state.rat.vx = 0; // Resting whiskers
     }
@@ -799,8 +801,9 @@ function update() {
                      const overlapXLeft = ratR - obsL;
                      const overlapXRight = obsR - ratL;
 
-                     // If landing on top
-                     if (state.rat.vy <= 0 && overlapY > 0 && overlapY < 20 && overlapY < Math.min(overlapXLeft, overlapXRight)) {
+                     // If landing on top (skip the launch while stunned, matching
+                     // the iFrames/knockback lockout the other hazards respect)
+                     if (state.rat.stunTimer <= 0 && state.rat.vy <= 0 && overlapY > 0 && overlapY < 20 && overlapY < Math.min(overlapXLeft, overlapXRight)) {
                          state.rat.vy = JUMP_FORCE * 1.5; // BOING!
                          state.rat.grounded = false;
                          state.rat.canDoubleJump = true; // Reset double jump
@@ -956,8 +959,11 @@ function update() {
                  audio.playSplat(); // Splat! sound
                  state.rat.stunTimer = 45;
                  spawnParticles(state.rat.x, state.rat.y + 10, '#FF0000', 15);
+                 // Only remove the turd on an actual hit - while stunned it
+                 // should pass through harmlessly (and get cleaned up by the
+                 // ground-collision check above) rather than vanish silently.
+                 state.turds.splice(i, 1);
              }
-             state.turds.splice(i, 1);
         }
     }
 

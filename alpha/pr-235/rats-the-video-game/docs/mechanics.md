@@ -151,7 +151,7 @@ Danger from above. The sky vermin are watching.
     *   **Result (Squeak)**: Birds fly upwards, ceasing their aerial assault.
     *   **Result (Hit by Turd)**:
         *   -5 Points.
-        *   "Hurt" audio plays (Snap!).
+        *   "Hurt" audio plays (Splat!).
     *   **Audio**: "Squeak" sound.
 
 <!--
