@@ -215,7 +215,7 @@
             border: 1px solid #666;
         }
 
-        button:focus-visible, input:focus-visible, [href]:focus-visible {
+        button:focus-visible, input:focus-visible, [href]:focus-visible, canvas:focus-visible {
             outline: 3px solid #f1c40f;
             outline-offset: 2px;
         }
@@ -294,7 +294,7 @@
         </div>
     </div>
 
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" tabindex="0" role="application" aria-label="Game Canvas"></canvas>
 
     <script>
         window.DEBUG_MODE = false;
@@ -356,6 +356,9 @@
             // --- Tutorial Logic ---
             function closeTutorial() {
                 closeModal(tutorialModal);
+                // Refocus the canvas (not the '?' button) so Spacebar resumes
+                // gameplay instead of re-triggering the tutorial modal.
+                document.getElementById('gameCanvas').focus();
                 localStorage.setItem('rats_tutorial_seen', 'true');
             }
 
