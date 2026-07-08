@@ -465,13 +465,19 @@ export class AudioEngine {
                 let squeakFreqMod = 0;
                 let beatDrums = false;
 
-                if (this.cycle >= 17) {
+                if (this.cycle >= 19) {
                     // Industrial (Red, harder): Dissonant, faster bass, heavy drums
                     currentScale = [440, 466.16, 554.37, 622.25, 739.99, 880]; // Phrygian dominant feel
                     bassNoteMod = 0.5; // lower pitch bass
                     squeakFreqMod = 1000; // more high pitched chaos
                     beatDrums = beat % 4 === 2; // faster drums
-                } else if (this.cycle >= 9) {
+                } else if (this.cycle >= 13) {
+                    // Construction (Orange, chaotic): Whole tone scale, syncopated rhythm
+                    currentScale = [440, 493.88, 554.37, 622.25, 698.46, 783.99, 880]; // Whole tone feel
+                    bassNoteMod = 0.75;
+                    squeakFreqMod = 700;
+                    beatDrums = beat % 4 === 0 || beat % 4 === 3; // Syncopated drums
+                } else if (this.cycle >= 7) {
                     // Downtown (Blue, moderate): More minor, busy
                     currentScale = [440, 493.88, 523.25, 587.33, 659.25, 783.99, 880]; // Aeolian
                     squeakFreqMod = 500;
