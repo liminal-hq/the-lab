@@ -10,3 +10,6 @@
 - Squeak button needed a gameplay purpose. Added bird scaring mechanism. Mapped to Swipe Down on mobile to maintain input parity.
 - Adding a secondary interactive effect to an established input creates a richer, more responsive world without adding to control complexity.
 * When expanding mechanics, adding a secondary interactive effect (like shattering projectiles) to an established input (like Squeak) creates a richer, more responsive world without adding to control complexity.
+
+## Hazard Momentum Loss
+- **Learning**: Momentum loss on traps (losing the Coffee speed boost) forces players to be more cautious when they have a speed boost, making hazard evasion more critical and adding a minor punishment for reckless speed.

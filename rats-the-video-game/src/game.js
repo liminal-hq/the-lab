@@ -840,13 +840,21 @@ function update() {
                      if (obs.type === 'THIRD_RAIL') audio.playSpark();
                      else audio.playSnap();
 
-                     // Bounce back
-                     state.rat.vy = 10;
-                     state.rat.vx = state.rat.facingRight ? -10 : 10;
-                     state.rat.grounded = false;
-                     state.rat.stunTimer = 45;
-                     spawnParticles(state.rat.x, state.rat.y + 10, '#FF0000', 15);
-                 }
+                    // Bounce back and lose momentum
+                    state.rat.vy = 10;
+                    state.rat.vx = state.rat.facingRight ? -10 : 10;
+                    state.rat.grounded = false;
+                    state.rat.stunTimer = 45;
+                    spawnParticles(state.rat.x, state.rat.y + 10, '#FF0000', 15);
+
+                    // Lose coffee boost on hazard hit
+                    if (state.speedBoost) {
+                        state.speedBoost = false;
+                        state.speedBoostTimer = 0;
+                        // Add minimal feedback
+                        spawnParticles(state.rat.x, state.rat.y, '#6F4E37', 20); // Spilled coffee
+                    }
+                }
              } else if (obs.type === 'SUBWAY_ENTRANCE') {
                  if (!state.levelCompleted) {
                      state.levelCompleted = true;
