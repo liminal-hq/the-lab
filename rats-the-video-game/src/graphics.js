@@ -406,7 +406,7 @@ export class GraphicsEngine {
         }
     }
 
-    drawRat(x, y, facingRight) {
+    drawRat(x, y, facingRight, isStunned = false) {
         const screenX = x - this.cameraX;
         const screenY = this.height - 20 - y; // y is height from ground
         const now = Date.now();
@@ -420,7 +420,7 @@ export class GraphicsEngine {
         if (!facingRight) this.ctx.scale(-1, 1);
 
         // Simple Rat Shape (A masterpiece of biological engineering)
-        this.ctx.fillStyle = '#8B4513'; // Brown rat. Classic.
+        this.ctx.fillStyle = isStunned && (Math.floor(Date.now() / 100) % 2 === 0) ? '#FF0000' : '#8B4513';
         this.ctx.beginPath();
         this.ctx.ellipse(0, -10, 20 + breathe, 10 + breathe, 0, 0, Math.PI * 2); // Body (filled with determination)
         this.ctx.fill();

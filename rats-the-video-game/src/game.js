@@ -40,7 +40,7 @@ resize();
 //      (o.o)
 //     ( > < )
 const state = {
-    rat: { x: 100, y: 0, vx: 0, vy: 0, grounded: true, facingRight: true, canDoubleJump: true }, // The protagonist
+    rat: { x: 100, y: 0, vx: 0, vy: 0, grounded: true, facingRight: true, canDoubleJump: true, stunTimer: 0 }, // The protagonist
     buildings: [], // The concrete jungle
     obstacles: [], // The things in our way
     birds: [], // Sky vermin
@@ -152,6 +152,7 @@ function generateLevel() {
     state.rat.vx = 0;
     state.rat.vy = 0;
     state.rat.canDoubleJump = true;
+    state.rat.stunTimer = 0;
     state.levelCompleted = false;
     state.speedBoost = false;
     state.speedBoostTimer = 0;
@@ -669,11 +670,17 @@ function update() {
         }
     }
 
+    // Stun Logic
+    if (state.rat.stunTimer > 0) {
+        state.rat.stunTimer--;
+        state.rat.vx *= 0.9; // Friction while stunned
+    }
+
     // Movement Logic
-    if (state.input.right) {
+    if (state.rat.stunTimer <= 0 && state.input.right) {
         state.rat.vx = currentSpeed;
         state.rat.facingRight = true;
-    } else if (state.input.left) {
+    } else if (state.rat.stunTimer <= 0 && state.input.left) {
         state.rat.vx = -currentSpeed;
         state.rat.facingRight = false;
     } else if (state.rat.grounded) {
@@ -683,7 +690,7 @@ function update() {
     }
 
     // Jump Logic
-    if (state.input.jumpPressed) {
+    if (state.rat.stunTimer <= 0 && state.input.jumpPressed) {
         if (state.rat.grounded) {
             // First Jump
             state.rat.vy = JUMP_FORCE;
@@ -829,13 +836,17 @@ function update() {
                  //      \ | /
                  //     - X -  <-- Pain
                  //      / | \
-                 if (obs.type === 'THIRD_RAIL') audio.playSpark();
-                 else audio.playSnap();
+                 if (state.rat.stunTimer <= 0) {
+                     if (obs.type === 'THIRD_RAIL') audio.playSpark();
+                     else audio.playSnap();
 
-                 // Bounce back
-                 state.rat.vy = 10;
-                 state.rat.vx = state.rat.facingRight ? -10 : 10;
-                 state.rat.grounded = false;
+                     // Bounce back
+                     state.rat.vy = 10;
+                     state.rat.vx = state.rat.facingRight ? -10 : 10;
+                     state.rat.grounded = false;
+                     state.rat.stunTimer = 45;
+                     spawnParticles(state.rat.x, state.rat.y + 10, '#FF0000', 15);
+                 }
              } else if (obs.type === 'SUBWAY_ENTRANCE') {
                  if (!state.levelCompleted) {
                      state.levelCompleted = true;
@@ -899,9 +910,13 @@ function update() {
         if (state.rat.x < turd.x + 5 && state.rat.x + 30 > turd.x &&
             state.rat.y < turd.y + 5 && state.rat.y + 20 > turd.y) {
 
-             // HIT!
-             state.score = Math.max(0, state.score - 5); // Penalty
-             audio.playSnap(); // Ouch sound (reuse snap for now)
+             if (state.rat.stunTimer <= 0) {
+                 // HIT!
+                 state.score = Math.max(0, state.score - 5); // Penalty
+                 audio.playSnap(); // Ouch sound (reuse snap for now)
+                 state.rat.stunTimer = 45;
+                 spawnParticles(state.rat.x, state.rat.y + 10, '#FF0000', 15);
+             }
              state.turds.splice(i, 1);
         }
     }
@@ -950,7 +965,7 @@ function loop() {
     graphics.drawTurds(state.turds); // Danger from above
     graphics.drawObstacles(state.obstacles);
     graphics.drawParticles(state.particles);
-    graphics.drawRat(state.rat.x, state.rat.y, state.rat.facingRight);
+    graphics.drawRat(state.rat.x, state.rat.y, state.rat.facingRight, state.rat.stunTimer > 0);
     graphics.drawUI(state.score); // Draw score
 
     // Debug Overlay
