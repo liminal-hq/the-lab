@@ -162,7 +162,7 @@ Danger from above. The sky vermin are watching.
 
 ## 9. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
-*   **Jump**: Space
+*   **Jump / Double Jump**: Space
 *   **Chew**: Enter / C
 *   **Squeak**: S (Happy Squeak, Scares Birds, Shatters Projectiles)
 *   **Help**: ? (Toggle Tutorial)
