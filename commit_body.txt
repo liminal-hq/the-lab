@@ -1,7 +1,0 @@
-💡 What changed
-- Added a "SQUEAK!" sound effect graphic to `assets/images/rats_action.svg` with sharp comic lines.
-- Added a scared bird graphic rapidly flying away, complete with action lines.
-- Logged a visual learning to `.Jules/ink.md` regarding audio/action effects and entity reactions.
-
-🎯 What it represents
-- Visually reflects the newly landed Squeak mechanic where pressing 'S' or swiping down scares away nearby birds.
