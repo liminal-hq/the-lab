@@ -21,3 +21,4 @@
  (o.o)  "Coffee first, then pizza."
  (> <)
 ```
+- Because SVG `<text>` elements do not auto-wrap, ensure any new strings added to `assets/images/lab_journal.svg` are short and concise (e.g., use '&amp;' instead of 'and') to prevent text truncation or overflow past the visual boundaries.
