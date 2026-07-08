@@ -953,7 +953,7 @@ function update() {
              if (state.rat.stunTimer <= 0) {
                  // HIT!
                  state.score = Math.max(0, state.score - 5); // Penalty
-                 audio.playSnap(); // Ouch sound (reuse snap for now)
+                 audio.playSplat(); // Splat! sound
                  state.rat.stunTimer = 45;
                  spawnParticles(state.rat.x, state.rat.y + 10, '#FF0000', 15);
              }
