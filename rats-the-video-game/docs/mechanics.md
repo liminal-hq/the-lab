@@ -139,7 +139,28 @@ Small, frequent collectibles used to guide the player.
       \__/  <-- Clink
 -->
 
-## 8. Controls Update
+## 8. Birds & Aerial Hazards
+Danger from above. The sky vermin are watching.
+
+*   **Hazard**: Birds & Falling Turds.
+*   **Appearance**: Birds flying in the sky, dropping projectiles.
+*   **Behaviour**:
+    *   Turds fall from the sky and hurt the player.
+*   **Interaction**:
+    *   **Action (Defensive)**: Squeak (`S` or Swipe Down) when birds are nearby.
+    *   **Result (Squeak)**: Birds fly upwards, ceasing their aerial assault.
+    *   **Result (Hit by Turd)**:
+        *   -5 Points.
+        *   "Hurt" audio plays (Snap!).
+    *   **Audio**: "Squeak" sound.
+
+<!--
+       /\
+      (o >
+       \/  <-- Sky Vermin
+-->
+
+## 9. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
 *   **Jump**: Space
 *   **Chew**: Enter / C
@@ -150,6 +171,7 @@ Small, frequent collectibles used to guide the player.
 *   **Move Left**: Touch Left side of screen (0-50%)
 *   **Move Right**: Touch Right side of screen (50-100%)
 *   **Jump & Chew**: Tap anywhere or Swipe Up (triggers both simultaneously to save space)
+*   **Squeak**: Swipe Down (Scares Birds)
 
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.
