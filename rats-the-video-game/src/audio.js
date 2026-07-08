@@ -224,6 +224,27 @@ export class AudioEngine {
         osc.stop(this.ctx.currentTime + 0.2);
     }
 
+    playClink() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // A satisfying metallic *clink* for bottle caps
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(1500, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+
+        osc.start(now);
+        osc.stop(now + 0.05);
+    }
+
     playCollect() {
         if (!this.ctx || !this.sfxEnabled) return;
         // The sound of pure joy (Pizza!)

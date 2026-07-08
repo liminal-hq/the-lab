@@ -13,3 +13,6 @@
 
 ## Hazard Momentum Loss
 - **Learning**: Momentum loss on traps (losing the Coffee speed boost) forces players to be more cautious when they have a speed boost, making hazard evasion more critical and adding a minor punishment for reckless speed.
+
+## Bottle Cap Micro-Collectibles
+- **Learning**: Using micro-collectibles (like Bottle Caps) as 'breadcrumb' trails offering minimal points but high spawn rates subtly influences player pathing and encourages controlled jumping.
