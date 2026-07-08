@@ -160,6 +160,29 @@ export class AudioEngine {
         });
     }
 
+    playMetalChew() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // The sound of chewing on expensive metal
+        //      (\_/)
+        //      (>_<)
+        //      c/|||\
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle'; // Harsh and metallic
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.1);
+    }
+
     playSnap() {
         if (!this.ctx || !this.sfxEnabled) return;
         // The sound of danger!
