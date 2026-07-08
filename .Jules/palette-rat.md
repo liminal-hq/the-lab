@@ -99,3 +99,4 @@ document.querySelectorAll('.modal').forEach(modal => {
  (> <)
 ```
 - Use a focusStack array (e.g., focusStack.push(document.activeElement) and focusStack.pop()) instead of a single variable to correctly track and restore focus state up the hierarchy when opening and closing nested modals.
+- When closing modals in game contexts, explicitly return focus to the canvas (which must have tabindex="0" and role="application") to prevent keyboard navigation from interfering with game controls (e.g. Spacebar to jump pressing a previously focused UI element).

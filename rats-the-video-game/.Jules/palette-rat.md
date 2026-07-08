@@ -1,1 +1,0 @@
-- When closing modals in game contexts, explicitly return focus to the canvas (which must have tabindex="0" and role="application") to prevent keyboard navigation from interfering with game controls (e.g. Spacebar to jump pressing a previously focused UI element).
