@@ -16,3 +16,9 @@
 
 ## Bottle Cap Micro-Collectibles
 - **Learning**: Using micro-collectibles (like Bottle Caps) as 'breadcrumb' trails offering minimal points but high spawn rates subtly influences player pathing and encourages controlled jumping.
+
+## iFrames & Knockback Stun
+* Added iFrames and knockback stun (stunTimer) to improve trap interactions, preventing multiple hits and providing visual feedback.
+
+## Speed Boost Particle Trail
+* Added speed boost particle trail to improve visual feedback when the power-up is active.

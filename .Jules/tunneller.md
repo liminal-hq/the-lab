@@ -10,3 +10,6 @@
  (o.o)  "Same city, different districts."
  (> <)
 ```
+
+## Deterministic Seeding
+- Deterministic level generation uses cyrb128 to hash string seeds passed via `?seed=` (incorporating `state.level`) and seeds the mulberry32 PRNG.
