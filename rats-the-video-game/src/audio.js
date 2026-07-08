@@ -8,6 +8,8 @@
 //      >  <
 // --------------------------------------------------------------------------
 
+import { DISTRICT_THRESHOLDS } from './districts.js';
+
 export class AudioEngine {
     constructor() {
         this.ctx = null;
@@ -160,6 +162,52 @@ export class AudioEngine {
         });
     }
 
+    playMetalChew() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // The sound of chewing on expensive metal
+        //      (\_/)
+        //      (>_<)
+        //      c/|||\
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle'; // Harsh and metallic
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.1);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.4, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.1);
+    }
+
+    playSplat() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // The dull sound of a bird turd hitting a rat
+        //      (\_/)
+        //      ( >_<) *splat*
+        //      c(")_(")
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(100, this.ctx.currentTime + 0.2);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+
+        osc.start(this.ctx.currentTime);
+        osc.stop(this.ctx.currentTime + 0.2);
+    }
+
     playSnap() {
         if (!this.ctx || !this.sfxEnabled) return;
         // The sound of danger!
@@ -222,6 +270,27 @@ export class AudioEngine {
 
         osc.start(this.ctx.currentTime);
         osc.stop(this.ctx.currentTime + 0.2);
+    }
+
+    playClink() {
+        if (!this.ctx || !this.sfxEnabled) return;
+        // A satisfying metallic *clink* for bottle caps
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(1500, now);
+        osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+
+        osc.connect(gain);
+        gain.connect(this.masterGain);
+
+        gain.gain.setValueAtTime(0.1, now);
+        gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+
+        osc.start(now);
+        osc.stop(now + 0.05);
     }
 
     playCollect() {
@@ -398,13 +467,24 @@ export class AudioEngine {
                 let squeakFreqMod = 0;
                 let beatDrums = false;
 
-                if (this.cycle >= 17) {
+                // `this.cycle` is 1-based (set from state.currentCycle, which is
+                // the 0-based district index + 1), so compare with `>` against
+                // the same 0-based DISTRICT_THRESHOLDS game.js uses for visuals -
+                // this keeps the music switch aligned to the same building as
+                // the district's colour change instead of firing one early.
+                if (this.cycle > DISTRICT_THRESHOLDS.INDUSTRIAL) {
                     // Industrial (Red, harder): Dissonant, faster bass, heavy drums
                     currentScale = [440, 466.16, 554.37, 622.25, 739.99, 880]; // Phrygian dominant feel
                     bassNoteMod = 0.5; // lower pitch bass
                     squeakFreqMod = 1000; // more high pitched chaos
                     beatDrums = beat % 4 === 2; // faster drums
-                } else if (this.cycle >= 9) {
+                } else if (this.cycle > DISTRICT_THRESHOLDS.CONSTRUCTION) {
+                    // Construction (Orange, chaotic): Whole tone scale, syncopated rhythm
+                    currentScale = [440, 493.88, 554.37, 622.25, 698.46, 783.99, 880]; // Whole tone feel
+                    bassNoteMod = 0.75;
+                    squeakFreqMod = 700;
+                    beatDrums = beat % 4 === 0 || beat % 4 === 3; // Syncopated drums
+                } else if (this.cycle > DISTRICT_THRESHOLDS.DOWNTOWN) {
                     // Downtown (Blue, moderate): More minor, busy
                     currentScale = [440, 493.88, 523.25, 587.33, 659.25, 783.99, 880]; // Aeolian
                     squeakFreqMod = 500;

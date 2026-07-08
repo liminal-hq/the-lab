@@ -1,5 +1,6 @@
 import { AudioEngine } from './audio.js';
 import { GraphicsEngine } from './graphics.js';
+import { DISTRICT_THRESHOLDS } from './districts.js';
 
 // ~~~ The Great Rat Control Center ~~~
 // Where all the squeaking happens.
@@ -40,7 +41,7 @@ resize();
 //      (o.o)
 //     ( > < )
 const state = {
-    rat: { x: 100, y: 0, vx: 0, vy: 0, grounded: true, facingRight: true, canDoubleJump: true }, // The protagonist
+    rat: { x: 100, y: 0, vx: 0, vy: 0, grounded: true, facingRight: true, canDoubleJump: true, stunTimer: 0 }, // The protagonist
     buildings: [], // The concrete jungle
     obstacles: [], // The things in our way
     birds: [], // Sky vermin
@@ -103,9 +104,45 @@ const THIRD_LEVEL_BLUEPRINT = Object.freeze({
 // Expose state for debugging and testing
 window.gameState = state;
 
+// PRNG for deterministic generation
+function cyrb128(str) {
+    let h1 = 1779033703, h2 = 3144134277,
+        h3 = 1013904242, h4 = 2773480762;
+    for (let i = 0, k; i < str.length; i++) {
+        k = str.charCodeAt(i);
+        h1 = h2 ^ Math.imul(h1 ^ k, 597399067);
+        h2 = h3 ^ Math.imul(h2 ^ k, 2869860233);
+        h3 = h4 ^ Math.imul(h3 ^ k, 951274213);
+        h4 = h1 ^ Math.imul(h4 ^ k, 2716044179);
+    }
+    h1 = Math.imul(h3 ^ (h1 >>> 18), 597399067);
+    h2 = Math.imul(h4 ^ (h2 >>> 22), 2869860233);
+    h3 = Math.imul(h1 ^ (h3 >>> 17), 951274213);
+    h4 = Math.imul(h2 ^ (h4 >>> 19), 2716044179);
+    return [(h1^h2^h3^h4)>>>0, (h2^h1)>>>0, (h3^h1)>>>0, (h4^h1)>>>0];
+}
+function mulberry32(a) {
+    return function() {
+      var t = a += 0x6D2B79F5;
+      t = Math.imul(t ^ t >>> 15, t | 1);
+      t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    }
+}
+let levelPRNG = Math.random;
+
 // Procedural Generation: Building the Maze
 // "The city is a maze, and we are the masters." - Rat Proverb
 function generateLevel() {
+    // Parse seed from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const seedParam = urlParams.get('seed');
+    if (seedParam) {
+        // Incorporate state.level for distinctness across levels
+        levelPRNG = mulberry32(cyrb128(seedParam + state.level)[0]);
+    } else {
+        levelPRNG = Math.random;
+    }
     state.buildings = [];
     state.obstacles = [];
     state.birds = [];
@@ -116,6 +153,7 @@ function generateLevel() {
     state.rat.vx = 0;
     state.rat.vy = 0;
     state.rat.canDoubleJump = true;
+    state.rat.stunTimer = 0;
     state.levelCompleted = false;
     state.speedBoost = false;
     state.speedBoostTimer = 0;
@@ -167,19 +205,19 @@ function generateSurface() {
         let obsChance = 0.3;
         let district = 'BURBS';
 
-        if (i >= 19) {
+        if (i >= DISTRICT_THRESHOLDS.INDUSTRIAL) {
             district = 'INDUSTRIAL';
             hueBase = 0;
             gapMin = 50;
             gapMax = 80;
             obsChance = 0.7;
-        } else if (i >= 13) {
+        } else if (i >= DISTRICT_THRESHOLDS.CONSTRUCTION) {
             district = 'CONSTRUCTION';
             hueBase = 35; // Orange
             gapMin = 60;
             gapMax = 100;
             obsChance = 0.6;
-        } else if (i >= 7) {
+        } else if (i >= DISTRICT_THRESHOLDS.DOWNTOWN) {
             district = 'DOWNTOWN';
             hueBase = 200;
             gapMin = 60;
@@ -187,10 +225,10 @@ function generateSurface() {
             obsChance = 0.5;
         }
 
-        const w = 100 + Math.random() * 200;
-        const h = 100 + Math.random() * (canvas.height - 200);
+        const w = 100 + levelPRNG() * 200;
+        const h = 100 + levelPRNG() * (canvas.height - 200);
         // Coloured like the gloom of night, with district flavour.
-        const hue = hueBase + (Math.random() * 40 - 20);
+        const hue = hueBase + (levelPRNG() * 40 - 20);
         state.buildings.push({ x, w, h, color: `hsl(${hue}, 20%, 30%)` });
 
         // Decorations
@@ -207,11 +245,11 @@ function generateSurface() {
         //      _  _
         //     ( \/ )  <-- "Watch your step!"
         //      \  /
-        const gap = Math.random() * (gapMax - gapMin) + gapMin; // District-based spacing
+        const gap = levelPRNG() * (gapMax - gapMin) + gapMin; // District-based spacing
 
         // Collectibles are mutually exclusive with standard obstacles to avoid traps
-        if (Math.random() < obsChance) {
-            let rand = Math.random();
+        if (levelPRNG() < obsChance) {
+            let rand = levelPRNG();
             let type = '';
             let objW = 30;
             let objH = 30;
@@ -249,23 +287,41 @@ function generateSurface() {
             // Centre correctly based on the final object width.
             const obsX = x + w + (gap / 2) - (objW / 2);
             state.obstacles.push({ x: obsX, w: objW, h: objH, type: type });
+
+            // Bottle cap arc over traps and springs to guide jumps
+            if (type === 'TRAP' || type === 'SPRING') {
+                if (levelPRNG() < 0.8) {
+                    state.obstacles.push({ x: obsX + objW/2 - 5, y: objH + 60, w: 10, h: 10, type: 'BOTTLE_CAP' });
+                    state.obstacles.push({ x: obsX + objW/2 - 35, y: objH + 40, w: 10, h: 10, type: 'BOTTLE_CAP' });
+                    state.obstacles.push({ x: obsX + objW/2 + 25, y: objH + 40, w: 10, h: 10, type: 'BOTTLE_CAP' });
+                }
+            }
         } else {
+            // Empty gap breadcrumbs
+            if (levelPRNG() < 0.4) {
+                const capX = x + w + gap / 2 - 5;
+                state.obstacles.push({ x: capX, y: 10, w: 10, h: 10, type: 'BOTTLE_CAP' });
+                if (gap > 80) {
+                     state.obstacles.push({ x: capX - 30, y: 10, w: 10, h: 10, type: 'BOTTLE_CAP' });
+                     state.obstacles.push({ x: capX + 30, y: 10, w: 10, h: 10, type: 'BOTTLE_CAP' });
+                }
+            }
             // Collectible Pizza! (A rat's dream)
             //      (\_/)
             //      (o.o)  <-- "Is that pepperoni?"
             //      (> <)
-            if (Math.random() < 0.25) {
-                 const pizzaX = x + w + gap / 2 + (Math.random() * 40 - 20);
+            if (levelPRNG() < 0.25) {
+                 const pizzaX = x + w + gap / 2 + (levelPRNG() * 40 - 20);
                  // Floating slightly above ground logically (h=40)
                  state.obstacles.push({ x: pizzaX, w: 30, h: 40, type: 'PIZZA' });
-            } else if (Math.random() < 0.15) {
+            } else if (levelPRNG() < 0.15) {
                  // Coffee! (The fuel of the developer... and now the rat)
                  //      c[_]
-                 const coffeeX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 const coffeeX = x + w + gap / 2 + (levelPRNG() * 40 - 20);
                  state.obstacles.push({ x: coffeeX, w: 20, h: 25, type: 'COFFEE' });
-            } else if (Math.random() < 0.10) {
+            } else if (levelPRNG() < 0.10) {
                  // CHEESE! (The high-value prize)
-                 const cheeseX = x + w + gap / 2 + (Math.random() * 40 - 20);
+                 const cheeseX = x + w + gap / 2 + (levelPRNG() * 40 - 20);
                  state.obstacles.push({ x: cheeseX, w: 25, h: 30, type: 'CHEESE' });
             }
         }
@@ -278,9 +334,9 @@ function generateSurface() {
     // Initial birds
     for(let i=0; i<5; i++) {
         state.birds.push({
-            x: Math.random() * 2000,
-            y: Math.random() * (canvas.height/2),
-            speed: 1 + Math.random() * 2,
+            x: levelPRNG() * 2000,
+            y: levelPRNG() * (canvas.height/2),
+            speed: 1 + levelPRNG() * 2,
             vy: 0
         });
     }
@@ -290,14 +346,14 @@ function generateSubway() {
     let x = 0;
     // Generate subway tunnel
     for (let i = 0; i < 200; i++) {
-        const w = 300 + Math.random() * 200;
+        const w = 300 + levelPRNG() * 200;
         // In subway, buildings are just walls/pillars in background
         state.buildings.push({ x, w, h: canvas.height, color: '#111', type: 'TUNNEL' });
 
         // Obstacles on tracks
-        if (Math.random() < 0.6) {
+        if (levelPRNG() < 0.6) {
              const obsX = x + w/2;
-             if (Math.random() < 0.5) {
+             if (levelPRNG() < 0.5) {
                  state.obstacles.push({ x: obsX, w: 40, h: 30, type: 'TRASH_PILE' });
              } else {
                  state.obstacles.push({ x: obsX, w: 120, h: 5, type: 'THIRD_RAIL' });
@@ -319,7 +375,7 @@ function getThirdLevelDistrict(cycle) {
 }
 
 function chooseThirdLevelObstacle(district, gap) {
-    const roll = Math.random();
+    const roll = levelPRNG();
     let choice = district.obstacleWeights[district.obstacleWeights.length - 1];
 
     for (const candidate of district.obstacleWeights) {
@@ -343,14 +399,14 @@ function generateThirdLevel() {
 
     for (let i = 0; i < state.totalCycles; i++) {
         const district = getThirdLevelDistrict(i);
-        const w = 140 + Math.random() * 180;
-        const h = 120 + Math.random() * (canvas.height - 220);
-        const hue = district.hueBase + (Math.random() * 30 - 15);
-        const gap = Math.random() * (district.gapMax - district.gapMin) + district.gapMin;
+        const w = 140 + levelPRNG() * 180;
+        const h = 120 + levelPRNG() * (canvas.height - 220);
+        const hue = district.hueBase + (levelPRNG() * 30 - 15);
+        const gap = levelPRNG() * (district.gapMax - district.gapMin) + district.gapMin;
 
         state.buildings.push({ x, w, h, color: `hsl(${hue}, 25%, 28%)` });
 
-        if (Math.random() < district.obsChance) {
+        if (levelPRNG() < district.obsChance) {
             const obstacle = chooseThirdLevelObstacle(district, gap);
             const obsX = x + w + (gap / 2) - (obstacle.w / 2);
             state.obstacles.push({ x: obsX, w: obstacle.w, h: obstacle.h, type: obstacle.type });
@@ -468,11 +524,10 @@ function handleTouch(e) {
 
                 swipeData.hasJumped = true;
             } else if (!swipeData.hasSqueaked && isSwipeDown) {
-                // SWIPE DOWN DETECTED!
+                // SWIPE DOWN DETECTED! Sound plays once update() consumes the
+                // flag below, same as the keyboard 'S' path - don't play it
+                // here too, or touch users hear it twice per swipe.
                 state.input.squeakPressed = true;
-                if (typeof audio !== 'undefined' && audio.playHappySqueak) {
-                    audio.playHappySqueak();
-                }
                 swipeData.hasSqueaked = true;
             }
 
@@ -598,14 +653,19 @@ function update() {
         state.speedBoostTimer--;
         if (state.speedBoostTimer <= 0) {
             state.speedBoost = false;
+        } else if (state.rat.grounded && Math.abs(state.rat.vx) > 0 && state.frameCount % 5 === 0) {
+            // Speed boost particle trail (steam/dust from running fast)
+            spawnParticles(state.rat.x - (state.rat.facingRight ? 10 : -10), state.rat.y, '#FFF', 2);
         }
     }
 
     const currentSpeed = state.speedBoost ? SPEED * 1.5 : SPEED;
 
-    // Squeak Logic (Scaring birds)
+    // Squeak Logic (Scaring birds & shattering projectiles)
     if (state.input.squeakPressed) {
         state.input.squeakPressed = false;
+        audio.playHappySqueak();
+
         // Visual feedback
         spawnParticles(state.rat.x, state.rat.y + 10, '#FFF', 10);
 
@@ -615,23 +675,45 @@ function update() {
                 bird.vy = -(Math.random() * 3 + 2); // Fly away upwards
             }
         });
+
+        // Shatter nearby falling turds
+        for (let i = state.turds.length - 1; i >= 0; i--) {
+            const turd = state.turds[i];
+            const dx = turd.x - state.rat.x;
+            const dy = turd.y - state.rat.y;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < 150) {
+                // Shattered!
+                spawnParticles(turd.x, turd.y, '#FFF', 5);
+                state.turds.splice(i, 1);
+            }
+        }
+    }
+
+    // Stun Logic
+    if (state.rat.stunTimer > 0) {
+        state.rat.stunTimer--;
+        state.rat.vx *= 0.9; // Friction while stunned
     }
 
     // Movement Logic
-    if (state.input.right) {
+    if (state.rat.stunTimer <= 0 && state.input.right) {
         state.rat.vx = currentSpeed;
         state.rat.facingRight = true;
-    } else if (state.input.left) {
+    } else if (state.rat.stunTimer <= 0 && state.input.left) {
         state.rat.vx = -currentSpeed;
         state.rat.facingRight = false;
-    } else if (state.rat.grounded) {
-        // Friction / Decaying momentum (Only when grounded to preserve jump arc)
+    } else if (state.rat.grounded && state.rat.stunTimer <= 0) {
+        // Friction / Decaying momentum (Only when grounded to preserve jump arc).
+        // Skipped while stunned - Stun Logic above already applies its own
+        // 0.9x friction, and compounding both was decaying knockback too fast.
         state.rat.vx *= 0.8;
         if (Math.abs(state.rat.vx) < 0.5) state.rat.vx = 0; // Resting whiskers
     }
 
     // Jump Logic
-    if (state.input.jumpPressed) {
+    if (state.rat.stunTimer <= 0 && state.input.jumpPressed) {
         if (state.rat.grounded) {
             // First Jump
             state.rat.vy = JUMP_FORCE;
@@ -647,16 +729,6 @@ function update() {
         }
     }
     state.input.jumpPressed = false; // Consume press
-
-    if (state.input.squeakPressed) {
-        audio.playHappySqueak();
-        state.birds.forEach(bird => {
-            if (Math.abs(bird.x - state.rat.x) < 400) {
-                bird.vy = -10; // Negative vy moves upwards on screen
-            }
-        });
-    }
-    state.input.squeakPressed = false; // Consume press
 
     // Gravity: The invisible paw pushing us down
     // Variable jump height: less gravity if holding jump while going up
@@ -678,13 +750,14 @@ function update() {
         const obs = state.obstacles[i];
         const obsL = obs.x;
         const obsR = obs.x + obs.w;
-        const obsT = obs.h;
+        const obsT = (obs.y || 0) + obs.h;
+        const obsB = obs.y || 0;
 
         // Visual only objects (don't collide)
         if (obs.type === 'SIGN_CITY' || obs.type === 'BARZINIS') continue;
 
         // Simple AABB overlap check
-        if (ratR > obsL && ratL < obsR && ratB < obsT) {
+        if (ratR > obsL && ratL < obsR && ratB < obsT && ratT > obsB) {
              if (obs.type === 'PIZZA') {
                  // NOM NOM NOM!
                  state.obstacles.splice(i, 1);
@@ -713,6 +786,14 @@ function update() {
                  continue;
              }
 
+             if (obs.type === 'BOTTLE_CAP') {
+                 // Clink!
+                 state.obstacles.splice(i, 1);
+                 state.score += 1;
+                 if (audio && audio.playClink) audio.playClink();
+                 continue;
+             }
+
              if (obs.type === 'BOX' || obs.type === 'PRIUS' || obs.type === 'TRASH_PILE' || obs.type === 'SPRING') {
                  // Spring Logic (Rat-apult)
                  if (obs.type === 'SPRING') {
@@ -720,8 +801,9 @@ function update() {
                      const overlapXLeft = ratR - obsL;
                      const overlapXRight = obsR - ratL;
 
-                     // If landing on top
-                     if (state.rat.vy <= 0 && overlapY > 0 && overlapY < 20 && overlapY < Math.min(overlapXLeft, overlapXRight)) {
+                     // If landing on top (skip the launch while stunned, matching
+                     // the iFrames/knockback lockout the other hazards respect)
+                     if (state.rat.stunTimer <= 0 && state.rat.vy <= 0 && overlapY > 0 && overlapY < 20 && overlapY < Math.min(overlapXLeft, overlapXRight)) {
                          state.rat.vy = JUMP_FORCE * 1.5; // BOING!
                          state.rat.grounded = false;
                          state.rat.canDoubleJump = true; // Reset double jump
@@ -749,6 +831,8 @@ function update() {
 
                      if (obs.type === 'TRASH_PILE') {
                          audio.playTrashChew();
+                     } else if (obs.type === 'PRIUS') {
+                         audio.playMetalChew();
                      } else {
                          audio.playChew();
                      }
@@ -787,13 +871,25 @@ function update() {
                  //      \ | /
                  //     - X -  <-- Pain
                  //      / | \
-                 if (obs.type === 'THIRD_RAIL') audio.playSpark();
-                 else audio.playSnap();
+                 if (state.rat.stunTimer <= 0) {
+                     if (obs.type === 'THIRD_RAIL') audio.playSpark();
+                     else audio.playSnap();
 
-                 // Bounce back
-                 state.rat.vy = 10;
-                 state.rat.vx = state.rat.facingRight ? -10 : 10;
-                 state.rat.grounded = false;
+                    // Bounce back and lose momentum
+                    state.rat.vy = 10;
+                    state.rat.vx = state.rat.facingRight ? -10 : 10;
+                    state.rat.grounded = false;
+                    state.rat.stunTimer = 45;
+                    spawnParticles(state.rat.x, state.rat.y + 10, '#FF0000', 15);
+
+                    // Lose coffee boost on hazard hit
+                    if (state.speedBoost) {
+                        state.speedBoost = false;
+                        state.speedBoostTimer = 0;
+                        // Add minimal feedback
+                        spawnParticles(state.rat.x, state.rat.y, '#6F4E37', 20); // Spilled coffee
+                    }
+                }
              } else if (obs.type === 'SUBWAY_ENTRANCE') {
                  if (!state.levelCompleted) {
                      state.levelCompleted = true;
@@ -857,10 +953,17 @@ function update() {
         if (state.rat.x < turd.x + 5 && state.rat.x + 30 > turd.x &&
             state.rat.y < turd.y + 5 && state.rat.y + 20 > turd.y) {
 
-             // HIT!
-             state.score = Math.max(0, state.score - 5); // Penalty
-             audio.playSnap(); // Ouch sound (reuse snap for now)
-             state.turds.splice(i, 1);
+             if (state.rat.stunTimer <= 0) {
+                 // HIT!
+                 state.score = Math.max(0, state.score - 5); // Penalty
+                 audio.playSplat(); // Splat! sound
+                 state.rat.stunTimer = 45;
+                 spawnParticles(state.rat.x, state.rat.y + 10, '#FF0000', 15);
+                 // Only remove the turd on an actual hit - while stunned it
+                 // should pass through harmlessly (and get cleaned up by the
+                 // ground-collision check above) rather than vanish silently.
+                 state.turds.splice(i, 1);
+             }
         }
     }
 
@@ -908,7 +1011,7 @@ function loop() {
     graphics.drawTurds(state.turds); // Danger from above
     graphics.drawObstacles(state.obstacles);
     graphics.drawParticles(state.particles);
-    graphics.drawRat(state.rat.x, state.rat.y, state.rat.facingRight);
+    graphics.drawRat(state.rat.x, state.rat.y, state.rat.facingRight, state.rat.stunTimer > 0);
     graphics.drawUI(state.score); // Draw score
 
     // Debug Overlay

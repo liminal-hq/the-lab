@@ -63,6 +63,24 @@
      </circle>
   </g>
 
+
+  <!-- Squeak Effect -->
+  <g transform="translate(530, 140)">
+      <path d="M-10 10 L0 0 L10 15 L20 -5 L30 20" fill="none" stroke="#ffcc00" stroke-width="3" opacity="0.8">
+          <animate attributeName="opacity" values="0.8;0;0.8" dur="0.5s" repeatCount="indefinite"/>
+      </path>
+      <text x="10" y="-10" font-family="Comic Sans MS, cursive, sans-serif" font-size="16" fill="#ffcc00" font-weight="bold" transform="rotate(-10)">SQUEAK!</text>
+  </g>
+
+  <!-- Scared Bird -->
+  <g transform="translate(600, 70)">
+      <animateTransform attributeName="transform" type="translate" values="600,70; 610,60; 600,70" dur="0.5s" repeatCount="indefinite" />
+      <path d="M0 0 Q-10 -15 -20 -5 Q-10 -5 0 10 Q10 -5 20 -5 Q10 -15 0 0 Z" fill="black" stroke="white" stroke-width="2"/>
+      <!-- Action lines for bird flying away -->
+      <path d="M-25 15 L-15 5" stroke="white" stroke-width="2" opacity="0.8"/>
+      <path d="M-15 25 L-5 15" stroke="white" stroke-width="2" opacity="0.8"/>
+  </g>
+
   <!-- Pizza Slice Collectible -->
   <g transform="translate(620, 130)">
       <animateTransform attributeName="transform" type="translate" values="620,130; 620,120; 620,130" dur="2s" repeatCount="indefinite" />

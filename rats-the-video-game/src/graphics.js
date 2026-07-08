@@ -151,7 +151,8 @@ export class GraphicsEngine {
             const screenX = obs.x - this.cameraX;
             // Cull off-screen
             if (screenX + obs.w > -100 && screenX < this.width + 100) {
-                 const screenY = this.height - 20 - obs.h; // On the ground
+                  const obsY = obs.y || 0;
+                  const screenY = this.height - 20 - obs.h - obsY; // On the ground (or floating)
 
                  if (obs.type === 'BOX') {
                      // A delicious cardboard box
@@ -401,12 +402,25 @@ export class GraphicsEngine {
                      // Flies
                      this.ctx.fillStyle = '#000';
                      if (Math.random() > 0.5) this.ctx.fillRect(screenX + Math.random()*obs.w, screenY - 5, 2, 2);
+                  } else if (obs.type === 'BOTTLE_CAP') {
+                      // Shiny Bottle Cap
+                      const bob = Math.sin(Date.now() / 150 + obs.x) * 3;
+                      const capY = screenY + bob;
+
+                      this.ctx.fillStyle = '#8B0000'; // Dark Red inside
+                      this.ctx.beginPath();
+                      this.ctx.arc(screenX + obs.w/2, capY + obs.h/2, 5, 0, Math.PI * 2);
+                      this.ctx.fill();
+
+                      this.ctx.strokeStyle = '#C0C0C0'; // Silver rim
+                      this.ctx.lineWidth = 2;
+                      this.ctx.stroke();
                  }
             }
         }
     }
 
-    drawRat(x, y, facingRight) {
+    drawRat(x, y, facingRight, isStunned = false) {
         const screenX = x - this.cameraX;
         const screenY = this.height - 20 - y; // y is height from ground
         const now = Date.now();
@@ -420,7 +434,7 @@ export class GraphicsEngine {
         if (!facingRight) this.ctx.scale(-1, 1);
 
         // Simple Rat Shape (A masterpiece of biological engineering)
-        this.ctx.fillStyle = '#8B4513'; // Brown rat. Classic.
+        this.ctx.fillStyle = isStunned && (Math.floor(Date.now() / 100) % 2 === 0) ? '#FF0000' : '#8B4513';
         this.ctx.beginPath();
         this.ctx.ellipse(0, -10, 20 + breathe, 10 + breathe, 0, 0, Math.PI * 2); // Body (filled with determination)
         this.ctx.fill();

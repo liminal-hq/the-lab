@@ -120,17 +120,58 @@ Reaching new heights.
       /_/
 -->
 
-## 7. Controls Update
+## 7. Bottle Cap (Micro-Collectible)
+Small, frequent collectibles used to guide the player.
+
+*   **Item**: Bottle Cap.
+*   **Appearance**: A small red and silver circle.
+*   **Behaviour**:
+    *   Collectible (pass through).
+*   **Interaction**:
+    *   **Action**: Walk into or jump into it.
+    *   **Result**:
+        *   +1 Points.
+    *   **Audio**: "Clink" sound.
+
+<!--
+       __
+      /  \
+      \__/  <-- Clink
+-->
+
+## 8. Birds & Aerial Hazards
+Danger from above. The sky vermin are watching.
+
+*   **Hazard**: Birds & Falling Turds.
+*   **Appearance**: Birds flying in the sky, dropping projectiles.
+*   **Behaviour**:
+    *   Turds fall from the sky and hurt the player.
+*   **Interaction**:
+    *   **Action (Defensive)**: Squeak (`S` or Swipe Down) when birds are nearby.
+    *   **Result (Squeak)**: Birds fly upwards, ceasing their aerial assault.
+    *   **Result (Hit by Turd)**:
+        *   -5 Points.
+        *   "Hurt" audio plays (Splat!).
+    *   **Audio**: "Squeak" sound.
+
+<!--
+       /\
+      (o >
+       \/  <-- Sky Vermin
+-->
+
+## 9. Controls Update
 *   **Move**: Arrow Keys (Left/Right)
-*   **Jump**: Space
+*   **Jump / Double Jump**: Space
 *   **Chew**: Enter / C
-*   **Squeak**: S (Happy Squeak)
+*   **Squeak**: S (Happy Squeak, Scares Birds, Shatters Projectiles)
 *   **Help**: ? (Toggle Tutorial)
 
 ### Touch Controls (Mobile)
 *   **Move Left**: Touch Left side of screen (0-50%)
 *   **Move Right**: Touch Right side of screen (50-100%)
 *   **Jump & Chew**: Tap anywhere or Swipe Up (triggers both simultaneously to save space)
+*   **Squeak**: Swipe Down (Scares Birds)
 
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.

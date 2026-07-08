@@ -215,7 +215,7 @@
             border: 1px solid #666;
         }
 
-        button:focus-visible, input:focus-visible, [href]:focus-visible {
+        button:focus-visible, input:focus-visible, [href]:focus-visible, canvas:focus-visible {
             outline: 3px solid #f1c40f;
             outline-offset: 2px;
         }
@@ -241,17 +241,17 @@
 
             <div class="control-legend">
                 <p class="desktop-only"><span class="key-badge">Space</span> Jump / Double Jump</p>
-                <p class="desktop-only"><span class="key-badge">S</span> Squeak (Scares Birds)</p>
+                <p class="desktop-only"><span class="key-badge">S</span> Squeak (Scares Birds, Shatters Projectiles)</p>
                 <p class="desktop-only"><span class="key-badge">Enter</span> / <span class="key-badge">C</span> Chew</p>
                 <p class="mobile-only">Tap or swipe up to jump and chew!</p>
-                <p class="mobile-only">Swipe down to Squeak (Scares Birds)</p>
+                <p class="mobile-only">Swipe down to Squeak (Scares Birds, Shatters Projectiles)</p>
                 <p style="margin-top: 10px; color: #DAA520;">Collect <span role="img" aria-label="cheese">🧀</span>, <span role="img" aria-label="pizza">🍕</span> and <span role="img" aria-label="coffee">☕</span> for points!</p>
             </div>
 
             <button id="close-btn">PLAY!</button>
             <div id="debug-container">
-                <label style="cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
-                    <input type="checkbox" id="debug-toggle" style="width: 20px; height: 20px; cursor: pointer;"> Enable Debug Info
+                <label for="debug-toggle" style="cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                    <input type="checkbox" id="debug-toggle" style="width: 24px; height: 24px; cursor: pointer;"> Enable Debug Info
                 </label>
             </div>
         </div>
@@ -294,7 +294,7 @@
         </div>
     </div>
 
-    <canvas id="gameCanvas"></canvas>
+    <canvas id="gameCanvas" tabindex="0" role="application" aria-label="Game Canvas"></canvas>
 
     <script>
         window.DEBUG_MODE = false;
@@ -333,10 +333,10 @@
             const musicToggle = document.getElementById('music-toggle');
             const sfxToggle = document.getElementById('sfx-toggle');
 
-            let lastFocus = null;
+            const focusStack = [];
 
             function openModal(modal) {
-                lastFocus = document.activeElement;
+                focusStack.push(document.activeElement);
                 modal.style.display = 'flex';
                 modal.setAttribute('aria-hidden', 'false');
 
@@ -347,15 +347,18 @@
             function closeModal(modal) {
                 modal.style.display = 'none';
                 modal.setAttribute('aria-hidden', 'true');
+                const lastFocus = focusStack.pop();
                 if (lastFocus && document.body.contains(lastFocus)) {
                     lastFocus.focus();
                 }
-                lastFocus = null;
             }
 
             // --- Tutorial Logic ---
             function closeTutorial() {
                 closeModal(tutorialModal);
+                // Refocus the canvas (not the '?' button) so Spacebar resumes
+                // gameplay instead of re-triggering the tutorial modal.
+                document.getElementById('gameCanvas').focus();
                 localStorage.setItem('rats_tutorial_seen', 'true');
             }
 
@@ -394,7 +397,7 @@
 
             // --- Credits Logic ---
             creditsBtn.addEventListener('click', () => {
-                lastFocus = document.activeElement;
+                focusStack.push(document.activeElement);
                 optionsModal.style.display = 'none';
                 optionsModal.setAttribute('aria-hidden', 'true');
 
@@ -412,7 +415,8 @@
                 optionsModal.style.display = 'flex';
                 optionsModal.setAttribute('aria-hidden', 'false');
 
-                if (lastFocus) lastFocus.focus();
+                const prevFocus = focusStack.pop();
+                if (prevFocus) prevFocus.focus();
             });
 
             // Debug

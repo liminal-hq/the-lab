@@ -9,3 +9,16 @@
 - **Learning**: Increasing speed by 1.5x significantly alters the jump arc, making gaps easier to clear but precision landings harder. This forces the player to adapt their muscle memory quickly. The 5-second duration feels just long enough to be exciting but short enough not to be overwhelming.
 - Squeak button needed a gameplay purpose. Added bird scaring mechanism. Mapped to Swipe Down on mobile to maintain input parity.
 - Adding a secondary interactive effect to an established input creates a richer, more responsive world without adding to control complexity.
+* When expanding mechanics, adding a secondary interactive effect (like shattering projectiles) to an established input (like Squeak) creates a richer, more responsive world without adding to control complexity.
+
+## Hazard Momentum Loss
+- **Learning**: Momentum loss on traps (losing the Coffee speed boost) forces players to be more cautious when they have a speed boost, making hazard evasion more critical and adding a minor punishment for reckless speed.
+
+## Bottle Cap Micro-Collectibles
+- **Learning**: Using micro-collectibles (like Bottle Caps) as 'breadcrumb' trails offering minimal points but high spawn rates subtly influences player pathing and encourages controlled jumping.
+
+## iFrames & Knockback Stun
+* Added iFrames and knockback stun (stunTimer) to improve trap interactions, preventing multiple hits and providing visual feedback.
+
+## Speed Boost Particle Trail
+* Added speed boost particle trail to improve visual feedback when the power-up is active.
