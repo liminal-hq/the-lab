@@ -13,3 +13,4 @@
 
 ## Deterministic Seeding
 - Deterministic level generation uses cyrb128 to hash string seeds passed via `?seed=` (incorporating `state.level`) and seeds the mulberry32 PRNG.
+- When linking audio progression to visual progression (e.g. district colours), share the exact threshold constants (like `DISTRICT_THRESHOLDS`) and boundary checks (e.g. `>=`) to ensure they transition precisely on the same frame/building.

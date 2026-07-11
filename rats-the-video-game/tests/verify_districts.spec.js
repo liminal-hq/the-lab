@@ -33,11 +33,19 @@ test('verify district generation colour bands', async ({ page }) => {
     expect(hue).toBeLessThanOrEqual(55);
   }
 
-  // Industrial: 19+
-  for (let i = 19; i < buildings.length; i++) {
+  // Industrial: 19-21
+  for (let i = 19; i <= 21; i++) {
     if (buildings[i].type === 'TUNNEL') continue;
     const hue = getHue(buildings[i].color);
     expect(hue).toBeGreaterThanOrEqual(-20);
     expect(hue).toBeLessThanOrEqual(20);
+  }
+
+  // Neon: 22+
+  for (let i = 22; i < buildings.length; i++) {
+    if (buildings[i].type === 'TUNNEL') continue;
+    const hue = getHue(buildings[i].color);
+    expect(hue).toBeGreaterThanOrEqual(280);
+    expect(hue).toBeLessThanOrEqual(320);
   }
 });

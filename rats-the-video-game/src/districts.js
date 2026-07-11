@@ -12,5 +12,6 @@
 export const DISTRICT_THRESHOLDS = Object.freeze({
     DOWNTOWN: 7,
     CONSTRUCTION: 13,
-    INDUSTRIAL: 19
+    INDUSTRIAL: 19,
+    NEON: 22
 });
