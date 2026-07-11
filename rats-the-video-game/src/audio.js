@@ -472,19 +472,25 @@ export class AudioEngine {
                 // the same 0-based DISTRICT_THRESHOLDS game.js uses for visuals -
                 // this keeps the music switch aligned to the same building as
                 // the district's colour change instead of firing one early.
-                if (this.cycle > DISTRICT_THRESHOLDS.INDUSTRIAL) {
+                if (this.cycle >= DISTRICT_THRESHOLDS.NEON) {
+                    // Neon (Magenta, chaotic): Frantic, very dissonant, busy drums
+                    currentScale = [440, 466.16, 523.25, 587.33, 622.25, 739.99, 880]; // Lydian/Dissonant mix
+                    bassNoteMod = 0.25;
+                    squeakFreqMod = 1200;
+                    beatDrums = beat % 2 === 0; // Very fast drums
+                } else if (this.cycle >= DISTRICT_THRESHOLDS.INDUSTRIAL) {
                     // Industrial (Red, harder): Dissonant, faster bass, heavy drums
                     currentScale = [440, 466.16, 554.37, 622.25, 739.99, 880]; // Phrygian dominant feel
                     bassNoteMod = 0.5; // lower pitch bass
                     squeakFreqMod = 1000; // more high pitched chaos
                     beatDrums = beat % 4 === 2; // faster drums
-                } else if (this.cycle > DISTRICT_THRESHOLDS.CONSTRUCTION) {
+                } else if (this.cycle >= DISTRICT_THRESHOLDS.CONSTRUCTION) {
                     // Construction (Orange, chaotic): Whole tone scale, syncopated rhythm
                     currentScale = [440, 493.88, 554.37, 622.25, 698.46, 783.99, 880]; // Whole tone feel
                     bassNoteMod = 0.75;
                     squeakFreqMod = 700;
                     beatDrums = beat % 4 === 0 || beat % 4 === 3; // Syncopated drums
-                } else if (this.cycle > DISTRICT_THRESHOLDS.DOWNTOWN) {
+                } else if (this.cycle >= DISTRICT_THRESHOLDS.DOWNTOWN) {
                     // Downtown (Blue, moderate): More minor, busy
                     currentScale = [440, 493.88, 523.25, 587.33, 659.25, 783.99, 880]; // Aeolian
                     squeakFreqMod = 500;

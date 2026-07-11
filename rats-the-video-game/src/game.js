@@ -205,7 +205,13 @@ function generateSurface() {
         let obsChance = 0.3;
         let district = 'BURBS';
 
-        if (i >= DISTRICT_THRESHOLDS.INDUSTRIAL) {
+        if (i >= DISTRICT_THRESHOLDS.NEON) {
+            district = 'NEON';
+            hueBase = 300; // Magenta
+            gapMin = 40;
+            gapMax = 70;
+            obsChance = 0.8;
+        } else if (i >= DISTRICT_THRESHOLDS.INDUSTRIAL) {
             district = 'INDUSTRIAL';
             hueBase = 0;
             gapMin = 50;
@@ -255,7 +261,12 @@ function generateSurface() {
             let objH = 30;
 
             // District-specific obstacle weighting
-            if (district === 'CONSTRUCTION') {
+            if (district === 'NEON') {
+                if (rand < 0.3) type = 'TRASH_PILE';
+                else if (rand < 0.6) type = 'TRAP';
+                else if (rand < 0.9) type = 'SPRING';
+                else type = 'BOX';
+            } else if (district === 'CONSTRUCTION') {
                 if (rand < 0.5) type = 'BOX';
                 else if (rand < 0.8) type = 'SPRING';
                 else type = 'TRAP';
