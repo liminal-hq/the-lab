@@ -71,6 +71,13 @@ async function loadGameWithAudioMock(page) {
       createOscillator() {
         return new MockOscillator();
       }
+
+      createDelay() {
+        return {
+          delayTime: new MockAudioParam(),
+          connect: () => {},
+        };
+      }
     }
 
     window.AudioContext = MockAudioContext;

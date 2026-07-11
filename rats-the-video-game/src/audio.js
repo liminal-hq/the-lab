@@ -58,6 +58,17 @@ export class AudioEngine {
             } else {
                 this.masterGain.connect(this.ctx.destination);
             }
+
+            // Setup echo for the subway level
+            this.subwayDelay = this.ctx.createDelay();
+            this.subwayDelay.delayTime.value = 0.25; // Quarter second delay
+
+            this.subwayFeedback = this.ctx.createGain();
+            this.subwayFeedback.gain.value = 0.3; // Echo volume drops each bounce
+
+            this.subwayDelay.connect(this.subwayFeedback);
+            this.subwayFeedback.connect(this.subwayDelay);
+            this.subwayDelay.connect(this.masterGain);
         }
     }
 
@@ -78,6 +89,11 @@ export class AudioEngine {
 
         osc.connect(gain);
         gain.connect(this.masterGain);
+
+        // Add echo for subway lead
+        if (this.level === 'SUBWAY' && channelIdx === 1 && this.subwayDelay) {
+            gain.connect(this.subwayDelay);
+        }
 
         // Envelope: Attack -> Decay (Quick in, quick out, like stealing a crumb)
         gain.gain.setValueAtTime(0.5, this.ctx.currentTime);
