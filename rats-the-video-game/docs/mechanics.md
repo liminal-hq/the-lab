@@ -13,7 +13,7 @@ Rats are famous for their teeth. They never stop growing, so they must chew!
 *   **Behaviour**:
     *   Blocks the player's horizontal movement (Solid).
 *   **Interaction**:
-    *   **Action**: Press `Enter` (or `C`) while standing next to the object.
+    *   **Action**: Press `Enter` (or `C`) [Mobile: Tap / Swipe Up] while standing next to the object.
     *   **Result**: The object is destroyed.
     *   **Audio**: A crunchy "Chew" sound (or a Honk for the Prius).
     *   **Visual**: The object disappears in a burst of particles.
@@ -32,7 +32,7 @@ The city is dangerous. Humans have laid traps.
 *   **Behaviour**:
     *   Dangerous to touch.
 *   **Interaction**:
-    *   **Action**: Jump (`Space`) over the trap.
+    *   **Action**: Jump (`Space` or [Mobile: Tap / Swipe Up]) over the trap.
     *   **Result (Collision)**:
         *   Player is knocked back.
         *   "Hurt" audio plays (Snap!).
@@ -148,7 +148,7 @@ Danger from above. The sky vermin are watching.
     *   Turds fall from the sky and hurt the player.
 *   **Interaction**:
     *   **Action (Defensive)**: Squeak (`S` or Swipe Down) when birds are nearby.
-    *   **Result (Squeak)**: Birds fly upwards, ceasing their aerial assault.
+    *   **Result (Squeak)**: Birds fly upwards, ceasing their aerial assault, and any falling projectiles are shattered.
     *   **Result (Hit by Turd)**:
         *   -5 Points.
         *   "Hurt" audio plays (Splat!).
@@ -171,7 +171,7 @@ Danger from above. The sky vermin are watching.
 *   **Move Left**: Touch Left side of screen (0-50%)
 *   **Move Right**: Touch Right side of screen (50-100%)
 *   **Jump & Chew**: Tap anywhere or Swipe Up (triggers both simultaneously to save space)
-*   **Squeak**: Swipe Down (Scares Birds)
+*   **Squeak**: Swipe Down (Scares Birds, Shatters Projectiles)
 
 ## Notes on Implementation
 *   Obstacles are generated procedurally along with the city buildings.
