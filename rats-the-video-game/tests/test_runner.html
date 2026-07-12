@@ -103,6 +103,23 @@
                 log(`ERROR in Test 2: ${e.message}`, 'fail');
             }
 
+            // TEST 3: Squeak Input Consumption and Side Effects
+            try {
+                const rat = win.gameState.rat;
+                win.gameState.turds = [{ x: rat.x, y: rat.y, vy: 0 }];
+                win.gameState.input.squeakPressed = true;
+
+                await new Promise(r => setTimeout(r, 200));
+
+                if (win.gameState.input.squeakPressed === false && win.gameState.turds.length === 0) {
+                    log("PASS: Squeak input consumed and nearby turd shattered.", 'pass');
+                } else {
+                    log(`FAIL: Squeak input not processed correctly. squeakPressed: ${win.gameState.input.squeakPressed}, turds left: ${win.gameState.turds.length}`, 'fail');
+                }
+            } catch (e) {
+                log(`ERROR in Test 3: ${e.message}`, 'fail');
+            }
+
             status.textContent = "Tests Complete.";
         };
     </script>
