@@ -466,6 +466,7 @@ export class AudioEngine {
                 let bassNoteMod = 1;
                 let squeakFreqMod = 0;
                 let beatDrums = false;
+                let beatBass = false;
 
                 // `this.cycle` is 1-based (set from state.currentCycle, which is
                 // the 0-based district index + 1), so compare with `>` against
@@ -478,25 +479,29 @@ export class AudioEngine {
                     bassNoteMod = 0.5; // lower pitch bass
                     squeakFreqMod = 1000; // more high pitched chaos
                     beatDrums = beat % 4 === 2; // faster drums
+                    beatBass = beat % 2 === 0; // Fast, driving 8th notes
                 } else if (this.cycle > DISTRICT_THRESHOLDS.CONSTRUCTION) {
                     // Construction (Orange, chaotic): Whole tone scale, syncopated rhythm
                     currentScale = [440, 493.88, 554.37, 622.25, 698.46, 783.99, 880]; // Whole tone feel
                     bassNoteMod = 0.75;
                     squeakFreqMod = 700;
                     beatDrums = beat % 4 === 0 || beat % 4 === 3; // Syncopated drums
+                    beatBass = beat % 4 === 0 || beat % 8 === 3; // Syncopated rhythm
                 } else if (this.cycle > DISTRICT_THRESHOLDS.DOWNTOWN) {
                     // Downtown (Blue, moderate): More minor, busy
                     currentScale = [440, 493.88, 523.25, 587.33, 659.25, 783.99, 880]; // Aeolian
                     squeakFreqMod = 500;
                     beatDrums = beat % 8 === 4;
+                    beatBass = beat % 4 === 0; // Standard 4-on-the-floor
                 } else {
                     // Burbs (Green, safer) - default
                     beatDrums = beat % 8 === 4;
+                    beatBass = beat % 8 === 0; // Relaxed half-time feel
                 }
 
                 // Channel 0: Bass
-                if (beat % 4 === 0) {
-                    const note = bassLine[(beat / 4) % bassLine.length] * bassNoteMod;
+                if (beatBass) {
+                    const note = bassLine[Math.floor(beat / 4) % bassLine.length] * bassNoteMod;
                     this.playTone(note, 0.2, 0);
                 }
 

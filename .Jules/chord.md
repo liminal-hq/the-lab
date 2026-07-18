@@ -1,3 +1,4 @@
 In rats-the-video-game, district visual progression (e.g., BURBS, DOWNTOWN) is determined by the i variable in game.js, while corresponding musical motifs are driven by this.cycle in audio.js. These thresholds must remain synchronized.
 * Adding a `triangle` wave oscillator with an exponential ramp-down (e.g. from 800Hz to 100Hz over 0.1s) is an effective way to simulate a harsh, metallic chew sound, distinguishing it nicely from the softer `sawtooth` cardboard chew and the crinkly `square` trash chew.
 - Procedural Audio: A sawtooth wave with an exponential frequency drop (e.g., 300Hz to 100Hz) works well for a dull "splat" or "ouch" sound.
+In the `rats-the-video-game` audio engine, when decoupling sequential arrays (like `bassLine`) from fixed beat intervals (e.g., `beat % 4`), use `Math.floor()` for index calculations (e.g., `Math.floor(beat / 4)`) to prevent float indices and maintain the underlying progression speed.
