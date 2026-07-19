@@ -42,9 +42,10 @@ Inspired by Suzanne Vega's "Rats" from *Flying with Angels* (2025).
 2.  Press **SPACE** to jump and start the audio engine.
 3.  Use **Arrow Keys** to move left and right.
 4.  Press **Enter** or **C** to chew through obstacles.
-5.  Press **S** for a happy squeak.
-6.  *Mobile:* Tap left/right to move, swipe up or tap anywhere to jump. Mobile inputs automatically trigger chewing.
-7.  Survive.
+5.  Press **S** for a happy squeak (scares birds, shatters projectiles).
+6.  Press **?** to toggle the help tutorial.
+7.  *Mobile:* Tap left/right to move, swipe up or tap anywhere to jump. Mobile inputs automatically trigger chewing. Swipe down to squeak.
+8.  Survive.
 
 ## Development
 This project is part of "The Lab".
