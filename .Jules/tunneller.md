@@ -13,3 +13,4 @@
 
 ## Deterministic Seeding
 - Deterministic level generation uses cyrb128 to hash string seeds passed via `?seed=` (incorporating `state.level`) and seeds the mulberry32 PRNG.
+* Subdividing the 25-cycle level into 5 distinct 5-cycle chunks improves pacing and introduces aesthetic variety without requiring new visual assets.
