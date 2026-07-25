@@ -73,7 +73,11 @@ export class AudioEngine {
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
 
-        osc.type = 'square'; // Square waves are the crunchiest. Like stale bread.
+        // Distinct waveforms per channel for better mixing
+        if (channelIdx === 0) osc.type = 'triangle'; // Deep bass
+        else if (channelIdx === 3) osc.type = 'sawtooth'; // Gritty drums
+        else osc.type = 'square'; // Lead and squeaks
+
         osc.frequency.value = frequency;
 
         osc.connect(gain);
