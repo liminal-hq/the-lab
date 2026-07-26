@@ -16,3 +16,5 @@
 
 ### Testing Input Consumption
 *   When triggering single-frame inputs (like `squeakPressed`) via `page.evaluate()` in Playwright, use `await page.waitForFunction(() => window.gameState.input.squeakPressed === false)` to reliably ensure the game loop has fully processed the input and applied resulting side-effects (like scaring birds) before evaluating assertions.
+* When using the HTML test harness (`test_runner.html`) to test single-frame input consumption or entity side-effects, it's necessary to manually reset the entity properties (like setting `rat.grounded = true`, `rat.vy = 0`, and `rat.stunTimer = 0`) before injecting the single-frame input (`input.jumpPressed = true`). Afterwards, wait `200ms` for the game loop to process before asserting the flag was cleared.
+* When using Playwright `requestAnimationFrame` to step forward exactly one game tick, use `await new Promise(r => win.requestAnimationFrame(r))` rather than an arbitrary `setTimeout`. Wait for one frame to align, then inject state, then wait for another frame to allow execution.
