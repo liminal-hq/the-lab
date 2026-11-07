@@ -217,6 +217,12 @@ function generateSurface() {
             gapMin = 60;
             gapMax = 100;
             obsChance = 0.6;
+        } else if (i >= DISTRICT_THRESHOLDS.COMMERCIAL) {
+            district = 'COMMERCIAL';
+            hueBase = 280; // Purple/neon
+            gapMin = 60;
+            gapMax = 90;
+            obsChance = 0.55;
         } else if (i >= DISTRICT_THRESHOLDS.DOWNTOWN) {
             district = 'DOWNTOWN';
             hueBase = 200;
@@ -258,6 +264,10 @@ function generateSurface() {
             if (district === 'CONSTRUCTION') {
                 if (rand < 0.5) type = 'BOX';
                 else if (rand < 0.8) type = 'SPRING';
+                else type = 'TRAP';
+            } else if (district === 'COMMERCIAL') {
+                if (rand < 0.4) type = 'PRIUS';
+                else if (rand < 0.7) type = 'BOX';
                 else type = 'TRAP';
             } else if (district === 'INDUSTRIAL') {
                 if (rand < 0.4) type = 'TRASH_PILE'; // Trash piles fit small gaps better
