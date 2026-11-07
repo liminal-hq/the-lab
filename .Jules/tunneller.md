@@ -13,3 +13,4 @@
 
 ## Deterministic Seeding
 - Deterministic level generation uses cyrb128 to hash string seeds passed via `?seed=` (incorporating `state.level`) and seeds the mulberry32 PRNG.
+* Learned: Keeping generation chunks evenly spaced (e.g., 5 cycles) creates a smooth progression ramp. Use `>=` on `cycle - 1` to match 0-based district thresholds synchronously with visual building transitions.

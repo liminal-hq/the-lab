@@ -468,23 +468,29 @@ export class AudioEngine {
                 let beatDrums = false;
 
                 // `this.cycle` is 1-based (set from state.currentCycle, which is
-                // the 0-based district index + 1), so compare with `>` against
-                // the same 0-based DISTRICT_THRESHOLDS game.js uses for visuals -
-                // this keeps the music switch aligned to the same building as
-                // the district's colour change instead of firing one early.
-                if (this.cycle > DISTRICT_THRESHOLDS.INDUSTRIAL) {
+                // the 0-based district index + 1). We subtract 1 to match the
+                // 0-based DISTRICT_THRESHOLDS and use `>=` to ensure the music
+                // transitions synchronously on the exact same frame or building.
+                const cycleIndex = this.cycle - 1;
+                if (cycleIndex >= DISTRICT_THRESHOLDS.INDUSTRIAL) {
                     // Industrial (Red, harder): Dissonant, faster bass, heavy drums
                     currentScale = [440, 466.16, 554.37, 622.25, 739.99, 880]; // Phrygian dominant feel
                     bassNoteMod = 0.5; // lower pitch bass
                     squeakFreqMod = 1000; // more high pitched chaos
                     beatDrums = beat % 4 === 2; // faster drums
-                } else if (this.cycle > DISTRICT_THRESHOLDS.CONSTRUCTION) {
+                } else if (cycleIndex >= DISTRICT_THRESHOLDS.CONSTRUCTION) {
                     // Construction (Orange, chaotic): Whole tone scale, syncopated rhythm
                     currentScale = [440, 493.88, 554.37, 622.25, 698.46, 783.99, 880]; // Whole tone feel
                     bassNoteMod = 0.75;
                     squeakFreqMod = 700;
                     beatDrums = beat % 4 === 0 || beat % 4 === 3; // Syncopated drums
-                } else if (this.cycle > DISTRICT_THRESHOLDS.DOWNTOWN) {
+                } else if (cycleIndex >= DISTRICT_THRESHOLDS.COMMERCIAL) {
+                    // Commercial (Purple, neon): Upbeat, slightly synthetic
+                    currentScale = [440, 523.25, 659.25, 783.99, 880]; // Pentatonic synthetic feel
+                    bassNoteMod = 1.25;
+                    squeakFreqMod = 600;
+                    beatDrums = beat % 4 === 0; // Straight four on the floor
+                } else if (cycleIndex >= DISTRICT_THRESHOLDS.DOWNTOWN) {
                     // Downtown (Blue, moderate): More minor, busy
                     currentScale = [440, 493.88, 523.25, 587.33, 659.25, 783.99, 880]; // Aeolian
                     squeakFreqMod = 500;
