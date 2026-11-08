@@ -16,3 +16,6 @@
 
 ### Testing Input Consumption
 *   When triggering single-frame inputs (like `squeakPressed`) via `page.evaluate()` in Playwright, use `await page.waitForFunction(() => window.gameState.input.squeakPressed === false)` to reliably ensure the game loop has fully processed the input and applied resulting side-effects (like scaring birds) before evaluating assertions.
+
+### Testing Double Jump Mechanics
+*   When testing double jump mechanics in HTML test harnesses, ensure `stunTimer` is reset alongside `grounded` and `canDoubleJump`, as a non-zero `stunTimer` blocks jump input consumption in the game loop.

@@ -103,6 +103,51 @@
                 log(`ERROR in Test 2: ${e.message}`, 'fail');
             }
 
+            // TEST 3: Double Jump Mechanics
+            try {
+                // Reset state
+                win.gameState.rat.grounded = true;
+                win.gameState.rat.canDoubleJump = true;
+                win.gameState.rat.vy = 0;
+                win.gameState.rat.stunTimer = 0;
+                win.gameState.input.jumpPressed = true;
+                win.gameState.input.jump = true;
+
+                // Wait one frame
+                await new Promise(r => win.requestAnimationFrame(r));
+
+                let passed = true;
+
+                if (win.gameState.rat.grounded !== false) {
+                    log("FAIL: First jump did not un-ground rat", 'fail');
+                    passed = false;
+                }
+                if (win.gameState.rat.canDoubleJump !== true) {
+                    log("FAIL: First jump consumed double jump ability", 'fail');
+                    passed = false;
+                }
+
+                // Let game advance a tiny bit
+                await new Promise(r => setTimeout(r, 50));
+
+                // Trigger double jump
+                win.gameState.input.jumpPressed = true;
+
+                await new Promise(r => win.requestAnimationFrame(r));
+
+                if (win.gameState.rat.canDoubleJump !== false) {
+                    log("FAIL: Double jump did not consume ability", 'fail');
+                    passed = false;
+                }
+
+                if (passed) {
+                    log("PASS: Double jump mechanics function correctly", 'pass');
+                }
+
+            } catch (e) {
+                log(`ERROR in Test 3: ${e.message}`, 'fail');
+            }
+
             status.textContent = "Tests Complete.";
         };
     </script>
